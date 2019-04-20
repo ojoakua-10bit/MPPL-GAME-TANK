@@ -79,7 +79,7 @@ public class UploadsController {
 
     @ResponseBody
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/images/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/assets/{id}", method = RequestMethod.POST)
     public Map<String, Object> uploadAssets(
             @RequestHeader(name = "App-Token", required = false) String appToken,
             @RequestHeader(name = "User-Token", required = false) String userToken,

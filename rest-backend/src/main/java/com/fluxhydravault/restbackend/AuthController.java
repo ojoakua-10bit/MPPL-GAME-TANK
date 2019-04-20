@@ -44,7 +44,7 @@ public class AuthController {
         String token = tokenDAO.generateToken(player.getPlayer_id());
 
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put("time", new Date());
+        map.put("timestamp", new Date());
         map.put("user_token", token);
         map.put("user_data", player);
         return map;

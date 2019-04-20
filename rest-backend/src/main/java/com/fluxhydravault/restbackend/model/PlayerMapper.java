@@ -19,7 +19,7 @@ public class PlayerMapper implements RowMapper<Player> {
         player.setCredit_balance(resultSet.getInt(9));
         player.setInventory(resultSet.getInt(10));
         player.setAvatar(resultSet.getString(11));
-        player.setBan_status(resultSet.getByte(12));
+        player.setBan_status(resultSet.getByte(12) == 1);
 
         return player;
     }

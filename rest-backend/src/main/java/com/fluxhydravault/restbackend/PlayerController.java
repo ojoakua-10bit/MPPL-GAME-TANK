@@ -48,7 +48,7 @@ public class PlayerController {
             @RequestParam("password") String password,
             @RequestParam("player_name") String playerName
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
         Player result = playerDAO.newPlayer(username, password, playerName);
 
         Map<String, Object> map = new LinkedHashMap<>();

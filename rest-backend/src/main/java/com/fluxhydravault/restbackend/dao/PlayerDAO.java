@@ -230,6 +230,6 @@ public class PlayerDAO {
 
     private boolean isBannedPlayer(String playerID) {
         Player tmp = getPlayer(playerID);
-        return (tmp.getBan_status() == 1);
+        return tmp.getBan_status();
     }
 }

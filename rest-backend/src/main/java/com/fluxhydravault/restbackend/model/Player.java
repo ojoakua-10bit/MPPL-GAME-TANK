@@ -11,7 +11,7 @@ public class Player {
     private int credit_balance;
     private int inventory;
     private String avatar;
-    private byte ban_status;
+    private boolean ban_status;
 
     public int getXp() {
         return xp;
@@ -37,11 +37,11 @@ public class Player {
         this.avatar = avatar;
     }
 
-    public byte getBan_status() {
+    public boolean getBan_status() {
         return ban_status;
     }
 
-    public void setBan_status(byte ban_status) {
+    public void setBan_status(boolean ban_status) {
         this.ban_status = ban_status;
     }
 
