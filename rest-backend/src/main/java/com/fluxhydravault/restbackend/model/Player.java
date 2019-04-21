@@ -11,6 +11,7 @@ public class Player {
     private int credit_balance;
     private int inventory;
     private String avatar;
+    private boolean online_status;
     private boolean ban_status;
 
     public int getXp() {
@@ -99,5 +100,13 @@ public class Player {
 
     public void setCredit_balance(int credit_balance) {
         this.credit_balance = credit_balance;
+    }
+
+    public boolean getOnline_status() {
+        return online_status;
+    }
+
+    public void setOnline_status(boolean online_status) {
+        this.online_status = online_status;
     }
 }

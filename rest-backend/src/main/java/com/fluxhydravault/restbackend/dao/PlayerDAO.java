@@ -43,12 +43,12 @@ public class PlayerDAO {
             playerID = Digestive.sha256(username).substring(i, i + 20);
         } while(getPlayer(playerID) != null);
 
-        jdbcTemplateObject.update("INSERT INTO player VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        jdbcTemplateObject.update("INSERT INTO player VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 playerID,
                 username,
                 Digestive.sha1(password),
                 playerName, 0, 0, 0, 0, 0, 15,
-                DEFAULT_AVATAR_LOCATION, 0);
+                DEFAULT_AVATAR_LOCATION, 0, 0);
         return getPlayer(playerID);
     }
 
@@ -231,5 +231,10 @@ public class PlayerDAO {
     private boolean isBannedPlayer(String playerID) {
         Player tmp = getPlayer(playerID);
         return tmp.getBan_status();
+    }
+
+    public void setPlayerOnlineStatus(String playerID, boolean onlineStatus) {
+        String SQL = "UPDATE player SET online_status=? WHERE player_id=?";
+        jdbcTemplateObject.update(SQL, onlineStatus ? 1 : 0, playerID);
     }
 }

@@ -42,6 +42,7 @@ public class AuthController {
             throw new NotAuthenticatedException("Wrong username or password!");
         }
         String token = tokenDAO.generateToken(player.getPlayer_id());
+        playerDAO.setPlayerOnlineStatus(player.getPlayer_id(), true);
 
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());

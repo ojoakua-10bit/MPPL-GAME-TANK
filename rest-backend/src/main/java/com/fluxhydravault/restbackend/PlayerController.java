@@ -104,6 +104,9 @@ public class PlayerController {
             if (params.containsKey("inventory")) {
                 playerDAO.changePlayerInventory(playerID, Integer.parseInt(params.get("inventory")));
             }
+            if (params.containsKey("online_status")) {
+                playerDAO.setPlayerOnlineStatus(playerID, Boolean.getBoolean(params.get("online_status")));
+            }
         } catch (NumberFormatException ex) {
             throw new InputFormatException();
         }

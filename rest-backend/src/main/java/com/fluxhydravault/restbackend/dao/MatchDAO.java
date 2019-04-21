@@ -34,7 +34,7 @@ public class MatchDAO {
         }
         else {
             jdbcTemplateObject.update("INSERT INTO match_result VALUES (?, ?, ?, ?, ?, ?, ?)",
-                    matchID, playerID, matchStatus ? 1 : 0, score, totalDamage, goldGained);
+                    matchID, playerID, matchStatus ? 1 : 0, score, totalDamage, goldGained, itemGained);
         }
 
         return getMatch(matchID);

@@ -91,7 +91,7 @@ public class UploadsController {
         fileUploader.uploadAsset(file);
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
         String path = FILE_SERVER_ROOT + "assets/" + filename;
-        // add item assets
+        // add item assets to database
 
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());

@@ -35,7 +35,7 @@ Field | Type | Description
 ----|----|----
 timestamp | ISO8601 timestamp | Request timestamp.
 user_token | 64-characters string | Requested user token.
-user_data | Player object | A Player object based on requested username.
+user_data | [Player](#player-object) object | A Player object based on requested username.
 
 ### Player Object
 Represents a player information.
@@ -52,6 +52,7 @@ diamond_count | integer | Number of player's diamond.
 gold_count | integer | Number of player's gold.
 inventory | integer | Current player's inventory capacity.
 avatar | string | Path to user's avatar.
+online_status | boolean | Whether this user online or not.
 ban_status | boolean | Whether this user is banned or not.
 
 #### Example of Player Object
@@ -60,13 +61,14 @@ ban_status | boolean | Whether this user is banned or not.
     "player_id": "0d89db5aae3bf7797def",
     "username": "anko",
     "player_name": "Ichinomiya Anko",
-    "xp": 0,
-    "rank": 0,
-    "diamond_count": 0,
-    "gold_count": 0,
-    "credit_balance": 0,
+    "xp": 23750,
+    "rank": 4,
+    "diamond_count": 87,
+    "gold_count": 11300,
+    "credit_balance": 169000,
     "inventory": 15,
-    "avatar": "/static/default/avatar.png",
+    "avatar": "/static/images/0d89db5aae3bf7797def-anko.png",
+    "online_status": false,
     "ban_status": false
 }
 ```

@@ -2,7 +2,7 @@ package com.fluxhydravault.restbackend.model;
 
 public class Item {
     private String item_id;
-    private byte item_category;
+    private ItemCategory item_category;
     private String item_name;
     private String description;
     private String model_location;
@@ -15,11 +15,11 @@ public class Item {
         this.item_id = item_id;
     }
 
-    public byte getItem_category() {
+    public ItemCategory getItem_category() {
         return item_category;
     }
 
-    public void setItem_category(byte item_category) {
+    public void setItem_category(ItemCategory item_category) {
         this.item_category = item_category;
     }
 
