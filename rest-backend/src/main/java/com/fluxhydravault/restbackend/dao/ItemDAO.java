@@ -1,5 +1,6 @@
 package com.fluxhydravault.restbackend.dao;
 
+import com.fluxhydravault.restbackend.NotFoundException;
 import com.fluxhydravault.restbackend.model.Item;
 import com.fluxhydravault.restbackend.model.ItemCategory;
 import com.fluxhydravault.restbackend.model.ItemMapper;
@@ -38,7 +39,7 @@ public class ItemDAO {
         return getItem(itemID);
     }
 
-    private Item getItem(String itemID) {
+    public Item getItem(String itemID) {
         Item temp;
         try {
             temp = jdbcTemplateObject.queryForObject("SELECT * FROM item WHERE item_id=?",
@@ -52,7 +53,7 @@ public class ItemDAO {
     public Item getItemByName(String itemName) {
         Item temp;
         try {
-            temp = jdbcTemplateObject.queryForObject("SELECT * FROM item WHERE item_name LIKE ?",
+            temp = jdbcTemplateObject.queryForObject("SELECT * FROM item WHERE item_name=?",
                     new Object[]{ '%' + itemName + '%' }, new ItemMapper());
         } catch (IncorrectResultSetColumnCountException e) {
             temp = null;
@@ -60,7 +61,49 @@ public class ItemDAO {
         return temp;
     }
 
-    public List<Item> getAllItems() {
-        return jdbcTemplateObject.query("SELECT * FROM item", new ItemMapper());
+    public List<Item> searchItemByName(String itemName) {
+        return jdbcTemplateObject.query("SELECT * FROM item WHERE item_name LIKE ?",
+                new Object[]{ '%' + itemName + '%' }, new ItemMapper());
+    }
+
+    public List<Item> getItems(int start, int limit) {
+        return jdbcTemplateObject.query("SELECT * FROM item LIMIT ?, ?",
+                new ItemMapper(), start, limit);
+    }
+
+    public Integer getNumberOfItems() {
+        return jdbcTemplateObject.queryForObject("SELECT COUNT(*) FROM item",
+                (resultSet, i) -> resultSet.getInt(1));
+    }
+
+    public void changeItemName(String itemID, String itemName) {
+        String SQL = "UPDATE item SET `item_name`=? WHERE `item_id`=?";
+        jdbcTemplateObject.update(SQL, itemName, itemID);
+    }
+
+    public void changeItemCategory(String itemID, ItemCategory category) {
+        String SQL = "UPDATE item SET `item_category`=? WHERE `item_id`=?";
+        jdbcTemplateObject.update(SQL, category.toString(), itemID);
+    }
+
+
+    public void changeItemDescription(String itemID, String description) {
+        String SQL = "UPDATE item SET `description`=? WHERE `item_id`=?";
+        jdbcTemplateObject.update(SQL, description, itemID);
+    }
+
+    public void changeItemModelLocation(String itemID, String location) {
+        String SQL = "UPDATE item SET `model_location`=? WHERE `item_id`=?";
+        jdbcTemplateObject.update(SQL, location, itemID);
+    }
+
+    public void deleteItem(String itemID) {
+        Item temp = getItem(itemID);
+        if (temp == null) {
+            throw new NotFoundException("Player@" + itemID);
+        }
+
+        String SQL = "DELETE FROM item WHERE item_id=?";
+        jdbcTemplateObject.update(SQL, itemID);
     }
 }

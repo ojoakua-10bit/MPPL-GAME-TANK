@@ -51,4 +51,40 @@ public class ItemController {
 
         return map;
     }
+
+    @ResponseBody
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/{id}", method = { RequestMethod.PATCH, RequestMethod.PUT })
+    public Map<String, Object> updatePlayer(
+            @RequestHeader(name = "App-Token", required = false) String appToken,
+            @RequestHeader(name = "User-Token", required = false) String userToken,
+            @RequestParam Map<String, String> params,
+            @PathVariable("id") String itemID
+    ) {
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+
+        try {
+            if (params.containsKey("item_category")) {
+                itemDAO.changeItemCategory(itemID, ItemCategory.valueOf(params.get("item_category")));
+            }
+        } catch (IllegalArgumentException e) {
+            throw new InputFormatException("Unknown item_category.");
+        }
+        if (params.containsKey("item_name")) {
+            itemDAO.changeItemName(itemID, params.get("item_name"));
+        }
+        if (params.containsKey("description")) {
+            itemDAO.changeItemDescription(itemID, params.get("description"));
+        }
+        if (params.containsKey("model_location")) {
+            itemDAO.changeItemModelLocation(itemID, params.get("model_location"));
+        }
+
+        Item result = itemDAO.getItem(itemID);
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("timestamp", new Date());
+        map.put("message", "Update success.");
+        map.put("data", result);
+        return map;
+    }
 }

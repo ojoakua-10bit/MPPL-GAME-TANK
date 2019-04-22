@@ -150,7 +150,7 @@ public class PlayerController {
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @RequestParam(name = "q", required = false) String username
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenDAO);
         Map<String, Object> map = new LinkedHashMap<>();
         Player matchesResult;
         List<Player> possibleResults;
@@ -176,7 +176,7 @@ public class PlayerController {
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @PathVariable("id") String playerID
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenDAO);
         Map<String, Object> map = new LinkedHashMap<>();
         Player matchesResult = playerDAO.getPlayer(playerID);
 

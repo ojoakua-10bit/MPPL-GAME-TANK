@@ -77,7 +77,7 @@ public class PlayerDAO {
     }
 
     public List<Player> searchPlayer(String username) {
-        String SQL = "SELECT * FROM player WHERE username LIKE ?";
+        String SQL = "SELECT * FROM player WHERE username LIKE ? ORDER BY username";
         return jdbcTemplateObject.query(SQL,
                 new Object[]{'%' + username + '%'}, new PlayerMapper());
     }
