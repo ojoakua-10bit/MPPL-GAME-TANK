@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -77,7 +79,13 @@ public class ItemController {
             itemDAO.changeItemDescription(itemID, params.get("description"));
         }
         if (params.containsKey("model_location")) {
-            itemDAO.changeItemModelLocation(itemID, params.get("model_location"));
+            String tmp = params.get("model_location");
+            if (tmp.equals("null")) {
+                itemDAO.changeItemModelLocation(itemID, null);
+            }
+            else {
+                itemDAO.changeItemModelLocation(itemID, tmp);
+            }
         }
 
         Item result = itemDAO.getItem(itemID);
@@ -86,5 +94,60 @@ public class ItemController {
         map.put("message", "Update success.");
         map.put("data", result);
         return map;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public List<Item> listItems(
+            @RequestHeader(name = "App-Token", required = false) String appToken,
+            @RequestHeader(name = "User-Token", required = false) String userToken,
+            @RequestParam(name = "start", required = false) Integer start,
+            @RequestParam(name = "n", required = false) Integer limit,
+            HttpServletResponse response
+    ) {
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+
+        response.addHeader("X-Total-Count", itemDAO.getNumberOfItems().toString());
+        if (start == null && limit == null) {
+            return itemDAO.getItems(0, 10);
+        }
+        else if (start == null) {
+            return itemDAO.getItems(0, limit);
+        }
+        else if (limit == null) {
+            return itemDAO.getItems(start, 10);
+        }
+        else {
+            return itemDAO.getItems(start, limit);
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public Map<String, Object> searchItem(
+            @RequestHeader(name = "App-Token", required = false) String appToken,
+            @RequestHeader(name = "User-Token", required = false) String userToken,
+            @RequestParam(value = "q", required = false) String itemName
+    ) {
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("timestamp", new Date());
+        map.put("matched_result", itemDAO.getItemByName(itemName));
+        map.put("possible_results", itemDAO.searchItemByName(itemName));
+        return map;
+    }
+
+    @ResponseBody
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public void deleteItem(
+            @RequestHeader(name = "App-Token", required = false) String appToken,
+            @RequestHeader(name = "User-Token", required = false) String userToken,
+            @PathVariable("id") String itemID
+    ) {
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+
+        itemDAO.deleteItem(itemID);
     }
 }

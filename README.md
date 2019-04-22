@@ -4,6 +4,8 @@ Untuk tugas MPPL Bu Sarwo.
 
 ## Anggota
 
-1. Abdurrahman
-2. Deddy Aditya Pramana
-3. Dennas Hassel A.
+1. 05111640000087 - Abdurrahman (PM, Designer, Programmer)
+2. 05111640000069 - Deddy Aditya Pramana (Analyst, Programmer, Tester)
+3. 05111640000113 - Dennas Hassel A. (Analyst, Designer, Tester)
+
+

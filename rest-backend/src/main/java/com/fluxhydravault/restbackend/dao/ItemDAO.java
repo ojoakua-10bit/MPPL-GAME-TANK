@@ -100,7 +100,7 @@ public class ItemDAO {
     public void deleteItem(String itemID) {
         Item temp = getItem(itemID);
         if (temp == null) {
-            throw new NotFoundException("Player@" + itemID);
+            throw new NotFoundException("Item@" + itemID);
         }
 
         String SQL = "DELETE FROM item WHERE item_id=?";

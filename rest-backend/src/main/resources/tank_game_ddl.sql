@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 22, 2019 at 09:50 AM
+-- Generation Time: Apr 22, 2019 at 10:15 AM
 -- Server version: 10.3.14-MariaDB
 -- PHP Version: 7.3.4
 
@@ -21,19 +21,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `tank_game`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `dropped_item`
---
-
-CREATE TABLE `dropped_item` (
-  `dropped_id` bigint(20) NOT NULL,
-  `player_id` char(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_id` char(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `count` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -106,10 +93,11 @@ CREATE TABLE `player` (
 --
 
 CREATE TABLE `player_inventory` (
-  `inventory_id` char(40) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `inventory_id` bigint(20) NOT NULL,
   `player_id` char(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_id` char(20) COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `item_id` char(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `count` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -165,14 +153,6 @@ CREATE TABLE `token` (
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `dropped_item`
---
-ALTER TABLE `dropped_item`
-  ADD PRIMARY KEY (`dropped_id`),
-  ADD KEY `item_id` (`item_id`),
-  ADD KEY `player_id` (`player_id`);
 
 --
 -- Indexes for table `friend`
@@ -251,13 +231,6 @@ ALTER TABLE `friend`
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `dropped_item`
---
-ALTER TABLE `dropped_item`
-  ADD CONSTRAINT `dropped_item_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `item` (`item_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `dropped_item_ibfk_2` FOREIGN KEY (`player_id`) REFERENCES `player` (`player_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `friend`

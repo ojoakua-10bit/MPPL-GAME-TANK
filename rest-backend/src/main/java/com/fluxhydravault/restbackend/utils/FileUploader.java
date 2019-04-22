@@ -51,26 +51,26 @@ public class FileUploader {
         }
     }
 
-    public void uploadImage(MultipartFile file) {
+    public void uploadImage(String playerID, MultipartFile file) {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
         if (filename.isEmpty()) throw new InputFormatException("File is empty.");
 
         String type = file.getContentType();
         if (type != null && (type.equals("image/jpeg") || type.equals("image/png"))) {
             try {
-                Files.copy(file.getInputStream(), imagesPath.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(file.getInputStream(), imagesPath.resolve(playerID + filename), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 throw new InternalServerErrorException("An error has occurred when uploading your file.");
             }
         } else throw new InputFormatException("Invalid image format!");
     }
 
-    public void uploadAsset(MultipartFile file) {
+    public void uploadAsset(String itemID, MultipartFile file) {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
         if (filename.isEmpty()) throw new InputFormatException("File is empty.");
 
         try {
-            Files.copy(file.getInputStream(), assetsPath.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.getInputStream(), assetsPath.resolve(itemID + filename), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new InternalServerErrorException("An error has occurred when uploading your file.");
         }

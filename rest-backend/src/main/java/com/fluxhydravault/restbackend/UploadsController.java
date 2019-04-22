@@ -1,5 +1,6 @@
 package com.fluxhydravault.restbackend;
 
+import com.fluxhydravault.restbackend.dao.ItemDAO;
 import com.fluxhydravault.restbackend.dao.PlayerDAO;
 import com.fluxhydravault.restbackend.dao.TokenDAO;
 import com.fluxhydravault.restbackend.utils.FileUploader;
@@ -19,6 +20,7 @@ import java.util.Map;
 public class UploadsController {
     private PlayerDAO playerDAO;
     private TokenDAO tokenDAO;
+    private ItemDAO itemDAO;
     private FileUploader fileUploader;
     private final String FILE_SERVER_ROOT = "/static/";
 
@@ -30,6 +32,11 @@ public class UploadsController {
     @Autowired
     public void setTokenDAO(TokenDAO tokenDAO) {
         this.tokenDAO = tokenDAO;
+    }
+
+    @Autowired
+    public void setItemDAO(ItemDAO itemDAO) {
+        this.itemDAO = itemDAO;
     }
 
     @Autowired
@@ -52,8 +59,8 @@ public class UploadsController {
             throw new NoSuchPrivilegeException();
         }
 
-        fileUploader.uploadImage(file);
-        String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        fileUploader.uploadImage(playerID, file);
+        String filename = playerID + StringUtils.cleanPath(file.getOriginalFilename());
         String path = FILE_SERVER_ROOT + "images/" + filename;
         playerDAO.changePlayerAvatar(playerID, path);
 
@@ -88,10 +95,10 @@ public class UploadsController {
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
 
-        fileUploader.uploadAsset(file);
-        String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        fileUploader.uploadAsset(itemID, file);
+        String filename = itemID + StringUtils.cleanPath(file.getOriginalFilename());
         String path = FILE_SERVER_ROOT + "assets/" + filename;
-        // add item assets to database
+        itemDAO.changeItemModelLocation(itemID, FILE_SERVER_ROOT + "assets/" + filename);
 
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
