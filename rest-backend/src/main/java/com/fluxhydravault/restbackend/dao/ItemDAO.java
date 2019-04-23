@@ -54,7 +54,7 @@ public class ItemDAO {
         Item temp;
         try {
             temp = jdbcTemplateObject.queryForObject("SELECT * FROM item WHERE item_name=?",
-                    new Object[]{ '%' + itemName + '%' }, new ItemMapper());
+                    new Object[]{ itemName }, new ItemMapper());
         } catch (IncorrectResultSetColumnCountException e) {
             temp = null;
         }
@@ -67,7 +67,7 @@ public class ItemDAO {
     }
 
     public List<Item> getItems(int start, int limit) {
-        return jdbcTemplateObject.query("SELECT * FROM item LIMIT ?, ?",
+        return jdbcTemplateObject.query("SELECT * FROM item ORDER BY item_name LIMIT ?, ?",
                 new ItemMapper(), start, limit);
     }
 

@@ -1,6 +1,6 @@
 package com.fluxhydravault.restbackend.model;
 
-public class Shop {
+public class ShopItem {
     private String shop_item_id;
     private String item_id;
     private int gold_cost;

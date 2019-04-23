@@ -1,9 +1,11 @@
 package com.fluxhydravault.restbackend;
 
 import com.fluxhydravault.restbackend.dao.ItemDAO;
+import com.fluxhydravault.restbackend.dao.StatDAO;
 import com.fluxhydravault.restbackend.dao.TokenDAO;
 import com.fluxhydravault.restbackend.model.Item;
 import com.fluxhydravault.restbackend.model.ItemCategory;
+import com.fluxhydravault.restbackend.model.Stat;
 import com.fluxhydravault.restbackend.utils.HeaderChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ import java.util.Map;
 public class ItemController {
     private TokenDAO tokenDAO;
     private ItemDAO itemDAO;
+    private StatDAO statDAO;
 
     @Autowired
     public void setTokenDAO(TokenDAO tokenDAO) {
@@ -31,18 +34,30 @@ public class ItemController {
         this.itemDAO = itemDAO;
     }
 
+    @Autowired
+    public void setStatDAO(StatDAO statDAO) {
+        this.statDAO = statDAO;
+    }
+
     @ResponseBody
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Map<String, Object> newPlayer(
             @RequestHeader(name = "App-Token", required = false) String appToken,
             @RequestHeader(name = "User-Token", required = false) String userToken,
-            @RequestParam("item_category") ItemCategory category,
+            @RequestParam("item_category") String categoryString,
             @RequestParam("item_name") String itemName,
             @RequestParam("description") String description,
             @RequestParam(value = "location", required = false) String location
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+
+        ItemCategory category;
+        try {
+            category = ItemCategory.valueOf(categoryString);
+        } catch (IllegalArgumentException e) {
+            throw new InputFormatException("Unknown item_category: " + categoryString);
+        }
 
         Item result = itemDAO.newItem(category, itemName, description, location);
         Map<String, Object> map = new LinkedHashMap<>();
@@ -65,12 +80,16 @@ public class ItemController {
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
 
+        if (itemDAO.getItem(itemID) == null) {
+            throw new NotFoundException("Item@" + itemID);
+        }
+
         try {
             if (params.containsKey("item_category")) {
                 itemDAO.changeItemCategory(itemID, ItemCategory.valueOf(params.get("item_category")));
             }
         } catch (IllegalArgumentException e) {
-            throw new InputFormatException("Unknown item_category.");
+            throw new InputFormatException("Unknown item_category: " + params.get("item_category"));
         }
         if (params.containsKey("item_name")) {
             itemDAO.changeItemName(itemID, params.get("item_name"));
@@ -149,5 +168,17 @@ public class ItemController {
         HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
 
         itemDAO.deleteItem(itemID);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/{id}/stats", method = RequestMethod.GET)
+    public List<Stat> getItemStats(
+            @RequestHeader(name = "App-Token", required = false) String appToken,
+            @RequestHeader(name = "User-Token", required = false) String userToken,
+            @PathVariable("id") String itemID
+    ) {
+        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenDAO);
+
+        return statDAO.getStats(itemID);
     }
 }
