@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 22, 2019 at 10:15 AM
+-- Generation Time: Apr 23, 2019 at 06:04 AM
 -- Server version: 10.3.14-MariaDB
 -- PHP Version: 7.3.4
 
@@ -47,6 +47,18 @@ CREATE TABLE `item` (
   `description` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL,
   `model_location` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=COMPACT;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `item_stats`
+--
+
+CREATE TABLE `item_stats` (
+  `item_stat_id` bigint(20) NOT NULL,
+  `item_id` char(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `stat_id` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -117,23 +129,12 @@ CREATE TABLE `shop_item` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stats`
---
-
-CREATE TABLE `stats` (
-  `item_id` char(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `stat_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=COMPACT;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `stats_repo`
 --
 
 CREATE TABLE `stats_repo` (
   `stat_id` bigint(20) NOT NULL,
-  `type` int(11) NOT NULL,
+  `type` varchar(24) COLLATE utf8mb4_unicode_ci NOT NULL,
   `name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
   `value` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=COMPACT;
@@ -169,6 +170,14 @@ ALTER TABLE `item`
   ADD PRIMARY KEY (`item_id`);
 
 --
+-- Indexes for table `item_stats`
+--
+ALTER TABLE `item_stats`
+  ADD PRIMARY KEY (`item_stat_id`),
+  ADD KEY `item_id` (`item_id`),
+  ADD KEY `stat_id` (`stat_id`);
+
+--
 -- Indexes for table `match_result`
 --
 ALTER TABLE `match_result`
@@ -199,17 +208,11 @@ ALTER TABLE `shop_item`
   ADD KEY `item_id` (`item_id`);
 
 --
--- Indexes for table `stats`
---
-ALTER TABLE `stats`
-  ADD PRIMARY KEY (`item_id`,`stat_id`),
-  ADD KEY `stat_id` (`stat_id`);
-
---
 -- Indexes for table `stats_repo`
 --
 ALTER TABLE `stats_repo`
-  ADD PRIMARY KEY (`stat_id`);
+  ADD PRIMARY KEY (`stat_id`),
+  ADD UNIQUE KEY `name` (`name`);
 
 --
 -- Indexes for table `token`
@@ -229,6 +232,18 @@ ALTER TABLE `friend`
   MODIFY `friend_id` bigint(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `item_stats`
+--
+ALTER TABLE `item_stats`
+  MODIFY `item_stat_id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `stats_repo`
+--
+ALTER TABLE `stats_repo`
+  MODIFY `stat_id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
 -- Constraints for dumped tables
 --
 
@@ -238,6 +253,13 @@ ALTER TABLE `friend`
 ALTER TABLE `friend`
   ADD CONSTRAINT `friend_ibfk_1` FOREIGN KEY (`friend_player_id`) REFERENCES `player` (`player_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `friend_ibfk_2` FOREIGN KEY (`player_id`) REFERENCES `player` (`player_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `item_stats`
+--
+ALTER TABLE `item_stats`
+  ADD CONSTRAINT `item_stats_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `item` (`item_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `item_stats_ibfk_2` FOREIGN KEY (`stat_id`) REFERENCES `stats_repo` (`stat_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `match_result`
@@ -258,13 +280,6 @@ ALTER TABLE `player_inventory`
 --
 ALTER TABLE `shop_item`
   ADD CONSTRAINT `shop_item_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `item` (`item_id`) ON DELETE CASCADE;
-
---
--- Constraints for table `stats`
---
-ALTER TABLE `stats`
-  ADD CONSTRAINT `stats_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `item` (`item_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `stats_ibfk_2` FOREIGN KEY (`stat_id`) REFERENCES `stats_repo` (`stat_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `token`

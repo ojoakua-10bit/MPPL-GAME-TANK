@@ -22,6 +22,7 @@ public class StatDAO {
 
     public List<Stat> getStats(String itemID) {
         return jdbcTemplateObject.query("SELECT * FROM stats_repo WHERE stat_id IN " +
-                "(SELECT stats.stat_id FROM stats WHERE item_id=?)", new StatMapper());
+                "(SELECT item_stats.stat_id FROM item_stats WHERE item_id=?)",
+                new StatMapper(), itemID);
     }
 }
