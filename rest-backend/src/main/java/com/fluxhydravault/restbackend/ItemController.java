@@ -72,7 +72,7 @@ public class ItemController {
     @ResponseBody
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/{id}", method = { RequestMethod.PATCH, RequestMethod.PUT })
-    public Map<String, Object> updatePlayer(
+    public Map<String, Object> updateItem(
             @RequestHeader(name = "App-Token", required = false) String appToken,
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @RequestParam Map<String, String> params,
@@ -179,6 +179,61 @@ public class ItemController {
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenDAO);
 
-        return statDAO.getStats(itemID);
+        return statDAO.getItemStats(itemID);
+    }
+
+    @ResponseBody
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/{id}/stats", method = RequestMethod.POST)
+    public List<Stat> addItemStats(
+            @RequestHeader(name = "App-Token", required = false) String appToken,
+            @RequestHeader(name = "User-Token", required = false) String userToken,
+            @PathVariable("id") String itemID,
+            @RequestParam(name = "stat_id", required = false) Long statID,
+            @RequestParam(name = "stat_name", required = false) String statName
+    ) {
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+
+        if (statID != null && statName != null) {
+            throw new InputFormatException();
+        }
+        else if (statID != null) {
+            statDAO.addStatToItem(itemID, statID);
+        }
+        else if (statName != null) {
+            statDAO.addStatToItem(itemID, statName);
+        }
+        else {
+            throw new InputFormatException();
+        }
+
+        return statDAO.getItemStats(itemID);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/{id}/stats", method = RequestMethod.DELETE)
+    public List<Stat> deleteItemStats(
+            @RequestHeader(name = "App-Token", required = false) String appToken,
+            @RequestHeader(name = "User-Token", required = false) String userToken,
+            @PathVariable("id") String itemID,
+            @RequestParam(name = "stat_id", required = false) Long statID,
+            @RequestParam(name = "stat_name", required = false) String statName
+    ) {
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+
+        if (statID != null && statName != null) {
+            throw new InputFormatException();
+        }
+        else if (statID != null) {
+            statDAO.deleteStatFromItem(itemID, statID);
+        }
+        else if (statName != null) {
+            statDAO.deleteStatFromItem(itemID, statName);
+        }
+        else {
+            throw new InputFormatException();
+        }
+
+        return statDAO.getItemStats(itemID);
     }
 }
