@@ -1,4 +1,4 @@
-package com.fluxhydravault.restbackend.dao;
+package com.fluxhydravault.restbackend.services;
 
 import com.fluxhydravault.restbackend.model.Token;
 import com.fluxhydravault.restbackend.model.TokenMapper;
@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 import java.util.Random;
 
 @Service
-public class TokenDAO {
+public class TokenServiceImpl implements TokenService {
     private DataSource dataSource;
     private JdbcTemplate jdbcTemplateObject;
 
@@ -22,6 +22,7 @@ public class TokenDAO {
         jdbcTemplateObject = new JdbcTemplate(dataSource);
     }
 
+    @Override
     public String generateToken(String playerID) {
         Random random = new Random();
         String token;
@@ -38,6 +39,7 @@ public class TokenDAO {
         return token;
     }
 
+    @Override
     public Token getToken(String token) {
         Token tmp;
         try {
@@ -50,6 +52,7 @@ public class TokenDAO {
         return tmp;
     }
 
+    @Override
     public boolean isValidToken(String token) {
         Token tmp = getToken(token);
 

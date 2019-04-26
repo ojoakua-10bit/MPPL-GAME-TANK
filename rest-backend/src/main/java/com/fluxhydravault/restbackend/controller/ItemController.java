@@ -1,8 +1,10 @@
-package com.fluxhydravault.restbackend;
+package com.fluxhydravault.restbackend.controller;
 
-import com.fluxhydravault.restbackend.dao.ItemDAO;
-import com.fluxhydravault.restbackend.dao.StatDAO;
-import com.fluxhydravault.restbackend.dao.TokenDAO;
+import com.fluxhydravault.restbackend.InputFormatException;
+import com.fluxhydravault.restbackend.NotFoundException;
+import com.fluxhydravault.restbackend.services.ItemService;
+import com.fluxhydravault.restbackend.services.StatService;
+import com.fluxhydravault.restbackend.services.TokenService;
 import com.fluxhydravault.restbackend.model.Item;
 import com.fluxhydravault.restbackend.model.ItemCategory;
 import com.fluxhydravault.restbackend.model.Stat;
@@ -20,23 +22,23 @@ import java.util.Map;
 @RestController
 @RequestMapping("/items")
 public class ItemController {
-    private TokenDAO tokenDAO;
-    private ItemDAO itemDAO;
-    private StatDAO statDAO;
+    private TokenService tokenService;
+    private ItemService itemService;
+    private StatService statService;
 
     @Autowired
-    public void setTokenDAO(TokenDAO tokenDAO) {
-        this.tokenDAO = tokenDAO;
+    public void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 
     @Autowired
-    public void setItemDAO(ItemDAO itemDAO) {
-        this.itemDAO = itemDAO;
+    public void setItemService(ItemService itemService) {
+        this.itemService = itemService;
     }
 
     @Autowired
-    public void setStatDAO(StatDAO statDAO) {
-        this.statDAO = statDAO;
+    public void setStatService(StatService statService) {
+        this.statService = statService;
     }
 
     @ResponseBody
@@ -50,7 +52,7 @@ public class ItemController {
             @RequestParam("description") String description,
             @RequestParam(value = "location", required = false) String location
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
         ItemCategory category;
         try {
@@ -59,7 +61,7 @@ public class ItemController {
             throw new InputFormatException("Unknown item_category: " + categoryString);
         }
 
-        Item result = itemDAO.newItem(category, itemName, description, location);
+        Item result = itemService.newItem(category, itemName, description, location);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
         map.put("response", "201 Created");
@@ -78,36 +80,36 @@ public class ItemController {
             @RequestParam Map<String, String> params,
             @PathVariable("id") String itemID
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
-        if (itemDAO.getItem(itemID) == null) {
+        if (itemService.getItem(itemID) == null) {
             throw new NotFoundException("Item@" + itemID);
         }
 
         try {
             if (params.containsKey("item_category")) {
-                itemDAO.changeItemCategory(itemID, ItemCategory.valueOf(params.get("item_category")));
+                itemService.changeItemCategory(itemID, ItemCategory.valueOf(params.get("item_category")));
             }
         } catch (IllegalArgumentException e) {
             throw new InputFormatException("Unknown item_category: " + params.get("item_category"));
         }
         if (params.containsKey("item_name")) {
-            itemDAO.changeItemName(itemID, params.get("item_name"));
+            itemService.changeItemName(itemID, params.get("item_name"));
         }
         if (params.containsKey("description")) {
-            itemDAO.changeItemDescription(itemID, params.get("description"));
+            itemService.changeItemDescription(itemID, params.get("description"));
         }
         if (params.containsKey("model_location")) {
             String tmp = params.get("model_location");
             if (tmp.equals("null")) {
-                itemDAO.changeItemModelLocation(itemID, null);
+                itemService.changeItemModelLocation(itemID, null);
             }
             else {
-                itemDAO.changeItemModelLocation(itemID, tmp);
+                itemService.changeItemModelLocation(itemID, tmp);
             }
         }
 
-        Item result = itemDAO.getItem(itemID);
+        Item result = itemService.getItem(itemID);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
         map.put("message", "Update success.");
@@ -124,20 +126,20 @@ public class ItemController {
             @RequestParam(name = "n", required = false) Integer limit,
             HttpServletResponse response
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
-        response.addHeader("X-Total-Count", itemDAO.getNumberOfItems().toString());
+        response.addHeader("X-Total-Count", itemService.getNumberOfItems().toString());
         if (start == null && limit == null) {
-            return itemDAO.getItems(0, 10);
+            return itemService.getItems(0, 10);
         }
         else if (start == null) {
-            return itemDAO.getItems(0, limit);
+            return itemService.getItems(0, limit);
         }
         else if (limit == null) {
-            return itemDAO.getItems(start, 10);
+            return itemService.getItems(start, 10);
         }
         else {
-            return itemDAO.getItems(start, limit);
+            return itemService.getItems(start, limit);
         }
     }
 
@@ -148,12 +150,12 @@ public class ItemController {
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @RequestParam(value = "q", required = false) String itemName
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
-        map.put("matched_result", itemDAO.getItemByName(itemName));
-        map.put("possible_results", itemDAO.searchItemByName(itemName));
+        map.put("matched_result", itemService.getItemByName(itemName));
+        map.put("possible_results", itemService.searchItemByName(itemName));
         return map;
     }
 
@@ -165,9 +167,9 @@ public class ItemController {
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @PathVariable("id") String itemID
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
-        itemDAO.deleteItem(itemID);
+        itemService.deleteItem(itemID);
     }
 
     @ResponseBody
@@ -177,9 +179,9 @@ public class ItemController {
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @PathVariable("id") String itemID
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenService);
 
-        return statDAO.getItemStats(itemID);
+        return statService.getItemStats(itemID);
     }
 
     @ResponseBody
@@ -192,22 +194,22 @@ public class ItemController {
             @RequestParam(name = "stat_id", required = false) Long statID,
             @RequestParam(name = "stat_name", required = false) String statName
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
         if (statID != null && statName != null) {
             throw new InputFormatException();
         }
         else if (statID != null) {
-            statDAO.addStatToItem(itemID, statID);
+            statService.addStatToItem(itemID, statID);
         }
         else if (statName != null) {
-            statDAO.addStatToItem(itemID, statName);
+            statService.addStatToItem(itemID, statName);
         }
         else {
             throw new InputFormatException();
         }
 
-        return statDAO.getItemStats(itemID);
+        return statService.getItemStats(itemID);
     }
 
     @ResponseBody
@@ -219,21 +221,21 @@ public class ItemController {
             @RequestParam(name = "stat_id", required = false) Long statID,
             @RequestParam(name = "stat_name", required = false) String statName
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
         if (statID != null && statName != null) {
             throw new InputFormatException();
         }
         else if (statID != null) {
-            statDAO.deleteStatFromItem(itemID, statID);
+            statService.deleteStatFromItem(itemID, statID);
         }
         else if (statName != null) {
-            statDAO.deleteStatFromItem(itemID, statName);
+            statService.deleteStatFromItem(itemID, statName);
         }
         else {
             throw new InputFormatException();
         }
 
-        return statDAO.getItemStats(itemID);
+        return statService.getItemStats(itemID);
     }
 }

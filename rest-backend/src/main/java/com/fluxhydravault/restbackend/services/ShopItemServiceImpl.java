@@ -1,4 +1,4 @@
-package com.fluxhydravault.restbackend.dao;
+package com.fluxhydravault.restbackend.services;
 
 import com.fluxhydravault.restbackend.NotFoundException;
 import com.fluxhydravault.restbackend.model.ShopItem;
@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class ShopItemDAO {
+public class ShopItemServiceImpl implements ShopItemService {
     private DataSource dataSource;
     private JdbcTemplate jdbcTemplateObject;
 
@@ -24,6 +24,7 @@ public class ShopItemDAO {
         jdbcTemplateObject = new JdbcTemplate(dataSource);
     }
 
+    @Override
     public ShopItem newShopItem(String itemID, int gold, int diamond, int credit, float discount) {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String shopID = format.format(new Date()) + '-' + itemID;
@@ -34,6 +35,7 @@ public class ShopItemDAO {
         return getShopItem(shopID);
     }
 
+    @Override
     public ShopItem getShopItem(String shopID) {
         ShopItem temp;
         try {
@@ -45,6 +47,7 @@ public class ShopItemDAO {
         return temp;
     }
 
+    @Override
     public ShopItem getShopItemByItemName(String itemName) {
         ShopItem temp;
         try {
@@ -57,47 +60,56 @@ public class ShopItemDAO {
         return temp;
     }
 
+    @Override
     public List<ShopItem> searchShopItemByItemName(String itemName) {
         return jdbcTemplateObject.query("SELECT * FROM shop_item WHERE item_id IN " +
                         "(SELECT item.item_id FROM item WHERE item_name LIKE ?)",
                 new Object[]{ '%' + itemName + '%' }, new ShopItemMapper());
     }
 
+    @Override
     public List<ShopItem> getShopItems(int start, int limit) {
         return jdbcTemplateObject.query("SELECT * FROM shop_item ORDER BY item_id LIMIT ?, ?",
                 new ShopItemMapper(), start, limit);
     }
 
+    @Override
     public Integer getNumberOfShopItems() {
         return jdbcTemplateObject.queryForObject("SELECT COUNT(*) FROM shop_item",
                 (resultSet, i) -> resultSet.getInt(1));
     }
 
+    @Override
     public void changeItemID(String shopID, String itemID) {
         String SQL = "UPDATE shop_item SET `item_id`=? WHERE `shop_item_id`=?";
         jdbcTemplateObject.update(SQL, itemID, shopID);
     }
 
+    @Override
     public void changeGoldCost(String shopID, int amount) {
         String SQL = "UPDATE shop_item SET `gold_cost`=? WHERE `shop_item_id`=?";
         jdbcTemplateObject.update(SQL, amount, shopID);
     }
 
+    @Override
     public void changeDiamondCost(String shopID, int amount) {
         String SQL = "UPDATE shop_item SET `diamond_cost`=? WHERE `shop_item_id`=?";
         jdbcTemplateObject.update(SQL, amount, shopID);
     }
 
+    @Override
     public void changeCreditCost(String shopID, int amount) {
         String SQL = "UPDATE shop_item SET `credit_cost`=? WHERE `shop_item_id`=?";
         jdbcTemplateObject.update(SQL, amount, shopID);
     }
 
+    @Override
     public void changeDiscount(String shopID, float amount) {
         String SQL = "UPDATE shop_item SET `discount`=? WHERE `shop_item_id`=?";
         jdbcTemplateObject.update(SQL, amount, shopID);
     }
 
+    @Override
     public void deleteShopItem(String shopID) {
         ShopItem temp = getShopItem(shopID);
 

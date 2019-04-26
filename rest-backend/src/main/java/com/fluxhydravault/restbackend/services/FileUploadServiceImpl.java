@@ -1,4 +1,4 @@
-package com.fluxhydravault.restbackend.utils;
+package com.fluxhydravault.restbackend.services;
 
 import com.fluxhydravault.restbackend.InputFormatException;
 import com.fluxhydravault.restbackend.InternalServerErrorException;
@@ -13,11 +13,11 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 @Service
-public class FileUploader {
+public class FileUploadServiceImpl implements FileUploadService {
     private Path assetsPath;
     private Path imagesPath;
 
-    public FileUploader() {
+    public FileUploadServiceImpl() {
         String os = System.getProperty("os.name");
         String rootLocation, assetsLocation, imagesLocation;
         if (os.startsWith("Windows")) {

@@ -1,9 +1,7 @@
-package com.fluxhydravault.restbackend;
+package com.fluxhydravault.restbackend.controller;
 
-import com.fluxhydravault.restbackend.dao.ItemDAO;
-import com.fluxhydravault.restbackend.dao.PlayerDAO;
-import com.fluxhydravault.restbackend.dao.TokenDAO;
-import com.fluxhydravault.restbackend.utils.FileUploader;
+import com.fluxhydravault.restbackend.NoSuchPrivilegeException;
+import com.fluxhydravault.restbackend.services.*;
 import com.fluxhydravault.restbackend.utils.HeaderChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,30 +16,30 @@ import java.util.Map;
 @RestController
 @RequestMapping("/uploads")
 public class UploadsController {
-    private PlayerDAO playerDAO;
-    private TokenDAO tokenDAO;
-    private ItemDAO itemDAO;
-    private FileUploader fileUploader;
+    private PlayerService playerService;
+    private TokenService tokenService;
+    private ItemService itemService;
+    private FileUploadService fileUploadService;
     private final String FILE_SERVER_ROOT = "/static/";
 
     @Autowired
-    public void setPlayerDAO(PlayerDAO playerDAO) {
-        this.playerDAO = playerDAO;
+    public void setPlayerService(PlayerService playerService) {
+        this.playerService = playerService;
     }
 
     @Autowired
-    public void setTokenDAO(TokenDAO tokenDAO) {
-        this.tokenDAO = tokenDAO;
+    public void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 
     @Autowired
-    public void setItemDAO(ItemDAO itemDAO) {
-        this.itemDAO = itemDAO;
+    public void setItemService(ItemService itemService) {
+        this.itemService = itemService;
     }
 
     @Autowired
-    public void setFileUploader(FileUploader fileUploader) {
-        this.fileUploader = fileUploader;
+    public void setFileUploadService(FileUploadService fileUploadService) {
+        this.fileUploadService = fileUploadService;
     }
 
     @ResponseBody
@@ -53,16 +51,16 @@ public class UploadsController {
             @PathVariable("id") String playerID,
             @RequestParam("image-data") MultipartFile file
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
-        if (userToken != null && !tokenDAO.getToken(userToken).getPlayer_id().equals(playerID)) {
+        if (userToken != null && !tokenService.getToken(userToken).getPlayer_id().equals(playerID)) {
             throw new NoSuchPrivilegeException();
         }
 
-        fileUploader.uploadImage(playerID, file);
+        fileUploadService.uploadImage(playerID, file);
         String filename = playerID + StringUtils.cleanPath(file.getOriginalFilename());
         String path = FILE_SERVER_ROOT + "images/" + filename;
-        playerDAO.changePlayerAvatar(playerID, path);
+        playerService.changePlayerAvatar(playerID, path);
 
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
@@ -79,9 +77,9 @@ public class UploadsController {
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @PathVariable("id") String playerID
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
-        playerDAO.deletePlayerAvatar(playerID);
+        playerService.deletePlayerAvatar(playerID);
     }
 
     @ResponseBody
@@ -93,12 +91,12 @@ public class UploadsController {
             @PathVariable("id") String itemID,
             @RequestParam("assets-data") MultipartFile file
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
-        fileUploader.uploadAsset(itemID, file);
+        fileUploadService.uploadAsset(itemID, file);
         String filename = itemID + StringUtils.cleanPath(file.getOriginalFilename());
         String path = FILE_SERVER_ROOT + "assets/" + filename;
-        itemDAO.changeItemModelLocation(itemID, FILE_SERVER_ROOT + "assets/" + filename);
+        itemService.changeItemModelLocation(itemID, FILE_SERVER_ROOT + "assets/" + filename);
 
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());

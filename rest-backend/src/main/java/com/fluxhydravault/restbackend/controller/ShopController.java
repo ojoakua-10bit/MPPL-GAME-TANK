@@ -1,8 +1,9 @@
-package com.fluxhydravault.restbackend;
+package com.fluxhydravault.restbackend.controller;
 
-import com.fluxhydravault.restbackend.dao.ItemDAO;
-import com.fluxhydravault.restbackend.dao.ShopItemDAO;
-import com.fluxhydravault.restbackend.dao.TokenDAO;
+import com.fluxhydravault.restbackend.NotFoundException;
+import com.fluxhydravault.restbackend.services.ItemService;
+import com.fluxhydravault.restbackend.services.ShopItemService;
+import com.fluxhydravault.restbackend.services.TokenService;
 import com.fluxhydravault.restbackend.model.ShopItem;
 import com.fluxhydravault.restbackend.utils.HeaderChecker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,23 +19,23 @@ import java.util.Map;
 @RestController
 @RequestMapping("/shop")
 public class ShopController {
-    private TokenDAO tokenDAO;
-    private ItemDAO itemDAO;
-    private ShopItemDAO shopItemDAO;
+    private TokenService tokenService;
+    private ItemService itemService;
+    private ShopItemService shopItemService;
 
     @Autowired
-    public void setTokenDAO(TokenDAO tokenDAO) {
-        this.tokenDAO = tokenDAO;
+    public void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 
     @Autowired
-    public void setItemDAO(ItemDAO itemDAO) {
-        this.itemDAO = itemDAO;
+    public void setItemService(ItemService itemService) {
+        this.itemService = itemService;
     }
 
     @Autowired
-    public void setShopItemDAO(ShopItemDAO shopItemDAO) {
-        this.shopItemDAO = shopItemDAO;
+    public void setShopItemService(ShopItemService shopItemService) {
+        this.shopItemService = shopItemService;
     }
 
     @ResponseBody
@@ -49,13 +50,13 @@ public class ShopController {
             @RequestParam("credit_cost") int credit,
             @RequestParam("discount") float discount
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
-        if (itemDAO.getItem(itemID) == null) {
+        if (itemService.getItem(itemID) == null) {
             throw new NotFoundException("Item@" + itemID);
         }
 
-        ShopItem result = shopItemDAO.newShopItem(itemID, gold, diamond, credit, discount);
+        ShopItem result = shopItemService.newShopItem(itemID, gold, diamond, credit, discount);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
         map.put("response", "201 Created");
@@ -78,32 +79,32 @@ public class ShopController {
             @RequestParam(name = "credit_cost", required = false) Integer credit,
             @RequestParam(name = "discount", required = false) Float discount
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
-        if (shopItemDAO.getShopItem(shopID) == null) {
+        if (shopItemService.getShopItem(shopID) == null) {
             throw new NotFoundException("ShopItem@" + shopID);
         }
 
         if (itemID != null) {
-            if (itemDAO.getItem(itemID) == null) {
+            if (itemService.getItem(itemID) == null) {
                 throw new NotFoundException("Item@" + itemID);
             }
-            shopItemDAO.changeItemID(shopID, itemID);
+            shopItemService.changeItemID(shopID, itemID);
         }
         if (gold != null) {
-            shopItemDAO.changeGoldCost(shopID, gold);
+            shopItemService.changeGoldCost(shopID, gold);
         }
         if (diamond != null) {
-            shopItemDAO.changeDiamondCost(shopID, diamond);
+            shopItemService.changeDiamondCost(shopID, diamond);
         }
         if (credit != null) {
-            shopItemDAO.changeCreditCost(shopID, credit);
+            shopItemService.changeCreditCost(shopID, credit);
         }
         if (discount != null) {
-            shopItemDAO.changeDiscount(shopID, discount);
+            shopItemService.changeDiscount(shopID, discount);
         }
 
-        ShopItem result = shopItemDAO.getShopItem(shopID);
+        ShopItem result = shopItemService.getShopItem(shopID);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
         map.put("message", "Update success.");
@@ -120,20 +121,20 @@ public class ShopController {
             @RequestParam(name = "n", required = false) Integer limit,
             HttpServletResponse response
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenService);
 
-        response.addHeader("X-Total-Count", shopItemDAO.getNumberOfShopItems().toString());
+        response.addHeader("X-Total-Count", shopItemService.getNumberOfShopItems().toString());
         if (start == null && limit == null) {
-            return shopItemDAO.getShopItems(0, 10);
+            return shopItemService.getShopItems(0, 10);
         }
         else if (start == null) {
-            return shopItemDAO.getShopItems(0, limit);
+            return shopItemService.getShopItems(0, limit);
         }
         else if (limit == null) {
-            return shopItemDAO.getShopItems(start, 10);
+            return shopItemService.getShopItems(start, 10);
         }
         else {
-            return shopItemDAO.getShopItems(start, limit);
+            return shopItemService.getShopItems(start, limit);
         }
     }
 
@@ -144,12 +145,12 @@ public class ShopController {
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @RequestParam(value = "q", required = false) String itemName
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenService);
 
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
-        map.put("matched_result", shopItemDAO.getShopItemByItemName(itemName));
-        map.put("possible_results", shopItemDAO.searchShopItemByItemName(itemName));
+        map.put("matched_result", shopItemService.getShopItemByItemName(itemName));
+        map.put("possible_results", shopItemService.searchShopItemByItemName(itemName));
         return map;
     }
 
@@ -161,8 +162,8 @@ public class ShopController {
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @PathVariable("id") String shopItemID
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
-        shopItemDAO.deleteShopItem(shopItemID);
+        shopItemService.deleteShopItem(shopItemID);
     }
 }

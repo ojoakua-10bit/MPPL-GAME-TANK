@@ -1,10 +1,14 @@
-package com.fluxhydravault.restbackend;
+package com.fluxhydravault.restbackend.controller;
 
-import com.fluxhydravault.restbackend.dao.MatchDAO;
-import com.fluxhydravault.restbackend.dao.TokenDAO;
+import com.fluxhydravault.restbackend.InputFormatException;
+import com.fluxhydravault.restbackend.NoSuchPrivilegeException;
+import com.fluxhydravault.restbackend.NotAllowedException;
+import com.fluxhydravault.restbackend.NotAuthenticatedException;
+import com.fluxhydravault.restbackend.services.MatchService;
+import com.fluxhydravault.restbackend.services.TokenService;
 import com.fluxhydravault.restbackend.model.Match;
 import com.fluxhydravault.restbackend.model.Player;
-import com.fluxhydravault.restbackend.dao.PlayerDAO;
+import com.fluxhydravault.restbackend.services.PlayerService;
 import com.fluxhydravault.restbackend.model.PlayerInventory;
 import com.fluxhydravault.restbackend.utils.HeaderChecker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,23 +24,23 @@ import java.util.Map;
 @RestController
 @RequestMapping("/players")
 public class PlayerController {
-    private PlayerDAO playerDAO;
-    private TokenDAO tokenDAO;
-    private MatchDAO matchDAO;
+    private PlayerService playerService;
+    private TokenService tokenService;
+    private MatchService matchService;
 
     @Autowired
-    public void setPlayerDAO(PlayerDAO playerDAO) {
-        this.playerDAO = playerDAO;
+    public void setPlayerService(PlayerService playerService) {
+        this.playerService = playerService;
     }
 
     @Autowired
-    public void setTokenDAO(TokenDAO tokenDAO) {
-        this.tokenDAO = tokenDAO;
+    public void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 
     @Autowired
-    public void setMatchDAO(MatchDAO matchDAO) {
-        this.matchDAO = matchDAO;
+    public void setMatchService(MatchService matchService) {
+        this.matchService = matchService;
     }
 
     @ResponseBody
@@ -49,8 +53,8 @@ public class PlayerController {
             @RequestParam("password") String password,
             @RequestParam("player_name") String playerName
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
-        Player result = playerDAO.newPlayer(username, password, playerName);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
+        Player result = playerService.newPlayer(username, password, playerName);
 
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
@@ -70,49 +74,49 @@ public class PlayerController {
             @RequestParam Map<String, String> params,
             @PathVariable("id") String playerID
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenService);
 
-        if (userToken != null && !tokenDAO.getToken(userToken).getPlayer_id().equals(playerID)) {
+        if (userToken != null && !tokenService.getToken(userToken).getPlayer_id().equals(playerID)) {
             throw new NoSuchPrivilegeException();
         }
 
         if (params.containsKey("username")) {
-            playerDAO.changePlayerUsername(playerID, params.get("username"));
+            playerService.changePlayerUsername(playerID, params.get("username"));
         }
         if (params.containsKey("password")) {
-            playerDAO.changePlayerPassword(playerID, params.get("password"));
+            playerService.changePlayerPassword(playerID, params.get("password"));
         }
         if (params.containsKey("player_name")) {
-            playerDAO.changePlayerName(playerID, params.get("player_name"));
+            playerService.changePlayerName(playerID, params.get("player_name"));
         }
 
         try {
             if (params.containsKey("rank")) {
-                playerDAO.changePlayerRank(playerID, Integer.parseInt(params.get("rank")));
+                playerService.changePlayerRank(playerID, Integer.parseInt(params.get("rank")));
             }
             if (params.containsKey("xp")) {
-                playerDAO.changePlayerXP(playerID, Integer.parseInt(params.get("xp")));
+                playerService.changePlayerXP(playerID, Integer.parseInt(params.get("xp")));
             }
             if (params.containsKey("diamond_count")) {
-                playerDAO.changePlayerDiamond(playerID, Integer.parseInt(params.get("diamond_count")));
+                playerService.changePlayerDiamond(playerID, Integer.parseInt(params.get("diamond_count")));
             }
             if (params.containsKey("gold_count")) {
-                playerDAO.changePlayerGold(playerID, Integer.parseInt(params.get("gold_count")));
+                playerService.changePlayerGold(playerID, Integer.parseInt(params.get("gold_count")));
             }
             if (params.containsKey("credit_balance")) {
-                playerDAO.changePlayerCredit(playerID, Integer.parseInt(params.get("credit_balance")));
+                playerService.changePlayerCredit(playerID, Integer.parseInt(params.get("credit_balance")));
             }
             if (params.containsKey("inventory")) {
-                playerDAO.changePlayerInventory(playerID, Integer.parseInt(params.get("inventory")));
+                playerService.changePlayerInventory(playerID, Integer.parseInt(params.get("inventory")));
             }
             if (params.containsKey("online_status")) {
-                playerDAO.setPlayerOnlineStatus(playerID, Boolean.getBoolean(params.get("online_status")));
+                playerService.setPlayerOnlineStatus(playerID, Boolean.getBoolean(params.get("online_status")));
             }
         } catch (NumberFormatException ex) {
             throw new InputFormatException();
         }
 
-        Player result = playerDAO.getPlayer(playerID);
+        Player result = playerService.getPlayer(playerID);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
         map.put("message", "Update success.");
@@ -128,9 +132,9 @@ public class PlayerController {
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @PathVariable("id") String playerID
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
-        playerDAO.deletePlayer(playerID);
+        playerService.deletePlayer(playerID);
     }
 
     @ResponseBody
@@ -139,7 +143,7 @@ public class PlayerController {
             @RequestHeader(name = "App-Token", required = false) String appToken,
             @RequestHeader(name = "User-Token", required = false) String userToken
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenService);
 
         throw new NotAllowedException("Cannot delete all players, too dangerous");
     }
@@ -151,17 +155,17 @@ public class PlayerController {
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @RequestParam(name = "q", required = false) String username
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenService);
         Map<String, Object> map = new LinkedHashMap<>();
         Player matchesResult;
         List<Player> possibleResults;
         if (username == null){
             matchesResult = null;
-            possibleResults = playerDAO.listPlayers();
+            possibleResults = playerService.listPlayers();
         }
         else {
-            matchesResult = playerDAO.getPlayerByUsername(username);
-            possibleResults = playerDAO.searchPlayer(username);
+            matchesResult = playerService.getPlayerByUsername(username);
+            possibleResults = playerService.searchPlayer(username);
         }
 
         map.put("timestamp", new Date());
@@ -177,9 +181,9 @@ public class PlayerController {
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @PathVariable("id") String playerID
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenService);
         Map<String, Object> map = new LinkedHashMap<>();
-        Player matchesResult = playerDAO.getPlayer(playerID);
+        Player matchesResult = playerService.getPlayer(playerID);
 
         map.put("timestamp", new Date());
         map.put("matched_result", matchesResult);
@@ -199,14 +203,14 @@ public class PlayerController {
             @RequestParam("gold_gained") int goldGained,
             @RequestParam(value = "item_gained", required = false) String itemGained
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
-        if (!tokenDAO.getToken(userToken).getPlayer_id().equals(playerID)) {
+        if (!tokenService.getToken(userToken).getPlayer_id().equals(playerID)) {
             throw new NotAuthenticatedException();
         }
 
         Map<String, Object> map = new LinkedHashMap<>();
-        Match result = matchDAO.newMatch(playerID, matchStatus, score, totalDamage, goldGained, itemGained);
+        Match result = matchService.newMatch(playerID, matchStatus, score, totalDamage, goldGained, itemGained);
         map.put("timestamp", new Date());
         map.put("response", "201 Created");
         map.put("result", result);
@@ -224,21 +228,21 @@ public class PlayerController {
             @RequestParam(name = "n", required = false) Integer limit,
             HttpServletResponse response
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
         List<Match> result;
-        response.addHeader("X-Total-Count", matchDAO.getUserMatchesCount(playerID).toString());
+        response.addHeader("X-Total-Count", matchService.getUserMatchesCount(playerID).toString());
         if (start == null && limit == null) {
-            result = matchDAO.getUserMatches(playerID);
+            result = matchService.getUserMatches(playerID);
         }
         else if (start == null) {
-            result = matchDAO.getUserMatches(playerID, 0, limit);
+            result = matchService.getUserMatches(playerID, 0, limit);
         }
         else if (limit == null) {
-            result = matchDAO.getUserMatches(playerID, start, 10);
+            result = matchService.getUserMatches(playerID, start, 10);
         }
         else {
-            result = matchDAO.getUserMatches(playerID, start, limit);
+            result = matchService.getUserMatches(playerID, start, limit);
         }
 
         return result;
@@ -252,9 +256,9 @@ public class PlayerController {
             @PathVariable("player_id") String playerID,
             @PathVariable("match_id") String matchID
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
-        return matchDAO.getMatch(matchID);
+        return matchService.getMatch(matchID);
     }
 
     @ResponseBody
@@ -267,21 +271,21 @@ public class PlayerController {
             @RequestParam(name = "n", required = false) Integer limit,
             HttpServletResponse response
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
         List<Player> result;
-        response.addHeader("X-Total-Count", playerDAO.getNumberOfFriends(playerID).toString());
+        response.addHeader("X-Total-Count", playerService.getNumberOfFriends(playerID).toString());
         if (start == null && limit == null) {
-            result = playerDAO.getFriends(playerID, 0, 10);
+            result = playerService.getFriends(playerID, 0, 10);
         }
         else if (start == null) {
-            result = playerDAO.getFriends(playerID, 0, limit);
+            result = playerService.getFriends(playerID, 0, limit);
         }
         else if (limit == null) {
-            result = playerDAO.getFriends(playerID, start, 10);
+            result = playerService.getFriends(playerID, start, 10);
         }
         else {
-            result = playerDAO.getFriends(playerID, start, limit);
+            result = playerService.getFriends(playerID, start, limit);
         }
 
         return result;
@@ -296,9 +300,9 @@ public class PlayerController {
             @PathVariable("id") String playerID,
             @RequestParam("friend_id") String friendID
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
-        playerDAO.addFriend(playerID, friendID);
+        playerService.addFriend(playerID, friendID);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
         map.put("response", "201 Created");
@@ -316,9 +320,13 @@ public class PlayerController {
             @PathVariable("player_id") String playerID,
             @PathVariable("friend_id") String friendID
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
-        playerDAO.removeFriend(playerID, friendID);
+        if (!tokenService.getToken(userToken).getPlayer_id().equals(playerID)) {
+            throw new NoSuchPrivilegeException();
+        }
+
+        playerService.removeFriend(playerID, friendID);
     }
 
     @ResponseBody
@@ -328,7 +336,7 @@ public class PlayerController {
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @PathVariable("id") String playerID
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
         throw new NotAllowedException();
     }
@@ -341,10 +349,10 @@ public class PlayerController {
             @PathVariable("id") String playerID,
             @RequestParam("value") boolean value
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
-        if (value) playerDAO.banPlayer(playerID);
-        else playerDAO.unBanPlayer(playerID);
+        if (value) playerService.banPlayer(playerID);
+        else playerService.unBanPlayer(playerID);
     }
 
     @ResponseBody
@@ -354,9 +362,9 @@ public class PlayerController {
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @PathVariable("id") String playerID
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
-        return playerDAO.getPlayerItems(playerID);
+        return playerService.getPlayerItems(playerID);
     }
 
     @ResponseBody
@@ -368,13 +376,13 @@ public class PlayerController {
             @PathVariable("id") String playerID,
             @RequestParam("item_id") String itemID
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
-        if (!tokenDAO.getToken(userToken).getPlayer_id().equals(playerID)) {
+        if (!tokenService.getToken(userToken).getPlayer_id().equals(playerID)) {
             throw new NoSuchPrivilegeException();
         }
 
-        return playerDAO.addItemToInventory(playerID, itemID);
+        return playerService.addItemToInventory(playerID, itemID);
     }
 
     @ResponseBody
@@ -386,12 +394,12 @@ public class PlayerController {
             @PathVariable("id") String playerID,
             @RequestParam("q") long inventoryID
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
-        if (!tokenDAO.getToken(userToken).getPlayer_id().equals(playerID)) {
+        if (!tokenService.getToken(userToken).getPlayer_id().equals(playerID)) {
             throw new NoSuchPrivilegeException();
         }
 
-        playerDAO.deleteItemFromInventory(inventoryID);
+        playerService.deleteItemFromInventory(inventoryID);
     }
 }

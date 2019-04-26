@@ -1,4 +1,4 @@
-package com.fluxhydravault.restbackend.dao;
+package com.fluxhydravault.restbackend.services;
 
 import com.fluxhydravault.restbackend.model.Match;
 import com.fluxhydravault.restbackend.model.MatchMapper;
@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class MatchDAO {
+public class MatchServiceImpl implements MatchService {
     private DataSource dataSource;
     private JdbcTemplate jdbcTemplateObject;
 
@@ -23,6 +23,7 @@ public class MatchDAO {
         jdbcTemplateObject = new JdbcTemplate(dataSource);
     }
 
+    @Override
     public Match newMatch(String playerID, boolean matchStatus, int score, int totalDamage, int goldGained, String itemGained) {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String matchID = playerID + "-00" + format.format(new Date());
@@ -40,6 +41,7 @@ public class MatchDAO {
         return getMatch(matchID);
     }
 
+    @Override
     public Match getMatch(String matchID) {
         Match temp;
         try {
@@ -51,16 +53,19 @@ public class MatchDAO {
         return temp;
     }
 
+    @Override
     public List<Match> getUserMatches(String playerID) {
         return jdbcTemplateObject.query("SELECT * FROM match_result WHERE player_id=? LIMIT 300",
                 new Object[]{playerID}, new MatchMapper());
     }
 
+    @Override
     public List<Match> getUserMatches(String playerID, int start, int limit) {
         return jdbcTemplateObject.query("SELECT * FROM match_result WHERE player_id=? LIMIT ?, ?",
                 new Object[]{playerID, start, limit}, new MatchMapper());
     }
 
+    @Override
     public Integer getUserMatchesCount(String playerID) {
         return jdbcTemplateObject.queryForObject("SELECT COUNT(*) from match_result WHERE player_id=?",
                 new Object[]{playerID}, (resultSet, i) -> resultSet.getInt(1));

@@ -1,7 +1,8 @@
-package com.fluxhydravault.restbackend;
+package com.fluxhydravault.restbackend.controller;
 
-import com.fluxhydravault.restbackend.dao.PlayerDAO;
-import com.fluxhydravault.restbackend.dao.TokenDAO;
+import com.fluxhydravault.restbackend.NotAuthenticatedException;
+import com.fluxhydravault.restbackend.services.PlayerService;
+import com.fluxhydravault.restbackend.services.TokenService;
 import com.fluxhydravault.restbackend.model.Player;
 import com.fluxhydravault.restbackend.utils.HeaderChecker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +16,17 @@ import java.util.Map;
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
-    private PlayerDAO playerDAO;
-    private TokenDAO tokenDAO;
+    private PlayerService playerService;
+    private TokenService tokenService;
 
     @Autowired
-    public void setPlayerDAO(PlayerDAO playerDAO) {
-        this.playerDAO = playerDAO;
+    public void setPlayerService(PlayerService playerService) {
+        this.playerService = playerService;
     }
 
     @Autowired
-    public void setTokenDAO(TokenDAO tokenDAO) {
-        this.tokenDAO = tokenDAO;
+    public void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 
     @ResponseBody
@@ -37,12 +38,12 @@ public class AuthController {
     ) {
         HeaderChecker.checkAppToken(appToken);
 
-        Player player = playerDAO.authenticateUser(username, password);
+        Player player = playerService.authenticateUser(username, password);
         if (player == null) {
             throw new NotAuthenticatedException("Wrong username or password!");
         }
-        String token = tokenDAO.generateToken(player.getPlayer_id());
-        playerDAO.setPlayerOnlineStatus(player.getPlayer_id(), true);
+        String token = tokenService.generateToken(player.getPlayer_id());
+        playerService.setPlayerOnlineStatus(player.getPlayer_id(), true);
 
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());

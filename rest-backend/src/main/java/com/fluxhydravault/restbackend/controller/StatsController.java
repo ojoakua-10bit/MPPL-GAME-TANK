@@ -1,7 +1,8 @@
-package com.fluxhydravault.restbackend;
+package com.fluxhydravault.restbackend.controller;
 
-import com.fluxhydravault.restbackend.dao.StatDAO;
-import com.fluxhydravault.restbackend.dao.TokenDAO;
+import com.fluxhydravault.restbackend.InputFormatException;
+import com.fluxhydravault.restbackend.services.StatService;
+import com.fluxhydravault.restbackend.services.TokenService;
 import com.fluxhydravault.restbackend.model.Stat;
 import com.fluxhydravault.restbackend.model.StatType;
 import com.fluxhydravault.restbackend.utils.HeaderChecker;
@@ -14,17 +15,17 @@ import java.util.*;
 @RestController
 @RequestMapping("/stats")
 public class StatsController {
-    private TokenDAO tokenDAO;
-    private StatDAO statDAO;
+    private TokenService tokenService;
+    private StatService statService;
 
     @Autowired
-    public void setTokenDAO(TokenDAO tokenDAO) {
-        this.tokenDAO = tokenDAO;
+    public void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 
     @Autowired
-    public void setStatDAO(StatDAO statDAO) {
-        this.statDAO = statDAO;
+    public void setStatService(StatService statService) {
+        this.statService = statService;
     }
 
     @ResponseBody
@@ -37,7 +38,7 @@ public class StatsController {
             @RequestParam("stat_name") String statName,
             @RequestParam("stat_value") double statValue
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
         StatType type;
         try {
@@ -46,7 +47,7 @@ public class StatsController {
             throw new InputFormatException();
         }
 
-        Stat result = statDAO.newStat(type, statName, statValue);
+        Stat result = statService.newStat(type, statName, statValue);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
         map.put("response", "201 Created");
@@ -62,16 +63,16 @@ public class StatsController {
             @RequestParam(name = "q", required = false) String statName,
             @RequestParam(name = "type", required = false) String statType
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
         if (statName != null) {
-            return statDAO.searchStatByName(statName);
+            return statService.searchStatByName(statName);
         }
         else if (statType != null) {
-            return statDAO.getStatsByType(StatType.valueOf(statType));
+            return statService.getStatsByType(StatType.valueOf(statType));
         }
         else {
-            return statDAO.getAllStats();
+            return statService.getAllStats();
         }
     }
 
@@ -86,7 +87,7 @@ public class StatsController {
             @RequestParam(name = "stat_name", required = false) String statName,
             @RequestParam(name = "stat_value", required = false) Double statValue
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
         if (statType != null) {
             StatType type;
@@ -95,16 +96,16 @@ public class StatsController {
             } catch (IllegalArgumentException e) {
                 throw new InputFormatException();
             }
-            statDAO.changeStatType(statID, type);
+            statService.changeStatType(statID, type);
         }
         if (statName != null) {
-            statDAO.changeStatName(statID, statName);
+            statService.changeStatName(statID, statName);
         }
         if (statValue != null) {
-            statDAO.changeStatValue(statID, statValue);
+            statService.changeStatValue(statID, statValue);
         }
 
-        Stat result = statDAO.getStatById(statID);
+        Stat result = statService.getStatById(statID);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
         map.put("response", "201 Created");
@@ -123,7 +124,7 @@ public class StatsController {
             @RequestParam(name = "stat_type", required = false) String statType,
             @RequestParam(name = "stat_value", required = false) Double statValue
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
         if (statType != null) {
             StatType type;
@@ -132,16 +133,16 @@ public class StatsController {
             } catch (IllegalArgumentException e) {
                 throw new InputFormatException();
             }
-            statDAO.changeStatType(statName, type);
+            statService.changeStatType(statName, type);
         }
         if (newStatName != null) {
-            statDAO.changeStatName(statName, statName);
+            statService.changeStatName(statName, statName);
         }
         if (statValue != null) {
-            statDAO.changeStatValue(statName, statValue);
+            statService.changeStatValue(statName, statValue);
         }
 
-        Stat result = statDAO.getStatByName(statName);
+        Stat result = statService.getStatByName(statName);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
         map.put("response", "201 Created");
@@ -158,16 +159,16 @@ public class StatsController {
             @RequestParam(name = "stat_id", required = false) Long statID,
             @RequestParam(name = "stat_name", required = false) String statName
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
         if (statID != null && statName != null) {
             throw new InputFormatException();
         }
         else if (statID != null) {
-            statDAO.deleteStat(statID);
+            statService.deleteStat(statID);
         }
         else if (statName != null) {
-            statDAO.deleteStat(statName);
+            statService.deleteStat(statName);
         }
         else {
             throw new InputFormatException();
