@@ -4,6 +4,8 @@ import com.fluxhydravault.restbackend.AlreadyExistsException;
 import com.fluxhydravault.restbackend.InputFormatException;
 import com.fluxhydravault.restbackend.NotFoundException;
 import com.fluxhydravault.restbackend.model.Player;
+import com.fluxhydravault.restbackend.model.PlayerInventory;
+import com.fluxhydravault.restbackend.model.PlayerInventoryMapper;
 import com.fluxhydravault.restbackend.model.PlayerMapper;
 import com.fluxhydravault.restbackend.utils.Digestive;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -236,5 +238,36 @@ public class PlayerDAO {
     public void setPlayerOnlineStatus(String playerID, boolean onlineStatus) {
         String SQL = "UPDATE player SET online_status=? WHERE player_id=?";
         jdbcTemplateObject.update(SQL, onlineStatus ? 1 : 0, playerID);
+    }
+
+    public List<PlayerInventory> getPlayerItems(String playerID) {
+        return jdbcTemplateObject.query("SELECT p.inventory_id, i.* FROM item i, player_inventory p " +
+                        "WHERE p.item_id = i.item_id AND p.player_id=?",
+                new PlayerInventoryMapper(), playerID);
+    }
+
+    public Integer getPlayerItemsCount(String playerID) {
+        return jdbcTemplateObject.queryForObject("SELECT COUNT(*) FROM item WHERE item_id IN " +
+                        "(SELECT player_inventory.item_id FROM player_inventory WHERE player_id=?)",
+                (resultSet, i) -> resultSet.getInt(1), playerID);
+    }
+
+    public List<PlayerInventory> addItemToInventory(String playerID, String itemID) {
+        Player player = getPlayer(playerID);
+        if (player == null) {
+            throw new NotFoundException("Player@" + playerID);
+        }
+
+        int currentInventorySize = getPlayerItemsCount(playerID);
+        if (currentInventorySize >= player.getInventory()) {
+            throw new RuntimeException("Inventory already full.");
+        }
+
+        jdbcTemplateObject.update("INSERT INTO player_inventory(player_id, item_id) VALUES (?, ?)", player, itemID);
+        return getPlayerItems(playerID);
+    }
+
+    public void deleteItemFromInventory(long inventoryID) {
+        jdbcTemplateObject.update("DELETE FROM player_inventory WHERE inventory_id=?", inventoryID);
     }
 }

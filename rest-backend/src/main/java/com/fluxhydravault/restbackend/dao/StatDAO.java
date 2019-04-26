@@ -56,6 +56,15 @@ public class StatDAO {
         return temp;
     }
 
+    public List<Stat> getAllStats() {
+        return jdbcTemplateObject.query("SELECT * FROM stats_repo;", new StatMapper());
+    }
+
+    public List<Stat> searchStatByName(String name) {
+        return jdbcTemplateObject.query("SELECT * FROM stats_repo WHERE name LIKE ?",
+                new StatMapper(), "?" + name + "?");
+    }
+
     public List<Stat> getStatsByType(StatType type) {
         return jdbcTemplateObject.query("SELECT * FROM stats_repo WHERE type=?",
                 new StatMapper(), type.toString());

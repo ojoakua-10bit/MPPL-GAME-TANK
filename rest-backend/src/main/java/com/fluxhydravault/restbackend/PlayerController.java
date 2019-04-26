@@ -5,6 +5,7 @@ import com.fluxhydravault.restbackend.dao.TokenDAO;
 import com.fluxhydravault.restbackend.model.Match;
 import com.fluxhydravault.restbackend.model.Player;
 import com.fluxhydravault.restbackend.dao.PlayerDAO;
+import com.fluxhydravault.restbackend.model.PlayerInventory;
 import com.fluxhydravault.restbackend.utils.HeaderChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -344,5 +345,53 @@ public class PlayerController {
 
         if (value) playerDAO.banPlayer(playerID);
         else playerDAO.unBanPlayer(playerID);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/{id}/items", method = RequestMethod.GET)
+    public List<PlayerInventory> getPlayerItems(
+            @RequestHeader(name = "App-Token", required = false) String appToken,
+            @RequestHeader(name = "User-Token", required = false) String userToken,
+            @PathVariable("id") String playerID
+    ) {
+        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+
+        return playerDAO.getPlayerItems(playerID);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(value = "/{id}/items", method = RequestMethod.POST)
+    public List<PlayerInventory> addInventory(
+            @RequestHeader(name = "App-Token", required = false) String appToken,
+            @RequestHeader(name = "User-Token", required = false) String userToken,
+            @PathVariable("id") String playerID,
+            @RequestParam("item_id") String itemID
+    ) {
+        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+
+        if (!tokenDAO.getToken(userToken).getPlayer_id().equals(playerID)) {
+            throw new NoSuchPrivilegeException();
+        }
+
+        return playerDAO.addItemToInventory(playerID, itemID);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @RequestMapping(value = "/{id}/items", method = RequestMethod.DELETE)
+    public void deletePlayerItem(
+            @RequestHeader(name = "App-Token", required = false) String appToken,
+            @RequestHeader(name = "User-Token", required = false) String userToken,
+            @PathVariable("id") String playerID,
+            @RequestParam("q") long inventoryID
+    ) {
+        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenDAO);
+
+        if (!tokenDAO.getToken(userToken).getPlayer_id().equals(playerID)) {
+            throw new NoSuchPrivilegeException();
+        }
+
+        playerDAO.deleteItemFromInventory(inventoryID);
     }
 }

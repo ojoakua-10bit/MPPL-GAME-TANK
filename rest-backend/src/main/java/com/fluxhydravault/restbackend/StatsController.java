@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/stats")
@@ -54,6 +52,27 @@ public class StatsController {
         map.put("response", "201 Created");
         map.put("data", result);
         return map;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public List<Stat> getStats(
+            @RequestHeader(name = "App-Token", required = false) String appToken,
+            @RequestHeader(name = "User-Token", required = false) String userToken,
+            @RequestParam(name = "q", required = false) String statName,
+            @RequestParam(name = "type", required = false) String statType
+    ) {
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenDAO);
+
+        if (statName != null) {
+            return statDAO.searchStatByName(statName);
+        }
+        else if (statType != null) {
+            return statDAO.getStatsByType(StatType.valueOf(statType));
+        }
+        else {
+            return statDAO.getAllStats();
+        }
     }
 
     @ResponseBody
