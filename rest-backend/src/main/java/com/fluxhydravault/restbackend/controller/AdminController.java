@@ -36,11 +36,12 @@ public class AdminController {
             @RequestHeader(name = "App-Token", required = false) String appToken,
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @RequestParam("username") String username,
-            @RequestParam("password") String password
+            @RequestParam("password") String password,
+            @RequestParam("admin_name") String adminName
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
-        Admin result = adminService.newAdmin(username, password);
+        Admin result = adminService.newAdmin(username, password, adminName);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
         map.put("response", "201 Created");
@@ -58,7 +59,8 @@ public class AdminController {
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @PathVariable("id") String adminID,
             @RequestParam(name = "username", required = false) String username,
-            @RequestParam(name = "password", required = false) String password
+            @RequestParam(name = "password", required = false) String password,
+            @RequestParam(name = "admin_name", required = false) String adminName
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
@@ -67,6 +69,9 @@ public class AdminController {
         }
         if (password != null) {
             adminService.changeAdminPassword(adminID, password);
+        }
+        if (adminName != null) {
+            adminService.changeAdminName(adminID, adminName);
         }
 
         Admin result = adminService.getAdmin(adminID);

@@ -3,6 +3,7 @@ package com.fluxhydravault.restbackend.model;
 public class Admin {
     private String admin_id;
     private String username;
+    private String admin_name;
     private String avatar;
 
     public String getAdmin_id() {
@@ -19,6 +20,14 @@ public class Admin {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getAdmin_name() {
+        return admin_name;
+    }
+
+    public void setAdmin_name(String admin_name) {
+        this.admin_name = admin_name;
     }
 
     public String getAvatar() {

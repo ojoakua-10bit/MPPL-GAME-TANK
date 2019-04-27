@@ -5,7 +5,7 @@ import com.fluxhydravault.restbackend.model.Admin;
 import java.util.List;
 
 public interface AdminService {
-    Admin newAdmin(String username, String password);
+    Admin newAdmin(String username, String password, String adminName);
 
     Admin getAdmin(String adminID);
 
@@ -21,9 +21,11 @@ public interface AdminService {
 
     void changeAdminPassword(String adminID, String password);
 
-    Admin authenticateUser(String username, String password);
+    void changeAdminName(String adminID, String adminName);
 
     void changePlayerAvatar(String adminID, String location);
+
+    Admin authenticateUser(String username, String password);
 
     void deletePlayerAvatar(String adminID);
 }

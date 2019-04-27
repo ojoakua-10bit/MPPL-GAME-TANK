@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Service
@@ -27,7 +28,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Admin newAdmin(String username, String password) {
+    public Admin newAdmin(String username, String password, String adminName) {
         if (getAdminByUsername(username) != null) {
             throw new AlreadyExistsException(username);
         }
@@ -44,10 +45,11 @@ public class AdminServiceImpl implements AdminService {
             adminID = Digestive.sha256(username).substring(i, i + 13);
         } while(getAdmin(adminID) != null);
 
-        jdbcTemplateObject.update("INSERT INTO `admin` VALUES (?, ?, ?, ?)",
+        jdbcTemplateObject.update("INSERT INTO `admin` VALUES (?, ?, ?, ?, ?)",
                 adminID,
                 username,
                 Digestive.sha1(password),
+                adminName,
                 DEFAULT_AVATAR_LOCATION);
         return getAdmin(adminID);
     }
@@ -127,6 +129,18 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public void changeAdminName(String adminID, String adminName) {
+        String SQL = "UPDATE `admin` SET `admin_name`=? WHERE admin_id=?";
+        jdbcTemplateObject.update(SQL, adminID, adminID);
+    }
+
+    @Override
+    public void changePlayerAvatar(String adminID, String location) {
+        String SQL = "UPDATE `admin` SET avatar=? WHERE admin_id=?";
+        jdbcTemplateObject.update(SQL, DEFAULT_AVATAR_LOCATION, adminID);
+    }
+
+    @Override
     public Admin authenticateUser(String username, String password) {
         String SQL = "SELECT * FROM `admin` WHERE username=? and password=?";
         Admin admin;
@@ -140,12 +154,6 @@ public class AdminServiceImpl implements AdminService {
         }
 
         return admin;
-    }
-
-    @Override
-    public void changePlayerAvatar(String adminID, String location) {
-        String SQL = "UPDATE `admin` SET avatar=? WHERE admin_id=?";
-        jdbcTemplateObject.update(SQL, DEFAULT_AVATAR_LOCATION, adminID);
     }
 
     @Override
