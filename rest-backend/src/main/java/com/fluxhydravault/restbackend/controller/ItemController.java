@@ -112,7 +112,8 @@ public class ItemController {
         Item result = itemService.getItem(itemID);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
-        map.put("message", "Update success.");
+        map.put("response", "201 Created");
+        map.put("message", "Item update success.");
         map.put("data", result);
         return map;
     }

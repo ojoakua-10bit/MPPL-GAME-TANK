@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 24, 2019 at 06:23 AM
+-- Generation Time: Apr 26, 2019 at 09:50 AM
 -- Server version: 10.3.14-MariaDB
 -- PHP Version: 7.3.4
 
@@ -21,6 +21,38 @@ SET time_zone = "+00:00";
 --
 -- Database: `tank_game`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin`
+--
+
+CREATE TABLE `admin` (
+  `admin_id` char(13) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `username` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `avatar` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `admin`
+--
+
+INSERT INTO `admin` (`admin_id`, `username`, `password`, `avatar`) VALUES
+('5cc2d3c48119a', 'root', '80af2c2687f31e4288c2cff321479fa813b89549', '/static/default/avatar.png');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_token`
+--
+
+CREATE TABLE `admin_token` (
+  `token` char(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `admin_id` char(13) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` tinyint(4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -107,8 +139,7 @@ CREATE TABLE `player` (
 CREATE TABLE `player_inventory` (
   `inventory_id` bigint(20) NOT NULL,
   `player_id` char(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_id` char(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `count` int(11) NOT NULL
+  `item_id` char(20) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
@@ -154,6 +185,20 @@ CREATE TABLE `token` (
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `admin`
+--
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`admin_id`),
+  ADD UNIQUE KEY `username` (`username`);
+
+--
+-- Indexes for table `admin_token`
+--
+ALTER TABLE `admin_token`
+  ADD PRIMARY KEY (`token`),
+  ADD KEY `admin_id` (`admin_id`);
 
 --
 -- Indexes for table `friend`
@@ -238,6 +283,12 @@ ALTER TABLE `item_stats`
   MODIFY `item_stat_id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `player_inventory`
+--
+ALTER TABLE `player_inventory`
+  MODIFY `inventory_id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `stats_repo`
 --
 ALTER TABLE `stats_repo`
@@ -246,6 +297,12 @@ ALTER TABLE `stats_repo`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `admin_token`
+--
+ALTER TABLE `admin_token`
+  ADD CONSTRAINT `admin_token_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `admin` (`admin_id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `friend`

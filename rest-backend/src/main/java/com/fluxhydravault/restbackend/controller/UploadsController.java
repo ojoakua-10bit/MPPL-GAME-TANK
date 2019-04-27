@@ -19,6 +19,7 @@ public class UploadsController {
     private PlayerService playerService;
     private TokenService tokenService;
     private ItemService itemService;
+    private AdminService adminService;
     private FileUploadService fileUploadService;
     private final String FILE_SERVER_ROOT = "/static/";
 
@@ -38,6 +39,11 @@ public class UploadsController {
     }
 
     @Autowired
+    public void setAdminService(AdminService adminService) {
+        this.adminService = adminService;
+    }
+
+    @Autowired
     public void setFileUploadService(FileUploadService fileUploadService) {
         this.fileUploadService = fileUploadService;
     }
@@ -45,7 +51,7 @@ public class UploadsController {
     @ResponseBody
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/images/{id}", method = RequestMethod.POST)
-    public Map<String, Object> uploadAvatar(
+    public Map<String, Object> uploadPlayerAvatar(
             @RequestHeader(name = "App-Token", required = false) String appToken,
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @PathVariable("id") String playerID,
@@ -53,26 +59,55 @@ public class UploadsController {
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
-        if (userToken != null && !tokenService.getToken(userToken).getPlayer_id().equals(playerID)) {
+        if (userToken != null && !tokenService.getUserToken(userToken).getUser_id().equals(playerID)) {
             throw new NoSuchPrivilegeException();
         }
 
-        fileUploadService.uploadImage(playerID, file);
+        fileUploadService.uploadImage(playerID, false, file);
         String filename = playerID + StringUtils.cleanPath(file.getOriginalFilename());
         String path = FILE_SERVER_ROOT + "images/" + filename;
         playerService.changePlayerAvatar(playerID, path);
 
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
-        map.put("message", "Update success.");
-        map.put("path", path);
+        map.put("response", "201 Created");
+        map.put("message", "Player avatar upload success.");
+        map.put("data", path);
+        return map;
+    }
+
+    @ResponseBody
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/images/admin/{id}", method = RequestMethod.POST)
+    public Map<String, Object> uploadAdminAvatar(
+            @RequestHeader(name = "App-Token", required = false) String appToken,
+            @RequestHeader(name = "User-Token", required = false) String userToken,
+            @PathVariable("id") String adminID,
+            @RequestParam("image-data") MultipartFile file
+    ) {
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
+
+        if (userToken != null && !tokenService.getUserToken(userToken).getUser_id().equals(adminID)) {
+            throw new NoSuchPrivilegeException();
+        }
+
+        fileUploadService.uploadImage(adminID, true, file);
+        String filename = adminID + StringUtils.cleanPath(file.getOriginalFilename());
+        String path = FILE_SERVER_ROOT + "images/admin/" + filename;
+        adminService.changePlayerAvatar(adminID, path);
+
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("timestamp", new Date());
+        map.put("response", "201 Created");
+        map.put("message", "Avatar upload success.");
+        map.put("data", path);
         return map;
     }
 
     @ResponseBody
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @RequestMapping(value = "/images/{id}", method = RequestMethod.DELETE)
-    public void uploadAvatar(
+    public void deletePlayerAvatar(
             @RequestHeader(name = "App-Token", required = false) String appToken,
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @PathVariable("id") String playerID
@@ -80,6 +115,19 @@ public class UploadsController {
         HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
         playerService.deletePlayerAvatar(playerID);
+    }
+
+    @ResponseBody
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @RequestMapping(value = "/images/admin/{id}", method = RequestMethod.DELETE)
+    public void deleteAdminAvatar(
+            @RequestHeader(name = "App-Token", required = false) String appToken,
+            @RequestHeader(name = "User-Token", required = false) String userToken,
+            @PathVariable("id") String playerID
+    ) {
+        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
+
+        adminService.deletePlayerAvatar(playerID);
     }
 
     @ResponseBody
@@ -100,8 +148,9 @@ public class UploadsController {
 
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
-        map.put("message", "Update success.");
-        map.put("path", path);
+        map.put("response", "201 Created");
+        map.put("message", "Asset upload success.");
+        map.put("data", path);
         return map;
     }
 }

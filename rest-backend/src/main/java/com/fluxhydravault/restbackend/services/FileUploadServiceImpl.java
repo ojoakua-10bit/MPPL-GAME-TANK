@@ -15,24 +15,29 @@ import java.nio.file.StandardCopyOption;
 @Service
 public class FileUploadServiceImpl implements FileUploadService {
     private Path assetsPath;
-    private Path imagesPath;
+    private Path playerImagesPath;
+    private Path adminImagesPath;
 
     public FileUploadServiceImpl() {
         String os = System.getProperty("os.name");
-        String rootLocation, assetsLocation, imagesLocation;
+        String rootLocation, assetsLocation, playerImagesLocation, adminImagesLocation;
         if (os.startsWith("Windows")) {
             rootLocation = "C:\\server\\";
             assetsLocation = "C:\\server\\assets\\";
-            imagesLocation = "C:\\server\\images\\";
+            playerImagesLocation = "C:\\server\\images\\";
+            adminImagesLocation = "C:\\server\\images\\admin\\";
+
         }
         else {
             rootLocation = System.getenv("HOME") + "/server/";
             assetsLocation = System.getenv("HOME") + "/server/assets/";
-            imagesLocation = System.getenv("HOME") + "/server/images/";
+            playerImagesLocation = System.getenv("HOME") + "/server/images/";
+            adminImagesLocation = System.getenv("HOME") + "/server/images/admin/";
         }
 
         assetsPath = Paths.get(assetsLocation);
-        imagesPath = Paths.get(imagesLocation);
+        playerImagesPath = Paths.get(playerImagesLocation);
+        adminImagesPath = Paths.get(adminImagesLocation);
 
         try {
             Files.createDirectory(Paths.get(rootLocation));
@@ -45,20 +50,30 @@ public class FileUploadServiceImpl implements FileUploadService {
             System.out.println("Path already exists: " + e.getMessage());
         }
         try {
-            Files.createDirectory(imagesPath);
+            Files.createDirectory(playerImagesPath);
+        } catch (IOException e) {
+            System.out.println("Path already exists: " + e.getMessage());
+        }
+        try {
+            Files.createDirectory(adminImagesPath);
         } catch (IOException e) {
             System.out.println("Path already exists: " + e.getMessage());
         }
     }
 
-    public void uploadImage(String playerID, MultipartFile file) {
+    public void uploadImage(String playerID, boolean isAdmin, MultipartFile file) {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
         if (filename.isEmpty()) throw new InputFormatException("File is empty.");
 
         String type = file.getContentType();
         if (type != null && (type.equals("image/jpeg") || type.equals("image/png"))) {
             try {
-                Files.copy(file.getInputStream(), imagesPath.resolve(playerID + filename), StandardCopyOption.REPLACE_EXISTING);
+                if (isAdmin) {
+                    Files.copy(file.getInputStream(), adminImagesPath.resolve(playerID + filename), StandardCopyOption.REPLACE_EXISTING);
+                }
+                else {
+                    Files.copy(file.getInputStream(), playerImagesPath.resolve(playerID + filename), StandardCopyOption.REPLACE_EXISTING);
+                }
             } catch (IOException e) {
                 throw new InternalServerErrorException("An error has occurred when uploading your file.");
             }

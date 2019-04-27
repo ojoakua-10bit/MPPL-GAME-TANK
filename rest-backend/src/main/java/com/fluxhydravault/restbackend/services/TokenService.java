@@ -3,9 +3,15 @@ package com.fluxhydravault.restbackend.services;
 import com.fluxhydravault.restbackend.model.Token;
 
 public interface TokenService {
-    String generateToken(String playerID);
+    String generateUserToken(String playerID);
 
-    Token getToken(String token);
+    Token getUserToken(String token);
 
-    boolean isValidToken(String token);
+    boolean isValidUserToken(String token);
+
+    String generateAdminToken(String adminID);
+
+    Token getAdminToken(String token);
+
+    boolean isValidAdminToken(String token);
 }

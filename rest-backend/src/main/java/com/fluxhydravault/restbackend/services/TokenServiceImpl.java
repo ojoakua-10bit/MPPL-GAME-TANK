@@ -23,15 +23,15 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public String generateToken(String playerID) {
+    public String generateUserToken(String playerID) {
         Random random = new Random();
         String token;
         do {
             token = Digestive.sha256(Long.toString(random.nextLong()));
-        } while (getToken(token) != null);
-        Token oldToken = getValidToken(playerID);
+        } while (getUserToken(token) != null);
+        Token oldToken = getValidUserToken(playerID);
         if (oldToken != null) {
-            deactivateToken(oldToken.getToken());
+            deactivateUserToken(oldToken.getToken());
         }
 
         String SQL = "INSERT INTO token VALUES (?, ?, ?)";
@@ -40,7 +40,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Token getToken(String token) {
+    public Token getUserToken(String token) {
         Token tmp;
         try {
             tmp = jdbcTemplateObject
@@ -53,14 +53,52 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public boolean isValidToken(String token) {
-        Token tmp = getToken(token);
+    public boolean isValidUserToken(String token) {
+        Token tmp = getUserToken(token);
 
         if (tmp == null) return false;
         else return (tmp.getStatus() == 1);
     }
 
-    private Token getValidToken(String playerID) {
+    @Override
+    public String generateAdminToken(String adminID) {
+        Random random = new Random();
+        String token;
+        do {
+            token = Digestive.sha256(Long.toString(random.nextLong()));
+        } while (getAdminToken(token) != null);
+        Token oldToken = getValidAdminToken(adminID);
+        if (oldToken != null) {
+            deactivateAdminToken(oldToken.getToken());
+        }
+
+        String SQL = "INSERT INTO admin_token VALUES (?, ?, ?)";
+        jdbcTemplateObject.update(SQL, token, adminID, 1);
+        return token;
+    }
+
+    @Override
+    public Token getAdminToken(String token) {
+        Token tmp;
+        try {
+            tmp = jdbcTemplateObject
+                    .queryForObject("SELECT * FROM admin_token WHERE token=?",
+                            new Object[]{token}, new TokenMapper());
+        } catch (IncorrectResultSizeDataAccessException e) {
+            tmp = null;
+        }
+        return tmp;
+    }
+
+    @Override
+    public boolean isValidAdminToken(String token) {
+        Token tmp = getAdminToken(token);
+
+        if (tmp == null) return false;
+        else return (tmp.getStatus() == 1);
+    }
+
+    private Token getValidUserToken(String playerID) {
         Token token;
         try {
             token = jdbcTemplateObject
@@ -72,8 +110,25 @@ public class TokenServiceImpl implements TokenService {
         return token;
     }
 
-    private void deactivateToken(String token) {
+    private Token getValidAdminToken(String adminID) {
+        Token token;
+        try {
+            token = jdbcTemplateObject
+                    .queryForObject("SELECT * FROM admin_token WHERE admin_id=? AND status=1",
+                            new Object[]{adminID}, new TokenMapper());
+        } catch (IncorrectResultSizeDataAccessException e) {
+            token = null;
+        }
+        return token;
+    }
+
+    private void deactivateUserToken(String token) {
         String SQL = "UPDATE token SET status='0' WHERE token=?";
+        jdbcTemplateObject.update(SQL, token);
+    }
+
+    private void deactivateAdminToken(String token) {
+        String SQL = "UPDATE admin_token SET status='0' WHERE token=?";
         jdbcTemplateObject.update(SQL, token);
     }
 }

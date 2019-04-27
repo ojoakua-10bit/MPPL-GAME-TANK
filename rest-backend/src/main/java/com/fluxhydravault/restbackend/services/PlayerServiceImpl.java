@@ -125,7 +125,7 @@ public class PlayerServiceImpl implements PlayerService {
             throw new InputFormatException("Password should have 8 characters or more");
         }
 
-        String SQL = "UPDATE player SET password=? WHERE player_id=?";
+        String SQL = "UPDATE player SET `password`=? WHERE player_id=?";
         jdbcTemplateObject.update(SQL, Digestive.sha1(password), playerID);
     }
 

@@ -107,7 +107,8 @@ public class ShopController {
         ShopItem result = shopItemService.getShopItem(shopID);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
-        map.put("message", "Update success.");
+        map.put("response", "201 Created");
+        map.put("message", "Shop item update success.");
         map.put("data", result);
         return map;
     }

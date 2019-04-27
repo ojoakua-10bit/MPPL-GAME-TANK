@@ -1,6 +1,8 @@
 package com.fluxhydravault.restbackend.controller;
 
 import com.fluxhydravault.restbackend.NotAuthenticatedException;
+import com.fluxhydravault.restbackend.model.Admin;
+import com.fluxhydravault.restbackend.services.AdminService;
 import com.fluxhydravault.restbackend.services.PlayerService;
 import com.fluxhydravault.restbackend.services.TokenService;
 import com.fluxhydravault.restbackend.model.Player;
@@ -17,11 +19,17 @@ import java.util.Map;
 @RequestMapping("/auth")
 public class AuthController {
     private PlayerService playerService;
+    private AdminService adminService;
     private TokenService tokenService;
 
     @Autowired
     public void setPlayerService(PlayerService playerService) {
         this.playerService = playerService;
+    }
+
+    @Autowired
+    public void setAdminService(AdminService adminService) {
+        this.adminService = adminService;
     }
 
     @Autowired
@@ -42,13 +50,35 @@ public class AuthController {
         if (player == null) {
             throw new NotAuthenticatedException("Wrong username or password!");
         }
-        String token = tokenService.generateToken(player.getPlayer_id());
+        String token = tokenService.generateUserToken(player.getPlayer_id());
         playerService.setPlayerOnlineStatus(player.getPlayer_id(), true);
 
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
-        map.put("user_token", token);
-        map.put("user_data", player);
+        map.put("token", token);
+        map.put("data", player);
+        return map;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/admin", method = RequestMethod.POST)
+    public Map<String, Object> loginAdmin(
+            @RequestHeader(name = "App-Token", required = false) String appToken,
+            @RequestParam("username") String username,
+            @RequestParam("password") String password
+    ) {
+        HeaderChecker.checkAppToken(appToken);
+
+        Admin admin = adminService.authenticateUser(username, password);
+        if (admin == null) {
+            throw new NotAuthenticatedException("Wrong username or password!");
+        }
+        String token = tokenService.generateAdminToken(admin.getAdmin_id());
+
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("timestamp", new Date());
+        map.put("token", token);
+        map.put("data", admin);
         return map;
     }
 }

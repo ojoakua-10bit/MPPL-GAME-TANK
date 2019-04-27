@@ -6,6 +6,8 @@ import com.fluxhydravault.restbackend.services.TokenService;
 import java.util.LinkedHashMap;
 
 public class HeaderChecker {
+    private HeaderChecker() { }
+
     private static LinkedHashMap<String, String> appTokenList;
 
     static {
@@ -23,11 +25,20 @@ public class HeaderChecker {
             throw new NotAuthenticatedException();
         }
 
-        if (mode.equals("PLAYER") && userToken == null) {
+        if (userToken == null) {
             throw new NotAuthenticatedException("Unauthorized user detected!");
         }
 
-        if (userToken != null && !tokenService.isValidToken(userToken)) {
+        if (mode.equals("PLAYER") && !tokenService.isValidUserToken(userToken)) {
+            throw new NotAuthenticatedException("This token has been expired.");
+        }
+
+        if (mode.equals("ADMIN") && !tokenService.isValidAdminToken(userToken)) {
+            throw new NotAuthenticatedException("This token has been expired.");
+        }
+
+        if (mode.equals("BOTH") && (!tokenService.isValidAdminToken(userToken)
+                && !tokenService.isValidUserToken(userToken))) {
             throw new NotAuthenticatedException("This token has been expired.");
         }
     }

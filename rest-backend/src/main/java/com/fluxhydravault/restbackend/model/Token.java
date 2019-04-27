@@ -2,7 +2,7 @@ package com.fluxhydravault.restbackend.model;
 
 public class Token {
     private String token;
-    private String player_id;
+    private String user_id;
     private byte status;
 
     public String getToken() {
@@ -13,12 +13,12 @@ public class Token {
         this.token = token;
     }
 
-    public String getPlayer_id() {
-        return player_id;
+    public String getUser_id() {
+        return user_id;
     }
 
-    public void setPlayer_id(String player_id) {
-        this.player_id = player_id;
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
     public byte getStatus() {

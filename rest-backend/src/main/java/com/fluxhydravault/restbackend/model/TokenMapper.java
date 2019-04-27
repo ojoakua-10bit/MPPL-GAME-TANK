@@ -10,7 +10,7 @@ public class TokenMapper implements RowMapper<Token> {
     public Token mapRow(ResultSet resultSet, int i) throws SQLException {
         Token token = new Token();
         token.setToken(resultSet.getString(1));
-        token.setPlayer_id(resultSet.getString(2));
+        token.setUser_id(resultSet.getString(2));
         token.setStatus(resultSet.getByte(3));
 
         return token;

@@ -51,6 +51,7 @@ public class StatsController {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
         map.put("response", "201 Created");
+        map.put("message", "New stat successfully added.");
         map.put("data", result);
         return map;
     }
@@ -109,6 +110,7 @@ public class StatsController {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
         map.put("response", "201 Created");
+        map.put("message", "Stat successfully changed.");
         map.put("data", result);
         return map;
     }
@@ -146,6 +148,7 @@ public class StatsController {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
         map.put("response", "201 Created");
+        map.put("message", "Stat successfully changed.");
         map.put("data", result);
         return map;
     }

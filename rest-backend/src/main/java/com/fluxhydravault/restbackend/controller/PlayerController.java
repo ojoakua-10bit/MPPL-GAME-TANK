@@ -1,9 +1,6 @@
 package com.fluxhydravault.restbackend.controller;
 
-import com.fluxhydravault.restbackend.InputFormatException;
-import com.fluxhydravault.restbackend.NoSuchPrivilegeException;
-import com.fluxhydravault.restbackend.NotAllowedException;
-import com.fluxhydravault.restbackend.NotAuthenticatedException;
+import com.fluxhydravault.restbackend.*;
 import com.fluxhydravault.restbackend.services.MatchService;
 import com.fluxhydravault.restbackend.services.TokenService;
 import com.fluxhydravault.restbackend.model.Match;
@@ -45,15 +42,16 @@ public class PlayerController {
 
     @ResponseBody
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     public Map<String, Object> newPlayer(
             @RequestHeader(name = "App-Token", required = false) String appToken,
-            @RequestHeader(name = "User-Token", required = false) String userToken,
+//            @RequestHeader(name = "User-Token", required = false) String userToken,
             @RequestParam("username") String username,
             @RequestParam("password") String password,
             @RequestParam("player_name") String playerName
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
+//        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
+        HeaderChecker.checkAppToken(appToken);
         Player result = playerService.newPlayer(username, password, playerName);
 
         Map<String, Object> map = new LinkedHashMap<>();
@@ -76,7 +74,7 @@ public class PlayerController {
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenService);
 
-        if (userToken != null && !tokenService.getToken(userToken).getPlayer_id().equals(playerID)) {
+        if (userToken != null && !tokenService.getUserToken(userToken).getUser_id().equals(playerID)) {
             throw new NoSuchPrivilegeException();
         }
 
@@ -119,6 +117,7 @@ public class PlayerController {
         Player result = playerService.getPlayer(playerID);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
+        map.put("response", "201 Created");
         map.put("message", "Update success.");
         map.put("data", result);
         return map;
@@ -176,18 +175,19 @@ public class PlayerController {
 
     @ResponseBody
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Map<String, Object> searchPlayerByID(
+    public Player getPlayerByID(
             @RequestHeader(name = "App-Token", required = false) String appToken,
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @PathVariable("id") String playerID
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenService);
-        Map<String, Object> map = new LinkedHashMap<>();
-        Player matchesResult = playerService.getPlayer(playerID);
 
-        map.put("timestamp", new Date());
-        map.put("matched_result", matchesResult);
-        return map;
+        Player player = playerService.getPlayer(playerID);
+        if (player == null) {
+            throw new NotFoundException("Player@" + playerID);
+        }
+
+        return player;
     }
 
     @ResponseBody
@@ -205,7 +205,7 @@ public class PlayerController {
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
-        if (!tokenService.getToken(userToken).getPlayer_id().equals(playerID)) {
+        if (!tokenService.getUserToken(userToken).getUser_id().equals(playerID)) {
             throw new NotAuthenticatedException();
         }
 
@@ -213,7 +213,8 @@ public class PlayerController {
         Match result = matchService.newMatch(playerID, matchStatus, score, totalDamage, goldGained, itemGained);
         map.put("timestamp", new Date());
         map.put("response", "201 Created");
-        map.put("result", result);
+        map.put("message", "Match history created");
+        map.put("data", result);
 
         return map;
     }
@@ -303,10 +304,12 @@ public class PlayerController {
         HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
         playerService.addFriend(playerID, friendID);
+        Player data = playerService.getPlayer(friendID);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
         map.put("response", "201 Created");
         map.put("message", "Player '" + friendID + "' has been successfully added as your friend");
+        map.put("data", data);
 
         return map;
     }
@@ -322,7 +325,7 @@ public class PlayerController {
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
-        if (!tokenService.getToken(userToken).getPlayer_id().equals(playerID)) {
+        if (!tokenService.getUserToken(userToken).getUser_id().equals(playerID)) {
             throw new NoSuchPrivilegeException();
         }
 
@@ -378,7 +381,7 @@ public class PlayerController {
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
-        if (!tokenService.getToken(userToken).getPlayer_id().equals(playerID)) {
+        if (!tokenService.getUserToken(userToken).getUser_id().equals(playerID)) {
             throw new NoSuchPrivilegeException();
         }
 
@@ -396,7 +399,7 @@ public class PlayerController {
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
 
-        if (!tokenService.getToken(userToken).getPlayer_id().equals(playerID)) {
+        if (!tokenService.getUserToken(userToken).getUser_id().equals(playerID)) {
             throw new NoSuchPrivilegeException();
         }
 
