@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,21 +64,25 @@ public class FileUploadServiceImpl implements FileUploadService {
 
     public void uploadImage(String playerID, boolean isAdmin, MultipartFile file) {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        Path path;
         if (filename.isEmpty()) throw new InputFormatException("File is empty.");
-
-        String type = file.getContentType();
-        if (type != null && (type.equals("image/jpeg") || type.equals("image/png"))) {
             try {
                 if (isAdmin) {
-                    Files.copy(file.getInputStream(), adminImagesPath.resolve(playerID + filename), StandardCopyOption.REPLACE_EXISTING);
+                    path = adminImagesPath.resolve(playerID + filename);
+                    Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
                 }
                 else {
-                    Files.copy(file.getInputStream(), playerImagesPath.resolve(playerID + filename), StandardCopyOption.REPLACE_EXISTING);
+                    path = playerImagesPath.resolve(playerID + filename);
+                    Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                if (ImageIO.read(path.toFile()) == null) {
+                    Files.delete(path);
+                    throw new InputFormatException("Invalid image format.");
                 }
             } catch (IOException e) {
                 throw new InternalServerErrorException("An error has occurred when uploading your file.");
             }
-        } else throw new InputFormatException("Invalid image format!");
     }
 
     public void uploadAsset(String itemID, MultipartFile file) {
@@ -85,7 +90,8 @@ public class FileUploadServiceImpl implements FileUploadService {
         if (filename.isEmpty()) throw new InputFormatException("File is empty.");
 
         try {
-            Files.copy(file.getInputStream(), assetsPath.resolve(itemID + filename), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.getInputStream(), assetsPath.resolve(itemID + filename),
+                    StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new InternalServerErrorException("An error has occurred when uploading your file.");
         }

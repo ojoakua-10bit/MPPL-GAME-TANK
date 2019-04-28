@@ -27,5 +27,5 @@ public interface AdminService {
 
     Admin authenticateUser(String username, String password);
 
-    void deletePlayerAvatar(String adminID);
+    void deleteAdminAvatar(String adminID);
 }

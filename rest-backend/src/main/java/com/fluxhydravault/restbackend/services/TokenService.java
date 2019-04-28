@@ -7,7 +7,7 @@ public interface TokenService {
 
     Token getUserToken(String token);
 
-    boolean isValidUserToken(String token);
+    boolean isValidPlayerToken(String token);
 
     String generateAdminToken(String adminID);
 

@@ -5,6 +5,8 @@ import java.awt.*;
 
 public class ImagePanel extends JPanel {
     private Image image;
+    private int imageSizeX;
+    private int imageSizeY;
 
     public Image getImage() {
         return image;
@@ -14,6 +16,27 @@ public class ImagePanel extends JPanel {
         this.image = image;
     }
 
+    public int getImageSizeX() {
+        return imageSizeX;
+    }
+
+    public void setImageSizeX(int imageSizeX) {
+        this.imageSizeX = imageSizeX;
+    }
+
+    public int getImageSizeY() {
+        return imageSizeY;
+    }
+
+    public void setImageSizeY(int imageSizeY) {
+        this.imageSizeY = imageSizeY;
+    }
+
+    public void setImageSize(int x, int y) {
+        imageSizeX = x;
+        imageSizeY = y;
+    }
+
     @Override
     protected void paintComponent(Graphics graphics) {
         if (image == null) {
@@ -21,7 +44,7 @@ public class ImagePanel extends JPanel {
         }
         else {
             setBackground(Color.BLACK);
-            graphics.drawImage(image, 0, 0, 128, 128,this);
+            graphics.drawImage(image, 0, 0, imageSizeX, imageSizeY,this);
         }
     }
 }

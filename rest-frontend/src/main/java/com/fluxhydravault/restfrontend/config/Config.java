@@ -1,52 +1,91 @@
 package com.fluxhydravault.restfrontend.config;
 
 import com.fluxhydravault.restfrontend.model.Admin;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.util.EntityUtils;
+import com.google.gson.Gson;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class Config {
-    private final String APP_TOKEN = "e6a065c4517d3520dbaa8b63fc25527caccc39ce6dda5026b5232c027053fb3b";
-    private final String configLocation = System.getenv("HOME") + "/.tank_game/";
-    private final String configLocationWindows = System.getenv("HOMEDRIVE")
-            + System.getenv("HOMEPATH") + "\\.tank_game\\";
+    private final String configLocation;
 
     private Admin currentAdmin;
     private String userToken;
     private String baseUri;
-    private ResponseHandler<String> responseHandler;
 
     private static final Config config = new Config();
 
     private Config() {
-        responseHandler = response -> {
-            int status = response.getStatusLine().getStatusCode();
-            if (status >= 200 && status < 300) {
-                HttpEntity entity = response.getEntity();
-                return entity != null ? EntityUtils.toString(entity) : null;
-            }
-            else {
-                throw new ClientProtocolException("Unexpected response status: " + status);
-            }
-        };
-        loadDefaultConfig();
+        String os = System.getProperty("os.name");
+
+        if (os.startsWith("Windows")) {
+            configLocation = System.getenv("HOMEDRIVE") + System.getenv("HOMEPATH") + "\\.tank_game\\";
+        }
+        else {
+            configLocation = System.getenv("HOME") + "/.tank_game/";
+        }
+
+        try {
+            Files.createDirectory(Paths.get(configLocation));
+        } catch (IOException e) {
+            System.out.println("Path already exists: " + e.getMessage());
+        }
+
+        if (!loadConfig()) {
+            Defaults.getDefaultConfig(this);
+        }
     }
 
-    private void loadDefaultConfig() {
-        currentAdmin = null;
-        userToken = null;
-        baseUri = "http://localhost:7169";
+    private boolean loadConfig() {
+        Gson gson = new Gson();
+        File configFile = new File(configLocation + "config.json");
+
+        if (!configFile.exists() && configFile.isDirectory()) {
+            return false;
+        }
+
+        try {
+            List<String> lines = Files.readAllLines(configFile.toPath());
+            StringBuilder json = new StringBuilder();
+            lines.forEach(json::append);
+            Config tmp = gson.fromJson(json.toString(), Config.class);
+
+            setCurrentAdmin(tmp.currentAdmin);
+            setBaseUri(tmp.baseUri);
+            setUserToken(tmp.userToken);
+
+            return true;
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
     }
 
-    public void saveConfig() { }
+    public void saveConfig() {
+        Gson gson = new Gson();
+        File configFile = new File(configLocation + "config.json");
+
+        if (configFile.isDirectory()) {
+            try {
+                Files.delete(configFile.toPath());
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        try (FileWriter writer = new FileWriter(configFile)) {
+            writer.write(gson.toJson(this));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     public static Config getConfig() {
         return config;
-    }
-
-    public String getAppToken() {
-        return APP_TOKEN;
     }
 
     public Admin getCurrentAdmin() {
@@ -71,9 +110,5 @@ public class Config {
 
     public void setBaseUri(String baseUri) {
         this.baseUri = baseUri;
-    }
-
-    public ResponseHandler<String> getResponseHandler() {
-        return responseHandler;
     }
 }

@@ -55,11 +55,12 @@ public class UploadsController {
             @RequestHeader(name = "App-Token", required = false) String appToken,
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @PathVariable("id") String playerID,
-            @RequestParam("image-data") MultipartFile file
+            @RequestParam("image_data") MultipartFile file
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
+        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenService);
 
-        if (userToken != null && !tokenService.getUserToken(userToken).getUser_id().equals(playerID)) {
+        if (tokenService.isValidPlayerToken(userToken) &&
+                !tokenService.getUserToken(userToken).getUser_id().equals(playerID)) {
             throw new NoSuchPrivilegeException();
         }
 
@@ -83,11 +84,12 @@ public class UploadsController {
             @RequestHeader(name = "App-Token", required = false) String appToken,
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @PathVariable("id") String adminID,
-            @RequestParam("image-data") MultipartFile file
+            @RequestParam("image_data") MultipartFile file
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
-        if (userToken != null && !tokenService.getUserToken(userToken).getUser_id().equals(adminID)) {
+        if (tokenService.isValidAdminToken(userToken)
+                && !tokenService.getUserToken(userToken).getUser_id().equals(adminID)) {
             throw new NoSuchPrivilegeException();
         }
 
@@ -112,7 +114,11 @@ public class UploadsController {
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @PathVariable("id") String playerID
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "PLAYER", tokenService);
+        HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenService);
+        if (tokenService.isValidPlayerToken(userToken) &&
+                !tokenService.getUserToken(userToken).getUser_id().equals(playerID)) {
+            throw new NoSuchPrivilegeException();
+        }
 
         playerService.deletePlayerAvatar(playerID);
     }
@@ -123,11 +129,15 @@ public class UploadsController {
     public void deleteAdminAvatar(
             @RequestHeader(name = "App-Token", required = false) String appToken,
             @RequestHeader(name = "User-Token", required = false) String userToken,
-            @PathVariable("id") String playerID
+            @PathVariable("id") String adminID
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
+        if (tokenService.isValidAdminToken(userToken)
+                && !tokenService.getUserToken(userToken).getUser_id().equals(adminID)) {
+            throw new NoSuchPrivilegeException();
+        }
 
-        adminService.deletePlayerAvatar(playerID);
+        adminService.deleteAdminAvatar(adminID);
     }
 
     @ResponseBody
@@ -137,7 +147,7 @@ public class UploadsController {
             @RequestHeader(name = "App-Token", required = false) String appToken,
             @RequestHeader(name = "User-Token", required = false) String userToken,
             @PathVariable("id") String itemID,
-            @RequestParam("assets-data") MultipartFile file
+            @RequestParam("assets_data") MultipartFile file
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 

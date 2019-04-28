@@ -53,7 +53,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public boolean isValidUserToken(String token) {
+    public boolean isValidPlayerToken(String token) {
         Token tmp = getUserToken(token);
 
         if (tmp == null) return false;

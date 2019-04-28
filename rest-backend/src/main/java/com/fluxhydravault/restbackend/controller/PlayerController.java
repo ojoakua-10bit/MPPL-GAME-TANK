@@ -74,7 +74,8 @@ public class PlayerController {
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "BOTH", tokenService);
 
-        if (userToken != null && !tokenService.getUserToken(userToken).getUser_id().equals(playerID)) {
+        if (tokenService.isValidPlayerToken(userToken)
+                && !tokenService.getUserToken(userToken).getUser_id().equals(playerID)) {
             throw new NoSuchPrivilegeException();
         }
 

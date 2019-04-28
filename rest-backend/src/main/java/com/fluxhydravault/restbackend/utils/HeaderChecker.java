@@ -29,7 +29,7 @@ public class HeaderChecker {
             throw new NotAuthenticatedException("Unauthorized user detected!");
         }
 
-        if (mode.equals("PLAYER") && !tokenService.isValidUserToken(userToken)) {
+        if (mode.equals("PLAYER") && !tokenService.isValidPlayerToken(userToken)) {
             throw new NotAuthenticatedException("This token has been expired.");
         }
 
@@ -38,7 +38,7 @@ public class HeaderChecker {
         }
 
         if (mode.equals("BOTH") && (!tokenService.isValidAdminToken(userToken)
-                && !tokenService.isValidUserToken(userToken))) {
+                && !tokenService.isValidPlayerToken(userToken))) {
             throw new NotAuthenticatedException("This token has been expired.");
         }
     }

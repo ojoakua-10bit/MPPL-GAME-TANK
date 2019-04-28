@@ -7,8 +7,14 @@ public class ItemService {
     private Gson gson;
     private Config config;
 
-    public ItemService() {
+    private static final ItemService instance = new ItemService();
+
+    private ItemService() {
         gson = new Gson();
         config = Config.getConfig();
+    }
+
+    public static ItemService getInstance() {
+        return instance;
     }
 }

@@ -157,7 +157,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void deletePlayerAvatar(String adminID) {
+    public void deleteAdminAvatar(String adminID) {
         String SQL = "UPDATE `admin` SET avatar=? WHERE admin_id=?";
         jdbcTemplateObject.update(SQL, DEFAULT_AVATAR_LOCATION, adminID);
     }

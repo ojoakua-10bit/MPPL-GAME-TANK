@@ -1,5 +1,6 @@
 package com.fluxhydravault.restbackend.controller;
 
+import com.fluxhydravault.restbackend.NoSuchPrivilegeException;
 import com.fluxhydravault.restbackend.model.Admin;
 import com.fluxhydravault.restbackend.services.AdminService;
 import com.fluxhydravault.restbackend.services.TokenService;
@@ -92,6 +93,10 @@ public class AdminController {
             @PathVariable("id") String adminID
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
+        if (tokenService.isValidAdminToken(userToken)
+                && !tokenService.getUserToken(userToken).getUser_id().equals(adminID)) {
+            throw new NoSuchPrivilegeException();
+        }
 
         adminService.deleteAdmin(adminID);
     }
