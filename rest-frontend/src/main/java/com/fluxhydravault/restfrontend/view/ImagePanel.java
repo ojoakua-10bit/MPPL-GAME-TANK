@@ -40,10 +40,11 @@ public class ImagePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics graphics) {
         if (image == null) {
-            setBackground(Color.BLACK);
+            setBackground(Color.GRAY);
         }
         else {
-            setBackground(Color.BLACK);
+            setBackground(Color.GRAY);
+            graphics.clearRect(0, 0, imageSizeX, imageSizeY);
             graphics.drawImage(image, 0, 0, imageSizeX, imageSizeY,this);
         }
     }

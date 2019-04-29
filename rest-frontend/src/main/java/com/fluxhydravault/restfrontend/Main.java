@@ -1,7 +1,6 @@
 package com.fluxhydravault.restfrontend;
 
-import com.fluxhydravault.restfrontend.view.InitialView;
-import com.fluxhydravault.restfrontend.view.LandingForm;
+import com.fluxhydravault.restfrontend.view.LandingView;
 
 public class Main {
     public static void main(String[] args) {
@@ -16,8 +15,6 @@ public class Main {
             System.out.println(ex.getMessage());
         }
 
-        java.awt.EventQueue.invokeLater(() -> {
-            new LandingForm().setVisible(true);
-        });
+        java.awt.EventQueue.invokeLater(() -> new LandingView().setVisible(true));
     }
 }
