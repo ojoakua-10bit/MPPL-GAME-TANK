@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="rootPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fluxhydravault.restfrontendfx.controller.MainMenuController">
+<BorderPane fx:id="rootPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="960.0" styleClass="background" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fluxhydravault.restfrontendfx.controller.MainMenuController">
    <top>
       <GridPane prefHeight="88.0" prefWidth="960.0" BorderPane.alignment="CENTER">
         <columnConstraints>
@@ -128,7 +128,7 @@
          <children>
             <Label fx:id="welcomeMessage" text="Hi {admin_name}! Welcome to War Tanks - Admin Portal" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
                <font>
-                  <Font name="Segoe UI" size="28.0" />
+                  <Font name="Segoe UI Light" size="28.0" />
                </font>
             </Label>
             <Label text="To start, please select one available menu above." GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">

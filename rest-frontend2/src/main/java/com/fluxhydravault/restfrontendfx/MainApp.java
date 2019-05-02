@@ -1,6 +1,6 @@
 package com.fluxhydravault.restfrontendfx;
 
-import com.fluxhydravault.restfrontendfx.service.LoginService;
+import com.fluxhydravault.restfrontendfx.controller.InitialController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,10 +9,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import jfxtras.styles.jmetro8.JMetro;
 
-import java.io.File;
-
 public class MainApp extends Application {
-    private Stage primaryStage;
 
     public static void main(String[] args) {
         launch(args);
@@ -20,17 +17,20 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        LoginService.getInstance().login("root", "akmalzonk");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Initial.fxml"));
+        Parent root = loader.load();
 
-        Parent root = FXMLLoader.load(getClass().getResource("/view/MainMenu.fxml"));
-        Scene scene = new Scene(root, 960, 600);
-        new JMetro(JMetro.Style.DARK).applyTheme(scene);
+        Scene scene = new Scene(root, 600, 400);
+        new JMetro(JMetro.Style.LIGHT).applyTheme(scene);
 
-        this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("War Tanks: Admin Portal");
-        this.primaryStage.setScene(scene);
-        this.primaryStage.setResizable(false);
-        this.primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/img/logo.png")));
-        this.primaryStage.show();
+        InitialController controller = loader.getController();
+        controller.setPrimaryStage(primaryStage);
+        controller.setInitialScene(scene);
+
+        primaryStage.setTitle("War Tanks: Admin Portal");
+        primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/img/logo.png")));
+        primaryStage.show();
     }
 }

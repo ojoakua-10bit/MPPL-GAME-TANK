@@ -28,8 +28,7 @@ public class Defaults {
                 return entity != null ? EntityUtils.toString(entity) : null;
             }
             else {
-                throw new ClientProtocolException("Unexpected response status: " + status
-                        + "\n" + EntityUtils.toString(response.getEntity()));
+                throw new ClientProtocolException(EntityUtils.toString(response.getEntity()));
             }
         };
     }

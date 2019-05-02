@@ -4,9 +4,8 @@ import com.fluxhydravault.restfrontendfx.model.Player;
 import com.fluxhydravault.restfrontendfx.service.PlayerService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
 
 import java.util.List;
 
@@ -39,6 +38,11 @@ public class PlayerController {
     private Label avatarLabel;
     @FXML
     private Label banLabel;
+    private Stage primaryStage;
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
 
     private void updateTable(List<Player> list) {
         if (list != null)
@@ -102,6 +106,20 @@ public class PlayerController {
 
     @FXML
     private void deleteButtonClicked() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initOwner(primaryStage);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Delete Player");
+        alert.setContentText("Are you sure to delete this player? \nThis action cannot be undone.");
+
+        alert.showAndWait();
+
         System.out.println("Delete player.");
+
+        ButtonType result = alert.getResult();
+        if (result == ButtonType.OK) {
+            // TODO: deletion code here
+            System.out.println("Yes, delete this player");
+        }
     }
 }

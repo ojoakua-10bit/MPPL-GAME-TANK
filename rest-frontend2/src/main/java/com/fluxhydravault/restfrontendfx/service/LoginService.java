@@ -1,11 +1,14 @@
 package com.fluxhydravault.restfrontendfx.service;
 
+import com.fluxhydravault.restfrontendfx.UnauthorizedException;
 import com.fluxhydravault.restfrontendfx.config.Config;
 import com.fluxhydravault.restfrontendfx.config.Defaults;
 import com.fluxhydravault.restfrontendfx.model.Admin;
+import com.fluxhydravault.restfrontendfx.model.ErrorResponse;
 import com.fluxhydravault.restfrontendfx.model.TokenResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -48,8 +51,17 @@ public class LoginService {
             config.setUserToken(admin.getToken());
             config.setCurrentAdmin(admin.getData());
         }
+        catch (ClientProtocolException e) {
+            ErrorResponse response = gson.fromJson(e.getMessage(), ErrorResponse.class);
+            if (response.getStatus() == 401) {
+                throw new UnauthorizedException(response.getMessage());
+            }
+            else {
+                throw new RuntimeException(response.getFormattedMessage());
+            }
+        }
         catch (IOException e) {
-            System.out.println(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

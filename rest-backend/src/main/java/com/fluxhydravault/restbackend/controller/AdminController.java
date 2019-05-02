@@ -40,7 +40,7 @@ public class AdminController {
             @RequestParam("password") String password,
             @RequestParam("admin_name") String adminName
     ) {
-        HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
+        HeaderChecker.checkAppToken(appToken);
 
         Admin result = adminService.newAdmin(username, password, adminName);
         Map<String, Object> map = new LinkedHashMap<>();
@@ -54,7 +54,7 @@ public class AdminController {
 
     @ResponseBody
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
     public Map<String, Object> editAdmin(
             @RequestHeader(name = "App-Token", required = false) String appToken,
             @RequestHeader(name = "User-Token", required = false) String userToken,
