@@ -50,6 +50,7 @@ public class LoginService {
 
             config.setUserToken(admin.getToken());
             config.setCurrentAdmin(admin.getData());
+            config.saveConfig();
         }
         catch (ClientProtocolException e) {
             ErrorResponse response = gson.fromJson(e.getMessage(), ErrorResponse.class);

@@ -48,39 +48,29 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label text="Player ID">
+                        <Label text="Item ID">
                            <font>
                               <Font name="Segoe UI" size="14.0" />
                            </font>
                         </Label>
-                        <Label text="Username" GridPane.rowIndex="1">
+                        <Label text="Item Category" GridPane.rowIndex="1">
                            <font>
                               <Font name="Segoe UI" size="14.0" />
                            </font>
                         </Label>
-                        <Label text="Nickname" GridPane.rowIndex="2">
+                        <Label text="Item Name" GridPane.rowIndex="2">
                            <font>
                               <Font name="Segoe UI" size="14.0" />
                            </font>
                         </Label>
-                        <Label text="XP" GridPane.rowIndex="3">
+                        <Label text="Description" GridPane.rowIndex="3">
                            <font>
                               <Font name="Segoe UI" size="14.0" />
                            </font>
                         </Label>
-                        <Label text="Rank" GridPane.rowIndex="4">
-                           <font>
-                              <Font name="Segoe UI" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label text="Diamond Count" GridPane.rowIndex="5">
+                        <Label text="Model Location" GridPane.rowIndex="4">
                            <font>
                               <Font name="Segoe UI" size="14.0" />
                            </font>
@@ -100,67 +90,12 @@
                               <Font name="Segoe UI" size="14.0" />
                            </font>
                         </Label>
-                        <Label styleClass="label-bright" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" fx:id="xpLabel">
+                        <Label maxWidth="377.0" styleClass="label-bright" text="Label" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3" fx:id="xpLabel">
                            <font>
                               <Font name="Segoe UI" size="14.0" />
                            </font>
                         </Label>
                         <Label fx:id="rankLabel" styleClass="label-bright" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                           <font>
-                              <Font name="Segoe UI" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="diamondLabel" styleClass="label-bright" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                           <font>
-                              <Font name="Segoe UI" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label text="Gold Count" GridPane.rowIndex="6">
-                           <font>
-                              <Font name="Segoe UI" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="goldLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="6">
-                           <font>
-                              <Font name="Segoe UI" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label text="Credit Balance" GridPane.rowIndex="7">
-                           <font>
-                              <Font name="Segoe UI" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="creditLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="7">
-                           <font>
-                              <Font name="Segoe UI" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label text="Inventory Size" GridPane.rowIndex="8">
-                           <font>
-                              <Font name="Segoe UI" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="inventoryLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="8">
-                           <font>
-                              <Font name="Segoe UI" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label text="Path to Avatar" GridPane.rowIndex="9">
-                           <font>
-                              <Font name="Segoe UI" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label text="Ban Status" GridPane.rowIndex="10">
-                           <font>
-                              <Font name="Segoe UI" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="avatarLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="9">
-                           <font>
-                              <Font name="Segoe UI" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="banLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="10">
                            <font>
                               <Font name="Segoe UI" size="14.0" />
                            </font>

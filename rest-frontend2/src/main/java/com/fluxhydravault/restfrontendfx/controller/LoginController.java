@@ -18,6 +18,7 @@ import java.io.IOException;
 public class LoginController {
     private Stage primaryStage;
     private BorderPane initialRoot;
+    private Scene initialScene;
     private GridPane initialPane;
     @FXML
     private TextField usernameField;
@@ -34,6 +35,10 @@ public class LoginController {
 
     public void setInitialPane(GridPane initialPane) {
         this.initialPane = initialPane;
+    }
+
+    public void setInitialScene(Scene initialScene) {
+        this.initialScene = initialScene;
     }
 
     @FXML
@@ -61,6 +66,7 @@ public class LoginController {
 
             MainMenuController controller = loader.getController();
             controller.setPrimaryStage(primaryStage);
+            controller.setInitialScene(initialScene);
 
             Scene scene = new Scene(panel, 960, 600);
             new JMetro(JMetro.Style.LIGHT).applyTheme(scene);

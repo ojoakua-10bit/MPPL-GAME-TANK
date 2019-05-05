@@ -4,12 +4,19 @@ import com.fluxhydravault.restfrontendfx.model.Player;
 import com.fluxhydravault.restfrontendfx.service.PlayerService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro8.JMetro;
 
+import java.io.IOException;
 import java.util.List;
 
 public class PlayerController {
+    private Player selectedPlayer;
     @FXML
     private TableView<Player> playerTable;
     @FXML
@@ -57,15 +64,16 @@ public class PlayerController {
         idColumn.setCellValueFactory(cellData -> cellData.getValue().getPlayerIdProperty());
         usernameColumn.setCellValueFactory(cellData -> cellData.getValue().getUsernameProperty());
 
-        showPlayerDetails(null);
+        setSelectedPlayer(null);
 
         playerTable.getSelectionModel().selectedItemProperty()
-                .addListener((observableValue, player, t1) -> showPlayerDetails(t1));
+                .addListener((observableValue, player, t1) -> setSelectedPlayer(t1));
 
         updateTable(PlayerService.getInstance().getPlayerLists());
     }
 
-    private void showPlayerDetails(Player player) {
+    private void setSelectedPlayer(Player player) {
+        selectedPlayer = player;
         if (player == null) {
             idLabel.setText("");
             usernameLabel.setText("");
@@ -95,13 +103,28 @@ public class PlayerController {
     }
 
     @FXML
-    private void newButtonClicked() {
-        System.out.println("New player.");
-    }
-
-    @FXML
     private void editButtonClicked() {
-        System.out.println("Edit player.");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/EditPlayer.fxml"));
+            Parent root = loader.load();
+            EditPlayerController controller = loader.getController();
+            controller.setPlayer(selectedPlayer);
+
+            Stage stage = new Stage();
+            stage.setTitle("Edit Player");
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(primaryStage);
+            stage.setResizable(false);
+
+            Scene scene = new Scene(root);
+            new JMetro(JMetro.Style.LIGHT).applyTheme(scene);
+            stage.setScene(scene);
+            System.out.println("Edit player.");
+
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

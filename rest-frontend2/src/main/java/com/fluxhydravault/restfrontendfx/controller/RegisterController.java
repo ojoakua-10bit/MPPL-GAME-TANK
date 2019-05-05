@@ -39,16 +39,16 @@ public class RegisterController {
         if (username.isEmpty()) {
             showErrorAlert("Input error", "Username field is empty.");
         }
-        if (nickname.isEmpty()) {
+        else if (nickname.isEmpty()) {
             showErrorAlert("Input error", "Nickname field is empty.");
         }
-        if (password.isEmpty()) {
+        else if (password.isEmpty()) {
             showErrorAlert("Input error", "Password field is empty.");
         }
-        if (rePassword.isEmpty()) {
+        else if (rePassword.isEmpty()) {
             showErrorAlert("Input error", "Confirm Password field is empty.");
         }
-        if (!password.equals(rePassword)) {
+        else if (!password.equals(rePassword)) {
             showErrorAlert("Input error", "Password is mismatch field is empty.");
         }
 

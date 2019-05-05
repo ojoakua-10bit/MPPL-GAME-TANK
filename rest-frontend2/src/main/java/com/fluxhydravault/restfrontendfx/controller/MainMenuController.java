@@ -4,6 +4,8 @@ import com.fluxhydravault.restfrontendfx.config.Config;
 import com.fluxhydravault.restfrontendfx.model.Admin;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -11,12 +13,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro8.JMetro;
 
 import java.io.IOException;
 
 public class MainMenuController {
+    private Config config;
     private Admin admin;
     private Stage primaryStage;
+    private Scene initialScene;
     @FXML
     private BorderPane rootPanel;
     @FXML
@@ -39,13 +44,18 @@ public class MainMenuController {
         this.primaryStage = primaryStage;
     }
 
+    public void setInitialScene(Scene initialScene) {
+        this.initialScene = initialScene;
+    }
+
     /**
      * Initializes the controller class. This method is automatically called
      * after the fxml file has been loaded.
      */
     @FXML
     private void initialize() {
-        admin = Config.getConfig().getCurrentAdmin();
+        config = Config.getConfig();
+        admin = config.getCurrentAdmin();
         adminMenu.setText(admin.getUsername());
         welcomeMessage.setText("Hi "+ admin.getAdmin_name() +"! Welcome to War Tanks - Admin Portal");
     }
@@ -111,8 +121,33 @@ public class MainMenuController {
         System.out.println("Logout");
 
         ButtonType result = alert.getResult();
+
         if (result == ButtonType.OK) {
-            // TODO: logout code here
+            config.setUserToken(null);
+            config.setCurrentAdmin(null);
+            config.saveConfig();
+
+            if (initialScene == null) {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Initial.fxml"));
+                    Parent root = loader.load();
+
+                    Scene scene = new Scene(root, 600, 400);
+                    new JMetro(JMetro.Style.LIGHT).applyTheme(scene);
+
+                    InitialController controller = loader.getController();
+                    controller.setPrimaryStage(primaryStage);
+                    controller.setInitialScene(scene);
+
+                    primaryStage.setScene(scene);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            else {
+                primaryStage.setScene(initialScene);
+            }
+
             System.out.println("Yes, log me out");
         }
     }

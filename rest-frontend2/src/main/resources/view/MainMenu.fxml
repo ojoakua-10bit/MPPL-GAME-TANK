@@ -128,12 +128,12 @@
          <children>
             <Label fx:id="welcomeMessage" text="Hi {admin_name}! Welcome to War Tanks - Admin Portal" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
                <font>
-                  <Font name="Segoe UI Light" size="28.0" />
+                  <Font name="Segoe UI Light" size="32.0" />
                </font>
             </Label>
             <Label text="To start, please select one available menu above." GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
                <font>
-                  <Font name="Segoe UI" size="20.0" />
+                  <Font name="Segoe UI Light" size="24.0" />
                </font>
             </Label>
          </children>

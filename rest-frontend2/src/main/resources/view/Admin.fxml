@@ -53,7 +53,10 @@
                            <font>
                               <Font name="Segoe UI" size="13.0" />
                            </font></PasswordField>
-                        <PasswordField promptText="Current Password" GridPane.rowIndex="5" />
+                        <PasswordField promptText="Current Password" GridPane.rowIndex="5">
+                           <font>
+                              <Font name="Segoe UI" size="13.0" />
+                           </font></PasswordField>
                         <Label text="Change Username">
                            <font>
                               <Font name="Segoe UI" size="18.0" />

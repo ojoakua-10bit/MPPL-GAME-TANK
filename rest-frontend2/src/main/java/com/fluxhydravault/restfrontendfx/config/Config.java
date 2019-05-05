@@ -35,18 +35,12 @@ public class Config {
             System.out.println("Path already exists: " + e.getMessage());
         }
 
-        if (!loadConfig()) {
-            Defaults.getDefaultConfig(this);
-        }
+        Defaults.getDefaultConfig(this);
     }
 
-    private boolean loadConfig() {
+    public void loadConfig() {
         Gson gson = new Gson();
         File configFile = new File(configLocation + "config.json");
-
-        if (!configFile.exists() && configFile.isDirectory()) {
-            return false;
-        }
 
         try {
             List<String> lines = Files.readAllLines(configFile.toPath());
@@ -57,11 +51,8 @@ public class Config {
             setCurrentAdmin(tmp.currentAdmin);
             setBaseUri(tmp.baseUri);
             setUserToken(tmp.userToken);
-
-            return true;
         } catch (IOException e) {
             System.out.println(e.getMessage());
-            return false;
         }
     }
 
