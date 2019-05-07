@@ -115,6 +115,7 @@ public class PlayerController {
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(primaryStage);
             stage.setResizable(false);
+            controller.setStage(stage);
 
             Scene scene = new Scene(root);
             new JMetro(JMetro.Style.LIGHT).applyTheme(scene);
