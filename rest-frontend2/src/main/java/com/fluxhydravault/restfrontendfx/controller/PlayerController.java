@@ -17,6 +17,7 @@ import java.util.List;
 
 public class PlayerController {
     private Player selectedPlayer;
+    private PlayerService service;
     @FXML
     private TableView<Player> playerTable;
     @FXML
@@ -61,15 +62,16 @@ public class PlayerController {
 
     @FXML
     private void initialize() {
+        service = PlayerService.getInstance();
         idColumn.setCellValueFactory(cellData -> cellData.getValue().getPlayerIdProperty());
         usernameColumn.setCellValueFactory(cellData -> cellData.getValue().getUsernameProperty());
 
         setSelectedPlayer(null);
 
         playerTable.getSelectionModel().selectedItemProperty()
-                .addListener((observableValue, player, t1) -> setSelectedPlayer(t1));
+                .addListener((observable, old, current) -> setSelectedPlayer(current));
 
-        updateTable(PlayerService.getInstance().getPlayerLists());
+        updateTable(service.getPlayerLists());
     }
 
     private void setSelectedPlayer(Player player) {

@@ -95,6 +95,20 @@ public class MainMenuController {
     }
 
     @FXML
+    private void statsMenuClicked() {
+        // show stat view
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Stats.fxml"));
+            AnchorPane panel = loader.load();
+            ((StatsController) loader.getController()).setPrimaryStage(primaryStage);
+            rootPanel.setCenter(panel);
+            System.out.println("Stats");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void adminMenuClicked() {
         // show admin view
         try {

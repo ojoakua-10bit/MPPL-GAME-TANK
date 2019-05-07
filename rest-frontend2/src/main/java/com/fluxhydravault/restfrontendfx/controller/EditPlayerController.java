@@ -3,6 +3,7 @@ package com.fluxhydravault.restfrontendfx.controller;
 import com.fluxhydravault.restfrontendfx.model.Player;
 import com.fluxhydravault.restfrontendfx.service.PlayerService;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -47,14 +48,19 @@ public class EditPlayerController {
         int credit = Integer.parseInt(creditField.getText());
         boolean banStatus = banToggle.isSelected();
 
-        // TODO: show confirmation first
-
         if (password.isEmpty() || rePassword.isEmpty()) {
             service.editPlayer(null, credit, banStatus);
             return;
         }
         if (!password.equals(rePassword)) {
-            throw new RuntimeException("Password is mismatch");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initOwner(stage);
+            alert.setTitle("Error");
+            alert.setHeaderText("Input Error");
+            alert.setContentText("Password is mismatch");
+
+            alert.showAndWait();
+            return;
         }
         else {
             service.editPlayer(password, credit, banStatus);
@@ -62,5 +68,6 @@ public class EditPlayerController {
 
         player.setCredit_balance(credit);
         player.setBan_status(banStatus);
+        stage.close();
     }
 }
