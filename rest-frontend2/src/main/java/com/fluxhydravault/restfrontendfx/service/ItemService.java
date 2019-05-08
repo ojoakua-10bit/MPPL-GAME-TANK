@@ -3,6 +3,8 @@ package com.fluxhydravault.restfrontendfx.service;
 import com.fluxhydravault.restfrontendfx.config.Config;
 import com.fluxhydravault.restfrontendfx.config.Defaults;
 import com.fluxhydravault.restfrontendfx.model.Item;
+import com.fluxhydravault.restfrontendfx.model.ItemCategory;
+import com.fluxhydravault.restfrontendfx.model.StandardResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -29,8 +31,31 @@ public class ItemService {
         return instance;
     }
 
-    public Item newItem() {
-        return null;
+    public Item newItem(ItemCategory category, String name, String description, String location) {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        try {
+            HttpUriRequest request = RequestBuilder.post()
+                    .setUri(config.getBaseUri() + "/players")
+                    .addHeader("App-Token", Defaults.getAppToken())
+                    .addParameter("category", category.toString())
+                    .addParameter("name", name)
+                    .addParameter("description", description)
+                    .addParameter("location", location)
+                    .build();
+            System.out.println("Executing request " + request.getRequestLine());
+
+            String responseBody = httpclient.execute(request, Defaults.getDefaultResponseHandler());
+            Type responseType = TypeToken.getParameterized(StandardResponse.class, Item.class).getType();
+            StandardResponse<Item> response = gson.fromJson(responseBody, responseType);
+
+            return response.getData();
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+            // throw some exception
+            return null;
+        }
     }
 
     public List<Item> getItemLists() {

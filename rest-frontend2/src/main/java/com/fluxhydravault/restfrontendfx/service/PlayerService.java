@@ -34,32 +34,6 @@ public class PlayerService {
         return instance;
     }
 
-    public Player newPlayer(String username, String password, String playerName) {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-
-        try {
-            HttpUriRequest request = RequestBuilder.post()
-                    .setUri(config.getBaseUri() + "/players")
-                    .addHeader("App-Token", Defaults.getAppToken())
-                    .addParameter("username", username)
-                    .addParameter("password", password)
-                    .addParameter("player_name", playerName)
-                    .build();
-            System.out.println("Executing request " + request.getRequestLine());
-
-            String responseBody = httpclient.execute(request, Defaults.getDefaultResponseHandler());
-            Type responseType = TypeToken.getParameterized(StandardResponse.class, Player.class).getType();
-            StandardResponse<Player> response = gson.fromJson(responseBody, responseType);
-
-            return response.getData();
-        }
-        catch (IOException e) {
-            System.out.println(e.getMessage());
-            // throw some exception
-            return null;
-        }
-    }
-
     public List<Player> getPlayerLists() {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
