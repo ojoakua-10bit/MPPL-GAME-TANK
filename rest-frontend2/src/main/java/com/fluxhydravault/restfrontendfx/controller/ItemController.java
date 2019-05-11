@@ -4,9 +4,15 @@ import com.fluxhydravault.restfrontendfx.model.Item;
 import com.fluxhydravault.restfrontendfx.service.ItemService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro8.JMetro;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ItemController {
@@ -75,7 +81,28 @@ public class ItemController {
 
     @FXML
     private void newButtonClicked() {
-        System.out.println("New item.");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/EditItem.fxml"));
+            Parent root = loader.load();
+            EditItemController controller = loader.getController();
+            controller.setItem(null);
+
+            Stage stage = new Stage();
+            stage.setTitle("New Item");
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(primaryStage);
+            stage.setResizable(false);
+            controller.setStage(stage);
+
+            Scene scene = new Scene(root);
+            new JMetro(JMetro.Style.LIGHT).applyTheme(scene);
+            stage.setScene(scene);
+            System.out.println("Edit Item.");
+
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

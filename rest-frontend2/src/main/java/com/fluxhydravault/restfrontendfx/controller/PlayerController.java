@@ -110,6 +110,16 @@ public class PlayerController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/EditPlayer.fxml"));
             Parent root = loader.load();
             EditPlayerController controller = loader.getController();
+
+            if (selectedPlayer == null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.initOwner(primaryStage);
+                alert.setTitle("Error");
+                alert.setHeaderText("No selection");
+                alert.setContentText("Please select one player first.");
+
+                alert.showAndWait();
+            }
             controller.setPlayer(selectedPlayer);
 
             Stage stage = new Stage();
