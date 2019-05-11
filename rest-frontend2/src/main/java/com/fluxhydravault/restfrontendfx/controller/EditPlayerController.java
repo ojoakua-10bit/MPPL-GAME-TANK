@@ -49,7 +49,7 @@ public class EditPlayerController {
         boolean banStatus = banToggle.isSelected();
 
         if (password.isEmpty() || rePassword.isEmpty()) {
-            service.editPlayer(null, credit, banStatus);
+            service.editPlayer(player.getPlayer_id(), null, credit, banStatus);
             return;
         }
         if (!password.equals(rePassword)) {
@@ -63,7 +63,7 @@ public class EditPlayerController {
             return;
         }
         else {
-            service.editPlayer(password, credit, banStatus);
+            service.editPlayer(player.getPlayer_id(), password, credit, banStatus);
         }
 
         player.setCredit_balance(credit);

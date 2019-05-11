@@ -119,6 +119,7 @@ public class PlayerController {
                 alert.setContentText("Please select one player first.");
 
                 alert.showAndWait();
+                return;
             }
             controller.setPlayer(selectedPlayer);
 
@@ -155,6 +156,9 @@ public class PlayerController {
         ButtonType result = alert.getResult();
         if (result == ButtonType.OK) {
             // TODO: deletion code here
+            service.deletePlayer(selectedPlayer.getPlayer_id());
+            updateTable(service.getPlayerLists());
+            selectedPlayer = null;
             System.out.println("Yes, delete this player");
         }
     }

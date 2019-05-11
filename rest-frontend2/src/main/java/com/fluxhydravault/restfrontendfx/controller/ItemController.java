@@ -97,7 +97,7 @@ public class ItemController {
             Scene scene = new Scene(root);
             new JMetro(JMetro.Style.LIGHT).applyTheme(scene);
             stage.setScene(scene);
-            System.out.println("Edit Item.");
+            System.out.println("New Item.");
 
             stage.showAndWait();
         } catch (IOException e) {
@@ -107,7 +107,39 @@ public class ItemController {
 
     @FXML
     private void editButtonClicked() {
-        System.out.println("Edit item.");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/EditItem.fxml"));
+            Parent root = loader.load();
+            EditItemController controller = loader.getController();
+            controller.setItem(selectedItem);
+
+            Stage stage = new Stage();
+            stage.setTitle("Edit Item");
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(primaryStage);
+            stage.setResizable(false);
+
+            if (selectedItem == null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.initOwner(primaryStage);
+                alert.setTitle("Error");
+                alert.setHeaderText("No selection");
+                alert.setContentText("Please select one item first.");
+
+                alert.showAndWait();
+                return;
+            }
+            controller.setStage(stage);
+
+            Scene scene = new Scene(root);
+            new JMetro(JMetro.Style.LIGHT).applyTheme(scene);
+            stage.setScene(scene);
+            System.out.println("Edit Item.");
+
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -125,6 +157,9 @@ public class ItemController {
         ButtonType result = alert.getResult();
         if (result == ButtonType.OK) {
             // TODO: deletion code here
+            service.deleteItem(selectedItem.getItem_id());
+            updateTable(service.getItemLists());
+            selectedItem = null;
             System.out.println("Yes, delete this item");
         }
     }

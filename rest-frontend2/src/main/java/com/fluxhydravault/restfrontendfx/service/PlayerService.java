@@ -103,7 +103,7 @@ public class PlayerService {
         }
     }
 
-    public Player editPlayer(String password, int credit, boolean banStatus) {
+    public Player editPlayer(String playerID, String password, int credit, boolean banStatus) {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("credit_balance", Integer.toString(credit)));
@@ -111,16 +111,24 @@ public class PlayerService {
             params.add(new BasicNameValuePair("password", password));
 
         try {
-            HttpUriRequest request;
+            HttpUriRequest request, request2;
             StandardResponse<Player> response;
 
+            request2 = RequestBuilder.patch()
+                    .setUri(config.getBaseUri() + "/players/" + playerID + "/ban")
+                    .addHeader("App-Token", Defaults.getAppToken())
+                    .addHeader("User-Token", config.getUserToken())
+                    .addParameter("value", Boolean.toString(banStatus))
+                    .build();
+
             request = RequestBuilder.patch()
-                    .setUri(config.getBaseUri() + "/admins/" + config.getCurrentAdmin().getAdmin_id())
+                    .setUri(config.getBaseUri() + "/players/" + playerID)
                     .addHeader("App-Token", Defaults.getAppToken())
                     .addHeader("User-Token", config.getUserToken())
                     .addParameters(params.toArray(new NameValuePair[0]))
                     .build();
 
+            httpclient.execute(request2, Defaults.getDefaultResponseHandler());
             String responseBody = httpclient.execute(request, Defaults.getDefaultResponseHandler());
             Type responseType = TypeToken.getParameterized(StandardResponse.class, Player.class).getType();
             response = gson.fromJson(responseBody, responseType);
@@ -131,6 +139,25 @@ public class PlayerService {
             System.out.println(e.getMessage());
             // throw some exception
             return null;
+        }
+    }
+
+    public void deletePlayer(String playerID) {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        try {
+            HttpUriRequest request = RequestBuilder.delete()
+                    .setUri(config.getBaseUri() + "/players/" + playerID)
+                    .addHeader("App-Token", Defaults.getAppToken())
+                    .addHeader("User-Token", config.getUserToken())
+                    .build();
+            System.out.println("Executing request " + request.getRequestLine());
+
+            httpclient.execute(request, Defaults.getDefaultResponseHandler());
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+            // throw some exception
         }
     }
 }

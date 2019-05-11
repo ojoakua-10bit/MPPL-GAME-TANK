@@ -3,7 +3,6 @@ package com.fluxhydravault.restfrontendfx.service;
 import com.fluxhydravault.restfrontendfx.config.Config;
 import com.fluxhydravault.restfrontendfx.config.Defaults;
 import com.fluxhydravault.restfrontendfx.model.Item;
-import com.fluxhydravault.restfrontendfx.model.ItemCategory;
 import com.fluxhydravault.restfrontendfx.model.StandardResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -31,17 +30,18 @@ public class ItemService {
         return instance;
     }
 
-    public Item newItem(ItemCategory category, String name, String description, String location) {
+    public Item newItem(Item item) {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
         try {
             HttpUriRequest request = RequestBuilder.post()
-                    .setUri(config.getBaseUri() + "/players")
+                    .setUri(config.getBaseUri() + "/items")
                     .addHeader("App-Token", Defaults.getAppToken())
-                    .addParameter("category", category.toString())
-                    .addParameter("name", name)
-                    .addParameter("description", description)
-                    .addParameter("location", location)
+                    .addHeader("User-Token", config.getUserToken())
+                    .addParameter("category", item.getItem_category().toString())
+                    .addParameter("name", item.getItem_name())
+                    .addParameter("description", item.getDescription())
+                    .addParameter("location", item.getModel_location())
                     .build();
             System.out.println("Executing request " + request.getRequestLine());
 
@@ -78,6 +78,55 @@ public class ItemService {
             System.out.println(e.getMessage());
             // throw some exception
             return null;
+        }
+    }
+
+    public Item editItem(Item item) {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        try {
+            HttpUriRequest request;
+            StandardResponse<Item> response;
+
+            request = RequestBuilder.put()
+                    .setUri(config.getBaseUri() + "/items/" + item.getItem_id())
+                    .addHeader("App-Token", Defaults.getAppToken())
+                    .addHeader("User-Token", config.getUserToken())
+                    .addParameter("name", item.getItem_name())
+                    .addParameter("item_category", item.getItem_category().toString())
+                    .addParameter("description", item.getDescription())
+                    .addParameter("model_location", item.getModel_location())
+                    .build();
+
+            String responseBody = httpclient.execute(request, Defaults.getDefaultResponseHandler());
+            Type responseType = TypeToken.getParameterized(StandardResponse.class, Item.class).getType();
+            response = gson.fromJson(responseBody, responseType);
+
+            return response.getData();
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+            // throw some exception
+            return null;
+        }
+    }
+
+    public void deleteItem(String itemID) {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        try {
+            HttpUriRequest request = RequestBuilder.delete()
+                    .setUri(config.getBaseUri() + "/items/" + itemID)
+                    .addHeader("App-Token", Defaults.getAppToken())
+                    .addHeader("User-Token", config.getUserToken())
+                    .build();
+            System.out.println("Executing request " + request.getRequestLine());
+
+            httpclient.execute(request, Defaults.getDefaultResponseHandler());
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+            // throw some exception
         }
     }
 }
