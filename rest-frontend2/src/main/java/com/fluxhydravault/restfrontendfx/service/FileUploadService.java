@@ -58,7 +58,8 @@ public class FileUploadService {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             String responseBody = httpclient.execute(request, Defaults.getDefaultResponseHandler());
             Type responseType = TypeToken.getParameterized(StandardResponse.class, String.class).getType();
-            return gson.fromJson(responseBody, responseType);
+            StandardResponse<String> response = gson.fromJson(responseBody, responseType);
+            return response.getData();
         } catch (IOException e) {
             System.out.println(e.getMessage());
             return null;
@@ -83,7 +84,8 @@ public class FileUploadService {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             String responseBody = httpclient.execute(request, Defaults.getDefaultResponseHandler());
             Type responseType = TypeToken.getParameterized(StandardResponse.class, String.class).getType();
-            return gson.fromJson(responseBody, responseType);
+            StandardResponse<String> response = gson.fromJson(responseBody, responseType);
+            return response.getData();
         } catch (IOException e) {
             System.out.println(e.getMessage());
             return null;

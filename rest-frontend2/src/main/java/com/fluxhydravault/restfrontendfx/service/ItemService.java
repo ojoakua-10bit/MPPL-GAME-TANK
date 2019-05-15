@@ -4,6 +4,7 @@ import com.fluxhydravault.restfrontendfx.config.Config;
 import com.fluxhydravault.restfrontendfx.config.Defaults;
 import com.fluxhydravault.restfrontendfx.model.Item;
 import com.fluxhydravault.restfrontendfx.model.StandardResponse;
+import com.fluxhydravault.restfrontendfx.model.Stat;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -38,8 +39,8 @@ public class ItemService {
                     .setUri(config.getBaseUri() + "/items")
                     .addHeader("App-Token", Defaults.getAppToken())
                     .addHeader("User-Token", config.getUserToken())
-                    .addParameter("category", item.getItem_category().toString())
-                    .addParameter("name", item.getItem_name())
+                    .addParameter("item_category", item.getItem_category().toString())
+                    .addParameter("item_name", item.getItem_name())
                     .addParameter("description", item.getDescription())
                     .addParameter("location", item.getModel_location())
                     .build();
@@ -127,6 +128,74 @@ public class ItemService {
         catch (IOException e) {
             System.out.println(e.getMessage());
             // throw some exception
+        }
+    }
+
+    public List<Stat> getItemStats(String itemID) {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        try {
+            HttpUriRequest request = RequestBuilder.get()
+                    .setUri(config.getBaseUri() + "/items/" + itemID + "/stats")
+                    .addHeader("App-Token", Defaults.getAppToken())
+                    .addHeader("User-Token", config.getUserToken())
+                    .build();
+            System.out.println("Executing request " + request.getRequestLine());
+
+            String responseBody = httpclient.execute(request, Defaults.getDefaultResponseHandler());
+            Type responseType = TypeToken.getParameterized(List.class, Stat.class).getType();
+            return gson.fromJson(responseBody, responseType);
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+            // throw some exception
+            return null;
+        }
+    }
+
+    public List<Stat> addItemStat(String itemID, Long statID) {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        try {
+            HttpUriRequest request = RequestBuilder.post()
+                    .setUri(config.getBaseUri() + "/items/" + itemID + "/stats")
+                    .addHeader("App-Token", Defaults.getAppToken())
+                    .addHeader("User-Token", config.getUserToken())
+                    .addParameter("stat_id", statID.toString())
+                    .build();
+            System.out.println("Executing request " + request.getRequestLine());
+
+            String responseBody = httpclient.execute(request, Defaults.getDefaultResponseHandler());
+            Type responseType = TypeToken.getParameterized(List.class, Stat.class).getType();
+            return gson.fromJson(responseBody, responseType);
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+            // throw some exception
+            return null;
+        }
+    }
+
+    public List<Stat> deleteItemStats(String itemID, Long statID) {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        try {
+            HttpUriRequest request = RequestBuilder.delete()
+                    .setUri(config.getBaseUri() + "/items/" + itemID + "/stats")
+                    .addHeader("App-Token", Defaults.getAppToken())
+                    .addHeader("User-Token", config.getUserToken())
+                    .addParameter("stat_id", statID.toString())
+                    .build();
+            System.out.println("Executing request " + request.getRequestLine());
+
+            String responseBody = httpclient.execute(request, Defaults.getDefaultResponseHandler());
+            Type responseType = TypeToken.getParameterized(List.class, Stat.class).getType();
+            return gson.fromJson(responseBody, responseType);
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+            // throw some exception
+            return null;
         }
     }
 }

@@ -96,6 +96,7 @@ public class StatsController {
             System.out.println("New Stat.");
 
             stage.showAndWait();
+            updateTable(service.getStatLists());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -104,7 +105,7 @@ public class StatsController {
     @FXML
     private void editButtonClicked() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/EditItem.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/EditStat.fxml"));
             Parent root = loader.load();
             EditStatController controller = loader.getController();
             controller.setStat(selectedStat);
@@ -133,6 +134,7 @@ public class StatsController {
             System.out.println("Edit Stat.");
 
             stage.showAndWait();
+            updateTable(service.getStatLists());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -153,6 +155,9 @@ public class StatsController {
         ButtonType result = alert.getResult();
         if (result == ButtonType.OK) {
             // TODO: deletion code here
+            service.deleteStat(selectedStat.getStat_id());
+            updateTable(service.getStatLists());
+            selectedStat = null;
             System.out.println("Yes, delete this stat");
         }
     }

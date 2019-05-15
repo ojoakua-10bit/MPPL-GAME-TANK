@@ -100,6 +100,8 @@ public class ItemController {
             System.out.println("New Item.");
 
             stage.showAndWait();
+
+            updateTable(service.getItemLists());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -137,6 +139,8 @@ public class ItemController {
             System.out.println("Edit Item.");
 
             stage.showAndWait();
+
+            updateTable(service.getItemLists());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,9 +1,12 @@
 package com.fluxhydravault.restfrontendfx.controller;
 
 import com.fluxhydravault.restfrontendfx.model.Stat;
+import com.fluxhydravault.restfrontendfx.model.StatType;
+import com.fluxhydravault.restfrontendfx.service.StatService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -20,6 +23,11 @@ public class EditStatController {
 
     public void setStat(Stat stat) {
         this.stat = stat;
+        if (stat != null) {
+            typeBox.getSelectionModel().select(stat.getType().toString());
+            nameField.setText(stat.getName());
+            valueField.setText(stat.getValue().toString());
+        }
     }
 
     public void setStage(Stage stage) {
@@ -41,6 +49,12 @@ public class EditStatController {
         optionList.add("RELOAD_SPEED_BOOST");
         optionList.add("INV_CAPACITY_BONUS");
         typeBox.setItems(optionList);
+
+        if (stat != null) {
+            typeBox.getSelectionModel().select(stat.getType().toString());
+            nameField.setText(stat.getName());
+            valueField.setText(stat.getValue().toString());
+        }
     }
 
     @FXML
@@ -49,5 +63,35 @@ public class EditStatController {
     }
 
     @FXML
-    private void doSave() {}
+    private void doSave() {
+        StatService service = StatService.getInstance();
+        boolean newStat = false;
+
+        if (stat == null) {
+            stat = new Stat();
+            newStat = true;
+        }
+        stat.setName(nameField.getText());
+        stat.setType(StatType.valueOf(typeBox.getSelectionModel().getSelectedItem()));
+        try {
+            stat.setValue(Double.parseDouble(valueField.getText()));
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initOwner(stage);
+            alert.setTitle("Error");
+            alert.setHeaderText("Invalid value");
+            alert.setContentText("Value should be valid real number.");
+
+            alert.showAndWait();
+            return;
+        }
+
+        if (newStat) {
+            service.newStat(stat);
+        } else  {
+            service.editStat(stat);
+        }
+
+        stage.close();
+    }
 }

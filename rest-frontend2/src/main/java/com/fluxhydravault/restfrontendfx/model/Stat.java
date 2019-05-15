@@ -6,6 +6,8 @@ import javafx.beans.property.StringProperty;
 public class Stat {
     private transient StringProperty statIdProperty;
     private transient StringProperty statNameProperty;
+    private transient StringProperty statTypeProperty;
+    private transient StringProperty statValueProperty;
 
     private Long stat_id;
     private StatType type;
@@ -15,6 +17,8 @@ public class Stat {
     public Stat() {
         statIdProperty = new SimpleStringProperty(null);
         statNameProperty = new SimpleStringProperty(null);
+        statTypeProperty = new SimpleStringProperty(null);
+        statValueProperty = new SimpleStringProperty(null);
     }
 
     public Long getStat_id() {
@@ -31,6 +35,7 @@ public class Stat {
     }
 
     public void setType(StatType type) {
+        statTypeProperty.setValue(type.name());
         this.type = type;
     }
 
@@ -47,7 +52,8 @@ public class Stat {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(Double value) {
+        statValueProperty.setValue(value.toString());
         this.value = value;
     }
 
@@ -58,6 +64,16 @@ public class Stat {
 
     public StringProperty getStatNameProperty() {
         statNameProperty.setValue(name);
+        return statNameProperty;
+    }
+
+    public StringProperty getStatTypeProperty() {
+        statNameProperty.setValue(type.name());
+        return statNameProperty;
+    }
+
+    public StringProperty getStatValueProperty() {
+        statNameProperty.setValue(value.toString());
         return statNameProperty;
     }
 }

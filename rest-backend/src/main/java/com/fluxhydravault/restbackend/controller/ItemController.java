@@ -61,7 +61,12 @@ public class ItemController {
             throw new InputFormatException("Unknown item_category: " + categoryString);
         }
 
-        Item result = itemService.newItem(category, itemName, description, location);
+        Item result;
+        if (location.equals("null") || location.isEmpty()) {
+            result = itemService.newItem(category, itemName, description, null);
+        } else {
+            result = itemService.newItem(category, itemName, description, location);
+        }
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());
         map.put("response", "201 Created");

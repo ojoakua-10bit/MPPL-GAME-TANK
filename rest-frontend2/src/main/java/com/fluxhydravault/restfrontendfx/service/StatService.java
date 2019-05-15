@@ -78,4 +78,53 @@ public class StatService {
             return null;
         }
     }
+
+    public Stat editStat(Stat stat) {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        try {
+            HttpUriRequest request;
+            StandardResponse<Stat> response;
+
+            request = RequestBuilder.put()
+                    .setUri(config.getBaseUri() + "/stats/" + stat.getStat_id())
+                    .addHeader("App-Token", Defaults.getAppToken())
+                    .addHeader("User-Token", config.getUserToken())
+                    .addParameter("stat_name", stat.getName())
+                    .addParameter("stat_type", stat.getType().toString())
+                    .addParameter("stat_value", stat.getValue().toString())
+                    .build();
+
+            String responseBody = httpclient.execute(request, Defaults.getDefaultResponseHandler());
+            Type responseType = TypeToken.getParameterized(StandardResponse.class, Stat.class).getType();
+            response = gson.fromJson(responseBody, responseType);
+
+            return response.getData();
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+            // throw some exception
+            return null;
+        }
+    }
+
+    public void deleteStat(Long statID) {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        try {
+            HttpUriRequest request = RequestBuilder.delete()
+                    .setUri(config.getBaseUri() + "/stats")
+                    .addHeader("App-Token", Defaults.getAppToken())
+                    .addHeader("User-Token", config.getUserToken())
+                    .addParameter("stat_id", statID.toString())
+                    .build();
+            System.out.println("Executing request " + request.getRequestLine());
+
+            httpclient.execute(request, Defaults.getDefaultResponseHandler());
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+            // throw some exception
+        }
+    }
 }

@@ -34,7 +34,7 @@ public class ItemServiceImpl implements ItemService {
         }
         else {
             jdbcTemplateObject.update("INSERT INTO item VALUES (?, ?, ?, ?, ?)",
-                    itemID, category.toString(), itemName, description);
+                    itemID, category.toString(), itemName, description, location);
         }
 
         return getItem(itemID);

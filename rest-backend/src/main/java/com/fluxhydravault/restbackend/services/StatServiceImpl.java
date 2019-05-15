@@ -6,6 +6,7 @@ import com.fluxhydravault.restbackend.model.Stat;
 import com.fluxhydravault.restbackend.model.StatMapper;
 import com.fluxhydravault.restbackend.model.StatType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.IncorrectResultSetColumnCountException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ public class StatServiceImpl implements StatService {
             throw new AlreadyExistsException("Stat@" + name);
         }
         jdbcTemplateObject.update("INSERT INTO stats_repo(`type`, `name`, `value`) VALUES (?, ?, ?)",
-                type, name, value);
+                type.toString(), name, value);
 
         return getStatByName(name);
     }
@@ -41,7 +42,7 @@ public class StatServiceImpl implements StatService {
         try {
             temp = jdbcTemplateObject.queryForObject("SELECT * FROM stats_repo WHERE stat_id=?",
                     new Object[]{ id }, new StatMapper());
-        } catch (IncorrectResultSetColumnCountException e) {
+        } catch (IncorrectResultSetColumnCountException | EmptyResultDataAccessException e) {
             temp = null;
         }
         return temp;
@@ -53,7 +54,7 @@ public class StatServiceImpl implements StatService {
         try {
             temp = jdbcTemplateObject.queryForObject("SELECT * FROM stats_repo WHERE name=?",
                     new Object[]{ name }, new StatMapper());
-        } catch (IncorrectResultSetColumnCountException e) {
+        } catch (IncorrectResultSetColumnCountException | EmptyResultDataAccessException e) {
             temp = null;
         }
         return temp;
@@ -164,7 +165,7 @@ public class StatServiceImpl implements StatService {
     }
 
     private boolean isItemStatExists(String itemID, long statID) {
-        return !jdbcTemplateObject.query("SELECT item_id FROM item_stats WHERE item_id=? AND stat_id=?",
+        return !jdbcTemplateObject.query("SELECT item_stat_id FROM item_stats WHERE item_id=? AND stat_id=?",
                 new Object[] { itemID, statID },
                 (resultSet, i) -> resultSet.getLong(1)).isEmpty();
     }
