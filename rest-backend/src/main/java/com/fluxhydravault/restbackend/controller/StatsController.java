@@ -90,6 +90,7 @@ public class StatsController {
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
+        Stat tmp = statService.getStatById(statID);
         if (statType != null) {
             StatType type;
             try {
@@ -99,7 +100,7 @@ public class StatsController {
             }
             statService.changeStatType(statID, type);
         }
-        if (statName != null) {
+        if (statName != null && !statName.equals(tmp.getName())) {
             statService.changeStatName(statID, statName);
         }
         if (statValue != null) {

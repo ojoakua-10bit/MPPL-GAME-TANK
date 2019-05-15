@@ -33,10 +33,14 @@ public class EditItemController {
     @FXML
     private TextField descField;
     @FXML
+    private Button statsButton;
+    @FXML
     private Button uploadButton;
 
     public void setItem(Item item) {
         this.item = item;
+        statsButton.disableProperty().setValue(item == null);
+
         if (item != null) {
             nameField.setText(item.getItem_name());
             categoryBox.getSelectionModel().select(item.getItem_category().toString());
@@ -64,6 +68,7 @@ public class EditItemController {
             categoryBox.getSelectionModel().select(item.getItem_category().toString());
             descField.setText(item.getDescription());
         }
+        statsButton.disableProperty().setValue(item == null);
     }
 
     @FXML
@@ -91,9 +96,31 @@ public class EditItemController {
             item.setModel_location("null");
             newItem = true;
         }
-        item.setItem_category(ItemCategory.valueOf(categoryBox.getSelectionModel().getSelectedItem()));
-        item.setItem_name(nameField.getText());
-        item.setDescription(descField.getText());
+        try {
+            item.setItem_category(ItemCategory.valueOf(categoryBox.getSelectionModel().getSelectedItem()));
+        } catch (NullPointerException | IllegalArgumentException e) {
+            showInputErrorMessage("Please enter the valid category.");
+            item = null;
+            return;
+        }
+
+        if (nameField.getText().isEmpty()) {
+            showInputErrorMessage("Please enter the item name.");
+            item = null;
+            return;
+        }
+        else {
+            item.setItem_name(nameField.getText());
+        }
+
+        if (descField.getText().isEmpty()) {
+            showInputErrorMessage("Please enter the item description.");
+            item = null;
+            return;
+        }
+        else {
+            item.setDescription(descField.getText());
+        }
 
         Item result;
         if (newItem) {
@@ -145,7 +172,6 @@ public class EditItemController {
             controller.setStage(stage);
 
             Scene scene = new Scene(root);
-            new JMetro(JMetro.Style.LIGHT).applyTheme(scene);
             stage.setScene(scene);
             System.out.println("Edit item stats.");
 

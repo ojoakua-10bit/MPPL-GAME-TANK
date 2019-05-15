@@ -62,7 +62,7 @@
       </GridPane>
       <ButtonBar layoutX="334.0" layoutY="426.0" prefHeight="40.0" prefWidth="407.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <buttons>
-            <Button mnemonicParsing="false" onAction="#editStats" text="Stats..." />
+            <Button fx:id="statsButton" disable="true" mnemonicParsing="false" onAction="#editStats" text="Stats..." />
           <Button cancelButton="true" mnemonicParsing="false" onAction="#doCancel" text="Cancel" />
             <Button defaultButton="true" mnemonicParsing="false" onAction="#doSave" text="Save" />
         </buttons>

@@ -6,6 +6,7 @@ import com.fluxhydravault.restbackend.model.ItemCategory;
 import com.fluxhydravault.restbackend.model.ItemMapper;
 import com.fluxhydravault.restbackend.utils.Digestive;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.IncorrectResultSetColumnCountException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,7 @@ public class ItemServiceImpl implements ItemService {
         try {
             temp = jdbcTemplateObject.queryForObject("SELECT * FROM item WHERE item_id=?",
                     new Object[]{ itemID }, new ItemMapper());
-        } catch (IncorrectResultSetColumnCountException e) {
+        } catch (IncorrectResultSetColumnCountException | EmptyResultDataAccessException e) {
             temp = null;
         }
         return temp;
@@ -58,7 +59,7 @@ public class ItemServiceImpl implements ItemService {
         try {
             temp = jdbcTemplateObject.queryForObject("SELECT * FROM item WHERE item_name=?",
                     new Object[]{ itemName }, new ItemMapper());
-        } catch (IncorrectResultSetColumnCountException e) {
+        } catch (IncorrectResultSetColumnCountException | EmptyResultDataAccessException e) {
             temp = null;
         }
         return temp;

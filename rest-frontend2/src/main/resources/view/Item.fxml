@@ -105,8 +105,8 @@
                   <ButtonBar layoutX="54.0" layoutY="250.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
                      <buttons>
                         <Button mnemonicParsing="false" onAction="#newButtonClicked" text="New..." />
-                        <Button mnemonicParsing="false" onAction="#editButtonClicked" text="Edit..." />
-                        <Button minWidth="66.0" mnemonicParsing="false" onAction="#deleteButtonClicked" prefWidth="120.0" text="Delete" />
+                        <Button fx:id="editButton" disable="true" mnemonicParsing="false" onAction="#editButtonClicked" text="Edit..." />
+                        <Button fx:id="deleteButton" disable="true" minWidth="66.0" mnemonicParsing="false" onAction="#deleteButtonClicked" prefWidth="120.0" text="Delete" />
                      </buttons>
                   </ButtonBar>
                </children>

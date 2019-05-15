@@ -71,18 +71,29 @@ public class EditStatController {
             stat = new Stat();
             newStat = true;
         }
-        stat.setName(nameField.getText());
-        stat.setType(StatType.valueOf(typeBox.getSelectionModel().getSelectedItem()));
+
+        if (nameField.getText().isEmpty()) {
+            showErrorMessage("Empty name", "Please enter the stat name.");
+            stat = null;
+            return;
+        }
+        else {
+            stat.setName(nameField.getText());
+        }
+
+        try {
+            stat.setType(StatType.valueOf(typeBox.getSelectionModel().getSelectedItem()));
+        } catch (NullPointerException | IllegalArgumentException e) {
+            showErrorMessage("Invalid type", "Please choose one of the valid types.");
+            stat = null;
+            return;
+        }
+
         try {
             stat.setValue(Double.parseDouble(valueField.getText()));
         } catch (NumberFormatException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.initOwner(stage);
-            alert.setTitle("Error");
-            alert.setHeaderText("Invalid value");
-            alert.setContentText("Value should be valid real number.");
-
-            alert.showAndWait();
+            showErrorMessage("Invalid value", "Value should be valid real number.");
+            stat = null;
             return;
         }
 
@@ -93,5 +104,15 @@ public class EditStatController {
         }
 
         stage.close();
+    }
+
+    private void showErrorMessage(String header, String body) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.initOwner(stage);
+        alert.setTitle("Error");
+        alert.setHeaderText(header);
+        alert.setContentText(body);
+
+        alert.showAndWait();
     }
 }

@@ -35,6 +35,10 @@ public class ItemController {
     private Label descriptionLabel;
     @FXML
     private Label modelLabel;
+    @FXML
+    private Button editButton;
+    @FXML
+    private Button deleteButton;
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -64,6 +68,9 @@ public class ItemController {
 
     private void setSelectedItem(Item item) {
         selectedItem = item;
+        editButton.disableProperty().setValue(item == null);
+        deleteButton.disableProperty().setValue(item == null);
+
         if (item == null) {
             idLabel.setText("");
             categoryLabel.setText("");
@@ -121,16 +128,6 @@ public class ItemController {
             stage.initOwner(primaryStage);
             stage.setResizable(false);
 
-            if (selectedItem == null) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.initOwner(primaryStage);
-                alert.setTitle("Error");
-                alert.setHeaderText("No selection");
-                alert.setContentText("Please select one item first.");
-
-                alert.showAndWait();
-                return;
-            }
             controller.setStage(stage);
 
             Scene scene = new Scene(root);

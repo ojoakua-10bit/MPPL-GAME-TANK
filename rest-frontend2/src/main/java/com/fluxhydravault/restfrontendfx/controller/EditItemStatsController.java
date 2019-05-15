@@ -6,6 +6,7 @@ import com.fluxhydravault.restfrontendfx.service.ItemService;
 import com.fluxhydravault.restfrontendfx.service.StatService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
@@ -35,6 +36,10 @@ public class EditItemStatsController {
     private TableColumn<Stat, String> statType;
     @FXML
     private TableColumn<Stat, String> statValue;
+    @FXML
+    private Button addButton;
+    @FXML
+    private Button deleteButton;
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -88,10 +93,12 @@ public class EditItemStatsController {
 
     private void setSelectedStat(Stat selectedStat) {
         this.selectedStat = selectedStat;
+        addButton.disableProperty().setValue(selectedStat == null);
     }
 
     private void setSelectedItemStat(Stat selectedItemStat) {
         this.selectedItemStat = selectedItemStat;
+        deleteButton.disableProperty().setValue(selectedItemStat == null);
     }
 
     @FXML

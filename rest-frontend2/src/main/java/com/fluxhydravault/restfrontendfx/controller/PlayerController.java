@@ -18,6 +18,7 @@ import java.util.List;
 public class PlayerController {
     private Player selectedPlayer;
     private PlayerService service;
+    private Stage primaryStage;
     @FXML
     private TableView<Player> playerTable;
     @FXML
@@ -46,7 +47,10 @@ public class PlayerController {
     private Label avatarLabel;
     @FXML
     private Label banLabel;
-    private Stage primaryStage;
+    @FXML
+    private Button editButton;
+    @FXML
+    private Button deleteButton;
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -76,6 +80,9 @@ public class PlayerController {
 
     private void setSelectedPlayer(Player player) {
         selectedPlayer = player;
+        editButton.disableProperty().setValue(player == null);
+        deleteButton.disableProperty().setValue(player == null);
+
         if (player == null) {
             idLabel.setText("");
             usernameLabel.setText("");
@@ -111,16 +118,6 @@ public class PlayerController {
             Parent root = loader.load();
             EditPlayerController controller = loader.getController();
 
-            if (selectedPlayer == null) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.initOwner(primaryStage);
-                alert.setTitle("Error");
-                alert.setHeaderText("No selection");
-                alert.setContentText("Please select one player first.");
-
-                alert.showAndWait();
-                return;
-            }
             controller.setPlayer(selectedPlayer);
 
             Stage stage = new Stage();

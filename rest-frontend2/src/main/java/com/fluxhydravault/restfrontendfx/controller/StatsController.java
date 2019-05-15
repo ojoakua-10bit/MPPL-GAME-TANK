@@ -33,6 +33,10 @@ public class StatsController {
     private Label typeLabel;
     @FXML
     private Label valueLabel;
+    @FXML
+    private Button editButton;
+    @FXML
+    private Button deleteButton;
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -62,6 +66,9 @@ public class StatsController {
 
     private void setSelectedStat(Stat stat) {
         selectedStat = stat;
+        editButton.disableProperty().setValue(stat == null);
+        deleteButton.disableProperty().setValue(stat == null);
+
         if (stat == null) {
             idLabel.setText("");
             nameLabel.setText("");
@@ -116,16 +123,6 @@ public class StatsController {
             stage.initOwner(primaryStage);
             stage.setResizable(false);
 
-            if (selectedStat == null) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.initOwner(primaryStage);
-                alert.setTitle("Error");
-                alert.setHeaderText("No selection");
-                alert.setContentText("Please select one stat first.");
-
-                alert.showAndWait();
-                return;
-            }
             controller.setStage(stage);
 
             Scene scene = new Scene(root);
