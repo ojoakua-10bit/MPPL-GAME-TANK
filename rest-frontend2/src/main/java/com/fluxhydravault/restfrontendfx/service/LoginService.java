@@ -1,16 +1,20 @@
 package com.fluxhydravault.restfrontendfx.service;
 
+import com.fluxhydravault.restfrontendfx.ConnectionException;
 import com.fluxhydravault.restfrontendfx.UnauthorizedException;
 import com.fluxhydravault.restfrontendfx.config.Config;
 import com.fluxhydravault.restfrontendfx.config.Defaults;
 import com.fluxhydravault.restfrontendfx.model.Admin;
 import com.fluxhydravault.restfrontendfx.model.ErrorResponse;
 import com.fluxhydravault.restfrontendfx.model.TokenResponse;
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
@@ -24,7 +28,7 @@ public class LoginService {
     private static final LoginService instance = new LoginService();
 
     private LoginService() {
-        gson = new Gson();
+        gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
         config = Config.getConfig();
     }
 
@@ -33,9 +37,7 @@ public class LoginService {
     }
 
     public void login(String username, String password) {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-
-        try {
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             HttpUriRequest request = RequestBuilder.post()
                     .setUri(config.getBaseUri() + "/auth/admin")
                     .addHeader("App-Token", Defaults.getAppToken())
@@ -51,6 +53,9 @@ public class LoginService {
             config.setUserToken(admin.getToken());
             config.setCurrentAdmin(admin.getData());
             config.saveConfig();
+        }
+        catch (HttpHostConnectException e) {
+            throw new ConnectionException();
         }
         catch (ClientProtocolException e) {
             ErrorResponse response = gson.fromJson(e.getMessage(), ErrorResponse.class);

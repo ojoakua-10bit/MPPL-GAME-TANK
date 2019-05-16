@@ -23,8 +23,8 @@ public class EditPlayerController {
 
     public void setPlayer(Player player) {
         this.player = player;
-        creditField.setText(Integer.toString(player.getCredit_balance()));
-        banToggle.setSelected(player.getBan_status());
+        creditField.setText(Integer.toString(player.getCreditBalance()));
+        banToggle.setSelected(player.getBanStatus());
     }
 
     public void setStage(Stage stage) {
@@ -49,7 +49,7 @@ public class EditPlayerController {
         boolean banStatus = banToggle.isSelected();
 
         if (password.isEmpty() || rePassword.isEmpty()) {
-            service.editPlayer(player.getPlayer_id(), null, credit, banStatus);
+            service.editPlayer(player.getPlayerId(), null, credit, banStatus);
             return;
         }
         if (!password.equals(rePassword)) {
@@ -63,11 +63,11 @@ public class EditPlayerController {
             return;
         }
         else {
-            service.editPlayer(player.getPlayer_id(), password, credit, banStatus);
+            service.editPlayer(player.getPlayerId(), password, credit, banStatus);
         }
 
-        player.setCredit_balance(credit);
-        player.setBan_status(banStatus);
+        player.setCreditBalance(credit);
+        player.setBanStatus(banStatus);
         stage.close();
     }
 }

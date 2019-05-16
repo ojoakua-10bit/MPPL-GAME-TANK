@@ -7,18 +7,18 @@ public class Player {
     private transient final StringProperty playerIdProperty;
     private transient final StringProperty usernameProperty;
 
-    private String player_id;
+    private String playerId;
     private String username;
-    private String player_name;
+    private String playerName;
     private int xp;
     private int rank;
-    private int diamond_count;
-    private int gold_count;
-    private int credit_balance;
+    private int diamondCount;
+    private int goldCount;
+    private int creditBalance;
     private int inventory;
     private String avatar;
-    private boolean online_status;
-    private boolean ban_status;
+    private boolean onlineStatus;
+    private boolean banStatus;
 
     public Player() {
         playerIdProperty = new SimpleStringProperty(null);
@@ -49,21 +49,21 @@ public class Player {
         this.avatar = avatar;
     }
 
-    public boolean getBan_status() {
-        return ban_status;
+    public boolean getBanStatus() {
+        return banStatus;
     }
 
-    public void setBan_status(boolean ban_status) {
-        this.ban_status = ban_status;
+    public void setBanStatus(boolean banStatus) {
+        this.banStatus = banStatus;
     }
 
-    public String getPlayer_id() {
-        return player_id;
+    public String getPlayerId() {
+        return playerId;
     }
 
-    public void setPlayer_id(String player_id) {
-        this.player_id = player_id;
-        playerIdProperty.setValue(player_id);
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
+        playerIdProperty.setValue(playerId);
     }
 
     public String getUsername() {
@@ -75,12 +75,12 @@ public class Player {
         usernameProperty.setValue(username);
     }
 
-    public String getPlayer_name() {
-        return player_name;
+    public String getPlayerName() {
+        return playerName;
     }
 
-    public void setPlayer_name(String player_name) {
-        this.player_name = player_name;
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
     }
 
     public int getRank() {
@@ -91,40 +91,40 @@ public class Player {
         this.rank = rank;
     }
 
-    public int getDiamond_count() {
-        return diamond_count;
+    public int getDiamondCount() {
+        return diamondCount;
     }
 
-    public void setDiamond_count(int diamond_count) {
-        this.diamond_count = diamond_count;
+    public void setDiamondCount(int diamondCount) {
+        this.diamondCount = diamondCount;
     }
 
-    public int getGold_count() {
-        return gold_count;
+    public int getGoldCount() {
+        return goldCount;
     }
 
-    public void setGold_count(int gold_count) {
-        this.gold_count = gold_count;
+    public void setGoldCount(int goldCount) {
+        this.goldCount = goldCount;
     }
 
-    public int getCredit_balance() {
-        return credit_balance;
+    public int getCreditBalance() {
+        return creditBalance;
     }
 
-    public void setCredit_balance(int credit_balance) {
-        this.credit_balance = credit_balance;
+    public void setCreditBalance(int creditBalance) {
+        this.creditBalance = creditBalance;
     }
 
-    public boolean getOnline_status() {
-        return online_status;
+    public boolean getOnlineStatus() {
+        return onlineStatus;
     }
 
-    public void setOnline_status(boolean online_status) {
-        this.online_status = online_status;
+    public void setOnlineStatus(boolean onlineStatus) {
+        this.onlineStatus = onlineStatus;
     }
 
     public StringProperty getPlayerIdProperty() {
-        playerIdProperty.setValue(player_id);
+        playerIdProperty.setValue(playerId);
         return playerIdProperty;
     }
 
@@ -136,18 +136,18 @@ public class Player {
     @Override
     public String toString() {
         return "Player{" +
-                "player_id='" + player_id + '\'' +
+                "playerId='" + playerId + '\'' +
                 ", username='" + username + '\'' +
-                ", player_name='" + player_name + '\'' +
+                ", playerName='" + playerName + '\'' +
                 ", xp=" + xp +
                 ", rank=" + rank +
-                ", diamond_count=" + diamond_count +
-                ", gold_count=" + gold_count +
-                ", credit_balance=" + credit_balance +
+                ", diamondCount=" + diamondCount +
+                ", goldCount=" + goldCount +
+                ", creditBalance=" + creditBalance +
                 ", inventory=" + inventory +
                 ", avatar='" + avatar + '\'' +
-                ", online_status=" + online_status +
-                ", ban_status=" + ban_status +
+                ", onlineStatus=" + onlineStatus +
+                ", banStatus=" + banStatus +
                 '}';
     }
 }

@@ -78,7 +78,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Label>
-                  <Label fx:id="adminMenu" onMouseClicked="#adminMenuClicked" text="{admin_id}" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                  <Label fx:id="adminMenu" onMouseClicked="#adminMenuClicked" text="{adminId}" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                      <font>
                         <Font name="Segoe UI" size="20.0" />
                      </font>
@@ -135,7 +135,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label fx:id="welcomeMessage" text="Hi {admin_name}! Welcome to War Tanks - Admin Portal" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+            <Label fx:id="welcomeMessage" text="Hi {adminName}! Welcome to War Tanks - Admin Portal" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
                <font>
                   <Font name="Segoe UI Light" size="32.0" />
                </font>

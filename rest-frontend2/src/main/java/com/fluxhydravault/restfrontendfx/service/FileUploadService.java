@@ -1,13 +1,17 @@
 package com.fluxhydravault.restfrontendfx.service;
 
+import com.fluxhydravault.restfrontendfx.ConnectionException;
 import com.fluxhydravault.restfrontendfx.config.Config;
 import com.fluxhydravault.restfrontendfx.config.Defaults;
 import com.fluxhydravault.restfrontendfx.model.StandardResponse;
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -24,7 +28,7 @@ public class FileUploadService {
     private static final FileUploadService instance = new FileUploadService();
 
     private FileUploadService() {
-        gson = new Gson();
+        gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
         config = Config.getConfig();
     }
 
@@ -60,6 +64,8 @@ public class FileUploadService {
             Type responseType = TypeToken.getParameterized(StandardResponse.class, String.class).getType();
             StandardResponse<String> response = gson.fromJson(responseBody, responseType);
             return response.getData();
+        } catch (HttpHostConnectException e) {
+            throw new ConnectionException();
         } catch (IOException e) {
             System.out.println(e.getMessage());
             return null;
@@ -86,6 +92,8 @@ public class FileUploadService {
             Type responseType = TypeToken.getParameterized(StandardResponse.class, String.class).getType();
             StandardResponse<String> response = gson.fromJson(responseBody, responseType);
             return response.getData();
+        } catch (HttpHostConnectException e) {
+            throw new ConnectionException();
         } catch (IOException e) {
             System.out.println(e.getMessage());
             return null;

@@ -47,7 +47,7 @@ public class EditItemStatsController {
 
     public void setCurrentItem(Item currentItem) {
         this.currentItem = currentItem;
-        updateItemStatTable(itemService.getItemStats(currentItem.getItem_id()));
+        updateItemStatTable(itemService.getItemStats(currentItem.getItemId()));
     }
 
     private void updateStatTable(List<Stat> list) {
@@ -103,13 +103,13 @@ public class EditItemStatsController {
 
     @FXML
     private void doDelete() {
-        List<Stat> result = itemService.deleteItemStats(currentItem.getItem_id(), selectedItemStat.getStat_id());
+        List<Stat> result = itemService.deleteItemStats(currentItem.getItemId(), selectedItemStat.getStatId());
         updateItemStatTable(result);
     }
 
     @FXML
     private void doAdd() {
-        List<Stat> result = itemService.addItemStat(currentItem.getItem_id(), selectedStat.getStat_id());
+        List<Stat> result = itemService.addItemStat(currentItem.getItemId(), selectedStat.getStatId());
         updateItemStatTable(result);
     }
 

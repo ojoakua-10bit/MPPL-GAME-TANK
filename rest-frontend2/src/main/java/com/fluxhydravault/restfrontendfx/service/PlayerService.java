@@ -1,15 +1,19 @@
 package com.fluxhydravault.restfrontendfx.service;
 
+import com.fluxhydravault.restfrontendfx.ConnectionException;
 import com.fluxhydravault.restfrontendfx.config.Config;
 import com.fluxhydravault.restfrontendfx.config.Defaults;
 import com.fluxhydravault.restfrontendfx.model.Player;
 import com.fluxhydravault.restfrontendfx.model.SearchResponse;
 import com.fluxhydravault.restfrontendfx.model.StandardResponse;
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -26,7 +30,7 @@ public class PlayerService {
     private static final PlayerService instance = new PlayerService();
 
     private PlayerService() {
-        gson = new Gson();
+        gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
         config = Config.getConfig();
     }
 
@@ -35,9 +39,7 @@ public class PlayerService {
     }
 
     public List<Player> getPlayerLists() {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-
-        try {
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             HttpUriRequest request = RequestBuilder.get()
                     .setUri(config.getBaseUri() + "/players")
                     .addHeader("App-Token", Defaults.getAppToken())
@@ -49,7 +51,10 @@ public class PlayerService {
             Type responseType = TypeToken.getParameterized(SearchResponse.class, Player.class).getType();
             SearchResponse<Player> response = gson.fromJson(responseBody, responseType);
 
-            return response.getPossible_results();
+            return response.getPossibleResults();
+        }
+        catch (HttpHostConnectException e) {
+            throw new ConnectionException();
         }
         catch (IOException e) {
             System.out.println(e.getMessage());
@@ -59,9 +64,7 @@ public class PlayerService {
     }
 
     public SearchResponse<Player> searchPlayer(String username) {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-
-        try {
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             HttpUriRequest request = RequestBuilder.get()
                     .setUri(config.getBaseUri() + "/players?q=" + username)
                     .addHeader("App-Token", Defaults.getAppToken())
@@ -74,6 +77,9 @@ public class PlayerService {
 
             return gson.fromJson(responseBody, responseType);
         }
+        catch (HttpHostConnectException e) {
+            throw new ConnectionException();
+        }
         catch (IOException e) {
             System.out.println(e.getMessage());
             // throw some exception
@@ -82,9 +88,7 @@ public class PlayerService {
     }
 
     public Player searchPlayerById(String playerID) {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-
-        try {
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             HttpUriRequest request = RequestBuilder.get()
                     .setUri(config.getBaseUri() + "/players/" + playerID)
                     .addHeader("App-Token", Defaults.getAppToken())
@@ -96,6 +100,9 @@ public class PlayerService {
 
             return gson.fromJson(responseBody, Player.class);
         }
+        catch (HttpHostConnectException e) {
+            throw new ConnectionException();
+        }
         catch (IOException e) {
             System.out.println(e.getMessage());
             // throw some exception
@@ -104,13 +111,12 @@ public class PlayerService {
     }
 
     public Player editPlayer(String playerID, String password, int credit, boolean banStatus) {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("credit_balance", Integer.toString(credit)));
         if (password != null)
             params.add(new BasicNameValuePair("password", password));
 
-        try {
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             HttpUriRequest request, request2;
             StandardResponse<Player> response;
 
@@ -135,6 +141,9 @@ public class PlayerService {
 
             return response.getData();
         }
+        catch (HttpHostConnectException e) {
+            throw new ConnectionException();
+        }
         catch (IOException e) {
             System.out.println(e.getMessage());
             // throw some exception
@@ -143,9 +152,7 @@ public class PlayerService {
     }
 
     public void deletePlayer(String playerID) {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-
-        try {
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             HttpUriRequest request = RequestBuilder.delete()
                     .setUri(config.getBaseUri() + "/players/" + playerID)
                     .addHeader("App-Token", Defaults.getAppToken())
@@ -154,6 +161,9 @@ public class PlayerService {
             System.out.println("Executing request " + request.getRequestLine());
 
             httpclient.execute(request, Defaults.getDefaultResponseHandler());
+        }
+        catch (HttpHostConnectException e) {
+            throw new ConnectionException();
         }
         catch (IOException e) {
             System.out.println(e.getMessage());

@@ -9,7 +9,7 @@ public class Stat {
     private transient StringProperty statTypeProperty;
     private transient StringProperty statValueProperty;
 
-    private Long stat_id;
+    private Long statId;
     private StatType type;
     private String name;
     private Double value;
@@ -21,13 +21,13 @@ public class Stat {
         statValueProperty = new SimpleStringProperty(null);
     }
 
-    public Long getStat_id() {
-        return stat_id;
+    public Long getStatId() {
+        return statId;
     }
 
-    public void setStat_id(Long stat_id) {
-        statIdProperty.setValue(stat_id.toString());
-        this.stat_id = stat_id;
+    public void setStatId(Long statId) {
+        statIdProperty.setValue(statId.toString());
+        this.statId = statId;
     }
 
     public StatType getType() {
@@ -58,7 +58,7 @@ public class Stat {
     }
 
     public StringProperty getStatIdProperty() {
-        statIdProperty.setValue(stat_id.toString());
+        statIdProperty.setValue(statId.toString());
         return statIdProperty;
     }
 

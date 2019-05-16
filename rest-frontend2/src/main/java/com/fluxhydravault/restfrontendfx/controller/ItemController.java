@@ -78,11 +78,11 @@ public class ItemController {
             descriptionLabel.setText("");
             modelLabel.setText("");
         } else {
-            idLabel.setText(item.getItem_id());
-            categoryLabel.setText(item.getItem_category().toString());
-            nameLabel.setText(item.getItem_name());
+            idLabel.setText(item.getItemId());
+            categoryLabel.setText(item.getItemCategory().toString());
+            nameLabel.setText(item.getItemName());
             descriptionLabel.setText(item.getDescription());
-            modelLabel.setText(item.getModel_location());
+            modelLabel.setText(item.getModelLocation());
         }
     }
 
@@ -158,7 +158,7 @@ public class ItemController {
         ButtonType result = alert.getResult();
         if (result == ButtonType.OK) {
             // TODO: deletion code here
-            service.deleteItem(selectedItem.getItem_id());
+            service.deleteItem(selectedItem.getItemId());
             updateTable(service.getItemLists());
             selectedItem = null;
             System.out.println("Yes, delete this item");

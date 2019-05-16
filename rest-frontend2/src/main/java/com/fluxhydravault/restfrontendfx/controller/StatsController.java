@@ -75,7 +75,7 @@ public class StatsController {
             typeLabel.setText("");
             valueLabel.setText("");
         } else {
-            idLabel.setText(selectedStat.getStat_id().toString());
+            idLabel.setText(selectedStat.getStatId().toString());
             nameLabel.setText(selectedStat.getName());
             typeLabel.setText(selectedStat.getType().toString());
             valueLabel.setText(selectedStat.getValue().toString());
@@ -152,7 +152,7 @@ public class StatsController {
         ButtonType result = alert.getResult();
         if (result == ButtonType.OK) {
             // TODO: deletion code here
-            service.deleteStat(selectedStat.getStat_id());
+            service.deleteStat(selectedStat.getStatId());
             updateTable(service.getStatLists());
             selectedStat = null;
             System.out.println("Yes, delete this stat");

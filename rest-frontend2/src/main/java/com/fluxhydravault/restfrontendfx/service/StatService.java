@@ -1,13 +1,17 @@
 package com.fluxhydravault.restfrontendfx.service;
 
+import com.fluxhydravault.restfrontendfx.ConnectionException;
 import com.fluxhydravault.restfrontendfx.config.Config;
 import com.fluxhydravault.restfrontendfx.config.Defaults;
 import com.fluxhydravault.restfrontendfx.model.StandardResponse;
 import com.fluxhydravault.restfrontendfx.model.Stat;
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
@@ -22,7 +26,7 @@ public class StatService {
     private static StatService instance = new StatService();
 
     private StatService() {
-        gson = new Gson();
+        gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
         config = Config.getConfig();
     }
 
@@ -31,9 +35,7 @@ public class StatService {
     }
 
     public Stat newStat(Stat stat) {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-
-        try {
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             HttpUriRequest request = RequestBuilder.post()
                     .setUri(config.getBaseUri() + "/stats")
                     .addHeader("App-Token", Defaults.getAppToken())
@@ -49,6 +51,8 @@ public class StatService {
             StandardResponse<Stat> response = gson.fromJson(responseBody, responseType);
 
             return response.getData();
+        } catch (HttpHostConnectException e) {
+            throw new ConnectionException();
         } catch (IOException e) {
             System.out.println(e.getMessage());
             // throw some exception
@@ -57,9 +61,7 @@ public class StatService {
     }
 
     public List<Stat> getStatLists() {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-
-        try {
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             HttpUriRequest request = RequestBuilder.get()
                     .setUri(config.getBaseUri() + "/stats")
                     .addHeader("App-Token", Defaults.getAppToken())
@@ -72,6 +74,9 @@ public class StatService {
             Type responseType = TypeToken.getParameterized(List.class, Stat.class).getType();
             return gson.fromJson(responseBody, responseType);
         }
+        catch (HttpHostConnectException e) {
+            throw new ConnectionException();
+        }
         catch (IOException e) {
             System.out.println(e.getMessage());
             // throw some exception
@@ -80,14 +85,12 @@ public class StatService {
     }
 
     public Stat editStat(Stat stat) {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-
-        try {
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             HttpUriRequest request;
             StandardResponse<Stat> response;
 
             request = RequestBuilder.put()
-                    .setUri(config.getBaseUri() + "/stats/" + stat.getStat_id())
+                    .setUri(config.getBaseUri() + "/stats/" + stat.getStatId())
                     .addHeader("App-Token", Defaults.getAppToken())
                     .addHeader("User-Token", config.getUserToken())
                     .addParameter("stat_name", stat.getName())
@@ -101,6 +104,9 @@ public class StatService {
 
             return response.getData();
         }
+        catch (HttpHostConnectException e) {
+            throw new ConnectionException();
+        }
         catch (IOException e) {
             System.out.println(e.getMessage());
             // throw some exception
@@ -109,9 +115,7 @@ public class StatService {
     }
 
     public void deleteStat(Long statID) {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-
-        try {
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             HttpUriRequest request = RequestBuilder.delete()
                     .setUri(config.getBaseUri() + "/stats")
                     .addHeader("App-Token", Defaults.getAppToken())
@@ -121,6 +125,9 @@ public class StatService {
             System.out.println("Executing request " + request.getRequestLine());
 
             httpclient.execute(request, Defaults.getDefaultResponseHandler());
+        }
+        catch (HttpHostConnectException e) {
+            throw new ConnectionException();
         }
         catch (IOException e) {
             System.out.println(e.getMessage());

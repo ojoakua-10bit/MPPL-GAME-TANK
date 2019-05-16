@@ -97,17 +97,17 @@ public class PlayerController {
             banLabel.setText("");
         }
         else {
-            idLabel.setText(player.getPlayer_id());
+            idLabel.setText(player.getPlayerId());
             usernameLabel.setText(player.getUsername());
-            nicknameLabel.setText(player.getPlayer_name());
+            nicknameLabel.setText(player.getPlayerName());
             xpLabel.setText(Integer.toString(player.getXp()));
             rankLabel.setText(Integer.toString(player.getRank()));
-            diamondLabel.setText(Integer.toString(player.getDiamond_count()));
-            goldLabel.setText(Integer.toString(player.getGold_count()));
-            creditLabel.setText(Integer.toString(player.getCredit_balance()));
+            diamondLabel.setText(Integer.toString(player.getDiamondCount()));
+            goldLabel.setText(Integer.toString(player.getGoldCount()));
+            creditLabel.setText(Integer.toString(player.getCreditBalance()));
             inventoryLabel.setText(Integer.toString(player.getInventory()));
             avatarLabel.setText(player.getAvatar());
-            banLabel.setText(Boolean.toString(player.getBan_status()));
+            banLabel.setText(Boolean.toString(player.getBanStatus()));
         }
     }
 
@@ -153,7 +153,7 @@ public class PlayerController {
         ButtonType result = alert.getResult();
         if (result == ButtonType.OK) {
             // TODO: deletion code here
-            service.deletePlayer(selectedPlayer.getPlayer_id());
+            service.deletePlayer(selectedPlayer.getPlayerId());
             updateTable(service.getPlayerLists());
             selectedPlayer = null;
             System.out.println("Yes, delete this player");

@@ -17,7 +17,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import jfxtras.styles.jmetro8.JMetro;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,8 +41,8 @@ public class EditItemController {
         statsButton.disableProperty().setValue(item == null);
 
         if (item != null) {
-            nameField.setText(item.getItem_name());
-            categoryBox.getSelectionModel().select(item.getItem_category().toString());
+            nameField.setText(item.getItemName());
+            categoryBox.getSelectionModel().select(item.getItemCategory().toString());
             descField.setText(item.getDescription());
         }
     }
@@ -64,8 +63,8 @@ public class EditItemController {
         categoryBox.setItems(optionList);
 
         if (item != null) {
-            nameField.setText(item.getItem_name());
-            categoryBox.getSelectionModel().select(item.getItem_category().toString());
+            nameField.setText(item.getItemName());
+            categoryBox.getSelectionModel().select(item.getItemCategory().toString());
             descField.setText(item.getDescription());
         }
         statsButton.disableProperty().setValue(item == null);
@@ -93,11 +92,11 @@ public class EditItemController {
 
         if (item == null) {
             item = new Item();
-            item.setModel_location("null");
+            item.setModelLocation("null");
             newItem = true;
         }
         try {
-            item.setItem_category(ItemCategory.valueOf(categoryBox.getSelectionModel().getSelectedItem()));
+            item.setItemCategory(ItemCategory.valueOf(categoryBox.getSelectionModel().getSelectedItem()));
         } catch (NullPointerException | IllegalArgumentException e) {
             showInputErrorMessage("Please enter the valid category.");
             item = null;
@@ -110,7 +109,7 @@ public class EditItemController {
             return;
         }
         else {
-            item.setItem_name(nameField.getText());
+            item.setItemName(nameField.getText());
         }
 
         if (descField.getText().isEmpty()) {
@@ -130,8 +129,8 @@ public class EditItemController {
         }
 
         if (file != null) {
-            String location = uploadService.uploadAsset(file, result.getItem_id());
-            item.setModel_location(location);
+            String location = uploadService.uploadAsset(file, result.getItemId());
+            item.setModelLocation(location);
         }
 
         stage.close();

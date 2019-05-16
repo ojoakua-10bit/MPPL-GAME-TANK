@@ -5,8 +5,8 @@ import java.util.List;
 
 public class SearchResponse<T> {
     private Date timestamp;
-    private T matched_result;
-    private List<T> possible_results;
+    private T matchedResult;
+    private List<T> possibleResults;
 
     public Date getTimestamp() {
         return timestamp;
@@ -16,28 +16,28 @@ public class SearchResponse<T> {
         this.timestamp = timestamp;
     }
 
-    public T getMatched_result() {
-        return matched_result;
+    public T getMatchedResult() {
+        return matchedResult;
     }
 
-    public void setMatched_result(T matched_result) {
-        this.matched_result = matched_result;
+    public void setMatchedResult(T matchedResult) {
+        this.matchedResult = matchedResult;
     }
 
-    public List<T> getPossible_results() {
-        return possible_results;
+    public List<T> getPossibleResults() {
+        return possibleResults;
     }
 
-    public void setPossible_results(List<T> possible_results) {
-        this.possible_results = possible_results;
+    public void setPossibleResults(List<T> possibleResults) {
+        this.possibleResults = possibleResults;
     }
 
     @Override
     public String toString() {
         return "SearchResponse{" +
                 "timestamp=" + timestamp +
-                ", matched_result=" + matched_result +
-                ", possible_results=" + possible_results +
+                ", matchedResult=" + matchedResult +
+                ", possibleResults=" + possibleResults +
                 '}';
     }
 }

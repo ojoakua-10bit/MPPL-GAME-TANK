@@ -14,8 +14,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import jfxtras.styles.jmetro8.JMetro;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 public class MainMenuController {
     private Config config;
@@ -57,7 +60,12 @@ public class MainMenuController {
         config = Config.getConfig();
         admin = config.getCurrentAdmin();
         adminMenu.setText(admin.getUsername());
-        welcomeMessage.setText("Hi "+ admin.getAdmin_name() +"! Welcome to War Tanks - Admin Portal");
+        welcomeMessage.setText("Hi "+ admin.getAdminName() +"! Welcome to War Tanks - Admin Portal");
+//        try {
+//            FileUtils.copyURLToFile(new URL(config.getBaseUri()), new File(""));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @FXML
@@ -114,7 +122,9 @@ public class MainMenuController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Admin.fxml"));
             AnchorPane panel = loader.load();
-            ((AdminController) loader.getController()).setPrimaryStage(primaryStage);
+            AdminController controller = loader.getController();
+            controller.setPrimaryStage(primaryStage);
+            controller.setMainMenuController(this);
             rootPanel.setCenter(panel);
             System.out.println("Admin");
         } catch (IOException e) {
@@ -123,7 +133,7 @@ public class MainMenuController {
     }
 
     @FXML
-    private void logoutMenuClicked() {
+    public void logoutMenuClicked() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.initOwner(primaryStage);
         alert.setTitle("Confirmation");

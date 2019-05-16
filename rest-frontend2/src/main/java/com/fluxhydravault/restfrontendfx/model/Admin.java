@@ -1,17 +1,17 @@
 package com.fluxhydravault.restfrontendfx.model;
 
 public class Admin {
-    private String admin_id;
+    private String adminId;
     private String username;
-    private String admin_name;
+    private String adminName;
     private String avatar;
 
-    public String getAdmin_id() {
-        return admin_id;
+    public String getAdminId() {
+        return adminId;
     }
 
-    public void setAdmin_id(String admin_id) {
-        this.admin_id = admin_id;
+    public void setAdminId(String adminId) {
+        this.adminId = adminId;
     }
 
     public String getUsername() {
@@ -22,12 +22,12 @@ public class Admin {
         this.username = username;
     }
 
-    public String getAdmin_name() {
-        return admin_name;
+    public String getAdminName() {
+        return adminName;
     }
 
-    public void setAdmin_name(String admin_name) {
-        this.admin_name = admin_name;
+    public void setAdminName(String adminName) {
+        this.adminName = adminName;
     }
 
     public String getAvatar() {
@@ -41,9 +41,9 @@ public class Admin {
     @Override
     public String toString() {
         return "Admin{" +
-                "admin_id='" + admin_id + '\'' +
+                "adminId='" + adminId + '\'' +
                 ", username='" + username + '\'' +
-                ", admin_name='" + admin_name + '\'' +
+                ", adminName='" + adminName + '\'' +
                 ", avatar='" + avatar + '\'' +
                 '}';
     }
