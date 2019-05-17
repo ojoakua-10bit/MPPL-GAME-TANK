@@ -35,7 +35,6 @@ public class AdminController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Map<String, Object> newAdmin(
             @RequestHeader(name = "App-Token", required = false) String appToken,
-            @RequestHeader(name = "User-Token", required = false) String userToken,
             @RequestParam("username") String username,
             @RequestParam("password") String password,
             @RequestParam("admin_name") String adminName
