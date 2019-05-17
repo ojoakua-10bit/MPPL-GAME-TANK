@@ -97,7 +97,7 @@ public class ItemService {
                     .setUri(config.getBaseUri() + "/items/" + item.getItemId())
                     .addHeader("App-Token", Defaults.getAppToken())
                     .addHeader("User-Token", config.getUserToken())
-                    .addParameter("name", item.getItemName())
+                    .addParameter("item_name", item.getItemName())
                     .addParameter("item_category", item.getItemCategory().toString())
                     .addParameter("description", item.getDescription())
                     .addParameter("model_location", item.getModelLocation())

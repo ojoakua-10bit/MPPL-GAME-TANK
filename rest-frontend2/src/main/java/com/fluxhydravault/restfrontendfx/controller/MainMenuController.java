@@ -34,15 +34,7 @@ public class MainMenuController {
     @FXML
     private GridPane homePanel;
     @FXML
-    private Label homeLabel;
-    @FXML
-    private Label playerMenu;
-    @FXML
-    private Label itemMenu;
-    @FXML
     private Label adminMenu;
-    @FXML
-    private Label logoutMenu;
     @FXML
     private Label welcomeMessage;
     @FXML
@@ -65,6 +57,14 @@ public class MainMenuController {
         }
     }
 
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+        if (admin != null) {
+            adminMenu.setText(admin.getUsername());
+            welcomeMessage.setText("Hi " + admin.getAdminName() + "! Welcome to War Tanks - Admin Portal");
+        }
+    }
+
     /**
      * Initializes the controller class. This method is automatically called
      * after the fxml file has been loaded.
@@ -79,10 +79,16 @@ public class MainMenuController {
             System.out.println("Downloading avatar...");
             File imageLocation = new File(config.getConfigLocation() + Defaults.getImageLocation());
             FileUtils.copyURLToFile(new URL(config.getFileServerUri() + admin.getAvatar()),
-                    imageLocation, 10000, 10000);
+                    imageLocation, 15000, 15000);
             adminAvatar.setImage(new Image(new FileInputStream(imageLocation)));
         } catch (IOException e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initOwner(primaryStage);
+            alert.setTitle("Error");
+            alert.setHeaderText("Connection Error");
+            alert.setContentText("An error has occurred while connecting to server.");
+
+            alert.showAndWait();
         }
     }
 

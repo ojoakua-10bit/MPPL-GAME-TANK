@@ -20,6 +20,7 @@ import org.apache.http.impl.client.HttpClients;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.SocketException;
 
 public class FileUploadService {
     private Gson gson;
@@ -66,7 +67,10 @@ public class FileUploadService {
             return response.getData();
         } catch (HttpHostConnectException e) {
             throw new ConnectionException();
-        } catch (IOException e) {
+        } catch (SocketException e) {
+            throw new RuntimeException("Connection reset while uploading your avatar." +
+                    "\nUsually caused by the file size exceeds server's limit (10MB).");
+        }  catch (IOException e) {
             System.out.println(e.getMessage());
             return null;
         }
@@ -94,6 +98,9 @@ public class FileUploadService {
             return response.getData();
         } catch (HttpHostConnectException e) {
             throw new ConnectionException();
+        } catch (SocketException e) {
+            throw new RuntimeException("Connection reset while uploading your file." +
+                    "\nUsually caused by the file size exceeds server's limit (10MB).");
         } catch (IOException e) {
             System.out.println(e.getMessage());
             return null;

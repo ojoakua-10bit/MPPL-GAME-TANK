@@ -243,14 +243,14 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public void banPlayer(String playerID) {
         String SQL = "UPDATE player SET ban_status='1' WHERE player_id=?";
-        if (isBannedPlayer(playerID)) throw new AlreadyExistsException("ban_status");
+//        if (isBannedPlayer(playerID)) throw new AlreadyExistsException("ban_status");
         jdbcTemplateObject.update(SQL, playerID);
     }
 
     @Override
     public void unBanPlayer(String playerID) {
         String SQL = "UPDATE player SET ban_status='0' WHERE player_id=?";
-        if (!isBannedPlayer(playerID)) throw new AlreadyExistsException("ban_status");
+//        if (!isBannedPlayer(playerID)) throw new AlreadyExistsException("ban_status");
         jdbcTemplateObject.update(SQL, playerID);
     }
 

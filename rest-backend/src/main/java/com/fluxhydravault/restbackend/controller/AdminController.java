@@ -65,7 +65,7 @@ public class AdminController {
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
-        if (username != null) {
+        if (username != null && !adminService.getAdmin(adminID).getUsername().equals(username)) {
             adminService.changeAdminUsername(adminID, username);
         }
         if (password != null) {

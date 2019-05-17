@@ -133,6 +133,7 @@ public class PlayerController {
             System.out.println("Edit player.");
 
             stage.showAndWait();
+            updateTable(service.getPlayerLists());
         } catch (IOException e) {
             e.printStackTrace();
         }

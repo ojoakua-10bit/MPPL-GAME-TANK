@@ -50,6 +50,7 @@ public class EditPlayerController {
 
         if (password.isEmpty() || rePassword.isEmpty()) {
             service.editPlayer(player.getPlayerId(), null, credit, banStatus);
+            stage.close();
             return;
         }
         if (!password.equals(rePassword)) {

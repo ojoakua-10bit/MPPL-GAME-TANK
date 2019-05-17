@@ -82,11 +82,11 @@ public class EditItemController {
         boolean newItem = false;
 
         if (nameField.getText().isEmpty()) {
-            showInputErrorMessage("Item name is empty.");
+            showErrorMessage("Invalid input", "Item name is empty.");
             return;
         }
         if (descField.getText().isEmpty()) {
-            showInputErrorMessage("Item description is empty.");
+            showErrorMessage("Invalid input", "Item description is empty.");
             return;
         }
 
@@ -98,13 +98,13 @@ public class EditItemController {
         try {
             item.setItemCategory(ItemCategory.valueOf(categoryBox.getSelectionModel().getSelectedItem()));
         } catch (NullPointerException | IllegalArgumentException e) {
-            showInputErrorMessage("Please enter the valid category.");
+            showErrorMessage("Invalid input", "Please enter the valid category.");
             item = null;
             return;
         }
 
         if (nameField.getText().isEmpty()) {
-            showInputErrorMessage("Please enter the item name.");
+            showErrorMessage("Invalid input", "Please enter the item name.");
             item = null;
             return;
         }
@@ -113,7 +113,7 @@ public class EditItemController {
         }
 
         if (descField.getText().isEmpty()) {
-            showInputErrorMessage("Please enter the item description.");
+            showErrorMessage("Invalid input", "Please enter the item description.");
             item = null;
             return;
         }
@@ -129,8 +129,12 @@ public class EditItemController {
         }
 
         if (file != null) {
-            String location = uploadService.uploadAsset(file, result.getItemId());
-            item.setModelLocation(location);
+            try {
+                String location = uploadService.uploadAsset(file, result.getItemId());
+                item.setModelLocation(location);
+            } catch (RuntimeException e) {
+                showErrorMessage("Upload Error", e.getMessage());
+            }
         }
 
         stage.close();
@@ -180,11 +184,11 @@ public class EditItemController {
         }
     }
 
-    private void showInputErrorMessage(String message) {
+    private void showErrorMessage(String header, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initOwner(stage);
         alert.setTitle("Error");
-        alert.setHeaderText("Invalid input");
+        alert.setHeaderText(header);
         alert.setContentText(message);
 
         alert.showAndWait();
