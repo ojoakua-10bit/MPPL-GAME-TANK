@@ -1,5 +1,6 @@
 package com.fluxhydravault.restfrontendfx.controller;
 
+import com.fluxhydravault.restfrontendfx.UnexpectedResponse;
 import com.fluxhydravault.restfrontendfx.model.Admin;
 import com.fluxhydravault.restfrontendfx.service.AdminService;
 import javafx.fxml.FXML;
@@ -38,28 +39,33 @@ public class RegisterController {
 
         if (username.isEmpty()) {
             showErrorAlert("Input error", "Username field is empty.");
+            return;
         }
         else if (nickname.isEmpty()) {
             showErrorAlert("Input error", "Nickname field is empty.");
+            return;
         }
         else if (password.isEmpty()) {
             showErrorAlert("Input error", "Password field is empty.");
+            return;
         }
         else if (rePassword.isEmpty()) {
             showErrorAlert("Input error", "Confirm Password field is empty.");
+            return;
         }
         else if (!password.equals(rePassword)) {
-            showErrorAlert("Input error", "Password is mismatch field is empty.");
+            showErrorAlert("Input error", "Password is mismatch.");
+            return;
         }
 
         AdminService service = AdminService.getInstance();
-        Admin result = service.registerAdmin(username, password, nickname);
-        if (result == null) {
-            showErrorAlert("Register Error", "An error has occurred while registering your account");
-        }
-        else {
+        try {
+            service.registerAdmin(username, password, nickname);
             showSuccessAlert("Registration success", "Now you can login using your new account");
             primaryStage.setScene(initialScene);
+        } catch (UnexpectedResponse e) {
+            showErrorAlert("Register Error", "An error has occurred while registering your account" +
+                    "\n" + e.getMessage());
         }
     }
 

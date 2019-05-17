@@ -1,6 +1,9 @@
 package com.fluxhydravault.restfrontendfx.controller;
 
+import com.fluxhydravault.restfrontendfx.ConnectionException;
+import com.fluxhydravault.restfrontendfx.UnexpectedResponse;
 import com.fluxhydravault.restfrontendfx.config.Config;
+import com.fluxhydravault.restfrontendfx.config.Defaults;
 import com.fluxhydravault.restfrontendfx.model.Admin;
 import com.fluxhydravault.restfrontendfx.service.AdminService;
 import com.fluxhydravault.restfrontendfx.service.FileUploadService;
@@ -16,6 +19,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class AdminController {
@@ -42,12 +46,19 @@ public class AdminController {
 
     @FXML
     private void initialize() {
-        admin = Config.getConfig().getCurrentAdmin();
+        Config config = Config.getConfig();
+        admin = config.getCurrentAdmin();
         adminService = AdminService.getInstance();
         uploadService = FileUploadService.getInstance();
-        adminAvatar = null;
         usernameField.setText(admin.getUsername());
         nicknameField.setText(admin.getAdminName());
+        adminAvatar = new File(config.getConfigLocation() + Defaults.getImageLocation());
+        try {
+            avatarPreview.setImage(new Image(new FileInputStream(adminAvatar)));
+        } catch (FileNotFoundException e) {
+            adminAvatar = null;
+            avatarPreview.setImage(new Image(getClass().getResource("/img/image.png").getPath()));
+        }
     }
 
     public void setMainMenuController(MainMenuController mainMenuController) {
@@ -132,7 +143,22 @@ public class AdminController {
     @FXML
     private void doUpload() {
         if (adminAvatar != null) {
-            uploadService.uploadAvatar(adminAvatar, admin.getAdminId(), true);
+            try {
+                uploadService.uploadAvatar(adminAvatar, admin.getAdminId(), true);
+                // TODO show success message
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.initOwner(primaryStage);
+                alert.setTitle("Success");
+                alert.setHeaderText("Upload image success.");
+                alert.setContentText("Avatar uploaded successfully.");
+
+                alert.showAndWait();
+
+                mainMenuController.setAdminAvatarImage(adminAvatar);
+            } catch (UnexpectedResponse | ConnectionException e) {
+                // TODO show error message
+                e.printStackTrace();
+            }
         }
     }
 }

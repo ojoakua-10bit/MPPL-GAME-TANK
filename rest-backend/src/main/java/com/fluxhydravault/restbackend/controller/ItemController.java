@@ -106,7 +106,7 @@ public class ItemController {
         }
         if (params.containsKey("model_location")) {
             String tmp = params.get("model_location");
-            if (tmp.equals("null")) {
+            if (tmp == null || tmp.equals("null")) {
                 itemService.changeItemModelLocation(itemID, null);
             }
             else {

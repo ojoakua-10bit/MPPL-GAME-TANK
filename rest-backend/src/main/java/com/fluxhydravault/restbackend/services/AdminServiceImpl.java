@@ -130,13 +130,13 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void changeAdminName(String adminID, String adminName) {
         String SQL = "UPDATE `admin` SET `admin_name`=? WHERE admin_id=?";
-        jdbcTemplateObject.update(SQL, adminID, adminID);
+        jdbcTemplateObject.update(SQL, adminName, adminID);
     }
 
     @Override
-    public void changePlayerAvatar(String adminID, String location) {
+    public void changeAdminAvatar(String adminID, String location) {
         String SQL = "UPDATE `admin` SET avatar=? WHERE admin_id=?";
-        jdbcTemplateObject.update(SQL, DEFAULT_AVATAR_LOCATION, adminID);
+        jdbcTemplateObject.update(SQL, location, adminID);
     }
 
     @Override

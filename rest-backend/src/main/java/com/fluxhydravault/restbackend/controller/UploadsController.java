@@ -89,14 +89,14 @@ public class UploadsController {
         HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
 
         if (tokenService.isValidAdminToken(userToken)
-                && !tokenService.getUserToken(userToken).getUser_id().equals(adminID)) {
+                && !tokenService.getAdminToken(userToken).getUser_id().equals(adminID)) {
             throw new NoSuchPrivilegeException();
         }
 
         fileUploadService.uploadImage(adminID, true, file);
         String filename = adminID + StringUtils.cleanPath(file.getOriginalFilename());
         String path = FILE_SERVER_ROOT + "images/admin/" + filename;
-        adminService.changePlayerAvatar(adminID, path);
+        adminService.changeAdminAvatar(adminID, path);
 
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("timestamp", new Date());

@@ -39,10 +39,10 @@ public class FileUploadService {
     public String uploadAvatar(File avatar, String userID, boolean isAdmin) {
         String uri;
         if (isAdmin) {
-            uri = config.getBaseUri() + "/uploads/images/" + userID;
+            uri = config.getBaseUri() + "/uploads/images/admin/" + userID;
         }
         else {
-            uri = config.getBaseUri() + "/uploads/images/admin/" + userID;
+            uri = config.getBaseUri() + "/uploads/images/" + userID;
         }
 
         HttpEntity data = MultipartEntityBuilder.create()

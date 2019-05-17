@@ -1,15 +1,19 @@
 package com.fluxhydravault.restfrontendfx.service;
 
 import com.fluxhydravault.restfrontendfx.ConnectionException;
+import com.fluxhydravault.restfrontendfx.UnauthorizedException;
+import com.fluxhydravault.restfrontendfx.UnexpectedResponse;
 import com.fluxhydravault.restfrontendfx.config.Config;
 import com.fluxhydravault.restfrontendfx.config.Defaults;
 import com.fluxhydravault.restfrontendfx.model.Admin;
+import com.fluxhydravault.restfrontendfx.model.ErrorResponse;
 import com.fluxhydravault.restfrontendfx.model.StandardResponse;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.conn.HttpHostConnectException;
@@ -56,6 +60,15 @@ public class AdminService {
         }
         catch (HttpHostConnectException e) {
             throw new ConnectionException();
+        }
+        catch (ClientProtocolException e) {
+            ErrorResponse response = gson.fromJson(e.getMessage(), ErrorResponse.class);
+            if (response.getStatus() == 401) {
+                throw new UnauthorizedException(response.getMessage());
+            }
+            else {
+                throw new UnexpectedResponse(response.getMessage());
+            }
         }
         catch (IOException e) {
             System.out.println(e.getMessage());

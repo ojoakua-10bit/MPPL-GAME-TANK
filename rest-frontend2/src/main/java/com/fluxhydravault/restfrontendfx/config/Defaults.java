@@ -8,16 +8,23 @@ import org.apache.http.util.EntityUtils;
 public class Defaults {
     private Defaults() { }
 
+    private static final String IMAGE_LOCATION = "avatar.img";
+
     private static final String APP_TOKEN = "e6a065c4517d3520dbaa8b63fc25527caccc39ce6dda5026b5232c027053fb3b";
 
     static void getDefaultConfig(Config config) {
         config.setCurrentAdmin(null);
         config.setUserToken(null);
         config.setBaseUri("http://localhost:7169");
+        config.setFileServerUri("http://localhost");
     }
 
     public static String getAppToken() {
         return APP_TOKEN;
+    }
+
+    public static String getImageLocation() {
+        return IMAGE_LOCATION;
     }
 
     public static ResponseHandler<String> getDefaultResponseHandler() {

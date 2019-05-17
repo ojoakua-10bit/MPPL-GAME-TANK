@@ -1,6 +1,7 @@
 package com.fluxhydravault.restfrontendfx.controller;
 
 import com.fluxhydravault.restfrontendfx.config.Config;
+import com.fluxhydravault.restfrontendfx.config.Defaults;
 import com.fluxhydravault.restfrontendfx.model.Admin;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,6 +10,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -17,6 +20,7 @@ import jfxtras.styles.jmetro8.JMetro;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 
@@ -41,6 +45,8 @@ public class MainMenuController {
     private Label logoutMenu;
     @FXML
     private Label welcomeMessage;
+    @FXML
+    private ImageView adminAvatar;
 
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -49,6 +55,14 @@ public class MainMenuController {
 
     public void setInitialScene(Scene initialScene) {
         this.initialScene = initialScene;
+    }
+
+    public void setAdminAvatarImage(File image) {
+        try {
+            adminAvatar.setImage(new Image(new FileInputStream(image)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -61,11 +75,15 @@ public class MainMenuController {
         admin = config.getCurrentAdmin();
         adminMenu.setText(admin.getUsername());
         welcomeMessage.setText("Hi "+ admin.getAdminName() +"! Welcome to War Tanks - Admin Portal");
-//        try {
-//            FileUtils.copyURLToFile(new URL(config.getBaseUri()), new File(""));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            System.out.println("Downloading avatar...");
+            File imageLocation = new File(config.getConfigLocation() + Defaults.getImageLocation());
+            FileUtils.copyURLToFile(new URL(config.getFileServerUri() + admin.getAvatar()),
+                    imageLocation, 10000, 10000);
+            adminAvatar.setImage(new Image(new FileInputStream(imageLocation)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

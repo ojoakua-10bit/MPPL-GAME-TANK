@@ -2,6 +2,7 @@ package com.fluxhydravault.restfrontendfx.service;
 
 import com.fluxhydravault.restfrontendfx.ConnectionException;
 import com.fluxhydravault.restfrontendfx.UnauthorizedException;
+import com.fluxhydravault.restfrontendfx.UnexpectedResponse;
 import com.fluxhydravault.restfrontendfx.config.Config;
 import com.fluxhydravault.restfrontendfx.config.Defaults;
 import com.fluxhydravault.restfrontendfx.model.Admin;
@@ -63,7 +64,7 @@ public class LoginService {
                 throw new UnauthorizedException(response.getMessage());
             }
             else {
-                throw new RuntimeException(response.getFormattedMessage());
+                throw new UnexpectedResponse(response.getFormattedMessage());
             }
         }
         catch (IOException e) {

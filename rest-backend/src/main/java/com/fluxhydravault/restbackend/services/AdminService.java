@@ -23,7 +23,7 @@ public interface AdminService {
 
     void changeAdminName(String adminID, String adminName);
 
-    void changePlayerAvatar(String adminID, String location);
+    void changeAdminAvatar(String adminID, String location);
 
     Admin authenticateUser(String username, String password);
 

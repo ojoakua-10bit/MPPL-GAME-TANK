@@ -16,6 +16,7 @@ public class Config {
     private Admin currentAdmin;
     private String userToken;
     private String baseUri;
+    private String fileServerUri;
 
     private static final Config config = new Config();
 
@@ -87,8 +88,20 @@ public class Config {
         this.currentAdmin = currentAdmin;
     }
 
+    public String getConfigLocation() {
+        return configLocation;
+    }
+
     public String getUserToken() {
         return userToken;
+    }
+
+    public String getFileServerUri() {
+        return fileServerUri;
+    }
+
+    public void setFileServerUri(String fileServerUri) {
+        this.fileServerUri = fileServerUri;
     }
 
     public void setUserToken(String userToken) {
