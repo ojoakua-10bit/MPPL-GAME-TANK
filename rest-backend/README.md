@@ -1,12 +1,10 @@
-# rest-backend <!-- omit in toc -->
+# Dokumentasi REST API
 
-Backend REST API untuk tank game.
-
-# Dokumentasi
+Halaman ini mendokumentasikan struktur API pada REST Server.
 
 ## Daftar Isi
 
-- [Dokumentasi](#dokumentasi)
+- [Dokumentasi REST API](#dokumentasi-rest-api)
   - [Daftar Isi](#daftar-isi)
   - [Authentication](#authentication)
     - [Required Parameters](#required-parameters)
@@ -17,9 +15,12 @@ Backend REST API untuk tank game.
   - [Edit Admin](#edit-admin)
     - [Required Parameters](#required-parameters-2)
     - [Response Structure](#response-structure-2)
-  - [Hapus Admin](#hapus-admin)
+  - [Upload Avatar](#upload-avatar)
     - [Required Parameters](#required-parameters-3)
     - [Response Structure](#response-structure-3)
+  - [Hapus Admin](#hapus-admin)
+    - [Required Parameters](#required-parameters-4)
+    - [Response Structure](#response-structure-4)
   - [Tambah Stat](#tambah-stat)
   - [Mendapatkan Stat](#mendapatkan-stat)
   - [Edit Stat](#edit-stat)
@@ -43,23 +44,16 @@ Backend REST API untuk tank game.
       - [Contoh Admin Object](#contoh-admin-object)
     - [Item Object](#item-object)
       - [Struktur Item Object](#struktur-item-object)
+      - [ItemCategory enum](#itemcategory-enum)
       - [Contoh Item Object](#contoh-item-object)
     - [Stat Object](#stat-object)
       - [Struktur Stat Object](#struktur-stat-object)
+      - [StatType enum](#stattype-enum)
       - [Contoh Stat Object](#contoh-stat-object)
-    - [ShopItem Object](#shopitem-object)
-      - [Struktur ShopItem Object](#struktur-shopitem-object)
-      - [Contoh ShopItem Object](#contoh-shopitem-object)
-    - [Match Object](#match-object)
-      - [Struktur Match Object](#struktur-match-object)
-      - [Contoh Match Object](#contoh-match-object)
-    - [PlayerInventory Object](#playerinventory-object)
-      - [Struktur PlayerInventory Object](#struktur-playerinventory-object)
-      - [Contoh PlayerInventory Object](#contoh-playerinventory-object)
 
 ## Authentication
 
-Selelu sediakan informasi berikut pada HTTP header ketika menggunakan API kami. Jika tidak, maka server akan memberikan respon `401 Unauthorized`.
+Selalu sediakan informasi berikut pada HTTP header ketika menggunakan API kami. Jika tidak, maka server akan memberikan respon `401 Unauthorized`.
 
 Field | Type | Deskripsi
 ----|----|----
@@ -101,11 +95,25 @@ data | [Player](#player-object) atau [Admin](#admin-object) object | Data dari u
 
 ### `POST` /admins <!-- omit in toc -->
 
-Mendaftarkan admin baru dari portal admin. Hanya membutuhkan `App-Token` untuk ADMIN tanpa `User-Token`.
+Mendaftarkan admin baru. Hanya membutuhkan `App-Token` untuk ADMIN tanpa `User-Token`.
 
 ### Required Parameters
 
+Field | Type | Deskripsi
+----|----|----
+username | string | Username admin yang akan didaftarkan.
+password | string | Password dari admin yang akan didaftarkan.
+admin_name | string | Nickname dari admin yang akan didaftarkan.
+
+
 ### Response Structure
+
+Field | Type | Deskripsi
+----|----|----
+timestamp | ISO8601 timestamp | Request timestamp.
+response | string | Response code dari proses pendaftaran. Bernilai `201 Created` jika pendaftaran berhasil.
+message | string | Pesan berisi penjelasan dari response code.
+data | [Admin](#admin-object) object | Data dari Admin yang telah melakukan pendaftaran. Field ini berisi jika pendaftaran sukses.
 
 ## Edit Admin
 
@@ -113,17 +121,59 @@ Mendaftarkan admin baru dari portal admin. Hanya membutuhkan `App-Token` untuk A
 
 ### `PATCH` /admins/{id} <!-- omit in toc -->
 
+Mengubah data dari admin. Dibutuhkan `App-Token` dan `User-Token` Admin. Semua parameter di sini bersifat optional. Direkomendasikan untuk menggunakan `PUT` jika mengedit keseluruhan parameter dan `PATCH` jika mengedit sebagian saja.
+
 ### Required Parameters
 
+Field | Type | Deskripsi
+----|----|----
+username | string | Nilai username baru yang telah diubah.
+password | string | Nilai password baru yang telah diubah.
+admin_name | string | Nilai nickname baru yang telah diubah.
+
 ### Response Structure
+
+Field | Type | Deskripsi
+----|----|----
+timestamp | ISO8601 timestamp | Request timestamp.
+response | string | Response code dari proses pengeditan. Bernilai `201 Created` jika pengeditan berhasil.
+message | string | Pesan berisi penjelasan dari response code.
+data | [Admin](#admin-object) object | Data dari Admin yang telah diedit. Field ini berisi jika pengeditan sukses.
+
+## Upload Avatar
+
+### `POST` /images/admin/{id} <!-- omit in toc -->
+
+Mengubah avatar atau profile image dari admin saat ini.
+
+### Required Parameters
+
+Field | Type | Deskripsi
+----|----|----
+image_data | Multipart file data | Data gambar yang akan diupload. Server akan menolak jika file gambar tidak valid.
+
+### Response Structure
+
+Field | Type | Deskripsi
+----|----|----
+timestamp | ISO8601 timestamp | Request timestamp.
+response | string | Response code dari proses upload. Bernilai `201 Created` jika upload berhasil.
+message | string | Pesan berisi penjelasan dari response code.
+data | string | Path relatif menuju file pada file server.
 
 ## Hapus Admin
 
 ### `DELETE` /admins/{id} <!-- omit in toc -->
 
+Menghapus akun admin dengan id yang tersebut. Dibutuhkan `App-Token` dan `User-Token` Admin.
+
 ### Required Parameters
 
+Tidak ada parameter dibutuhkan dalam proses ini.
+
 ### Response Structure
+
+Sistem akan memberikan respon `204 No Content` jika proses delete berhasil.
 
 ---
 
@@ -231,31 +281,69 @@ Merepresentasikan informasi tentang game item.
 
 #### Struktur Item Object
 
+Field | Type | Deskripsi
+----|----|----
+item_id | string | Unique id dari item game.
+item_category | [ItemCategory](#itemcategory-enum) enum | Jenis dari item.
+item_name | string | Nama untuk item game.
+description | string | Penjelasan singkat tentang item game.
+model_location | string | Path menuju file asset pada file server. Benilai `null` jika item tidak memiliki asset.
 
+#### ItemCategory enum
+
+Value | Deskripsi
+----|----
+`TANK` | Item berupa tank.
+`SKIN` | Item berupa skin dari tank.
+`GAMEPLAY_DROPPED_ITEM` | Item merupakan bonus item yang didapatkan dari setelah match.
+`INVENTORY_CAPACITY` | Item merupakan tambahan inventory capacity.
 
 #### Contoh Item Object
+```json
+{
+    "item_id": "4ea8951cfa43ccbd3b9f",
+    "item_category": "SKIN",
+    "item_name": "Dummy Skin",
+    "description": "This is dummy skin",
+    "model_location": "/static/assets/4ea8951cfa43ccbd3b9fM3-Dummy-Skin-Asset.zip"
+}
+```
 
 ### Stat Object
 
+Merepresentasikan informasi tentang stat pada sebuah game item.
+
 #### Struktur Stat Object
 
+Field | Type | Deskripsi
+----|----|----
+stat_id | number | Unique id dari stat.
+type | [StatType](#stattype-enum) enum | Jenis dari stat.
+name | string | Nama dari stat, bersifat unique setiap stat-nya.
+value | real | Nilai dari stat tersebut.
+
+#### StatType enum
+
+Value | Deskripsi
+----|----
+HITPOINT | Stat berupa base hitpoint dari tank.
+ATTACK | Stat berupa base attack dari tank.
+DEFENSE | Stat berupa base defense dari tank
+SPEED | Stat berupa base speed dari tank.
+RELOAD_SPEED | Stat berupa base reload speed dari tank.
+HITPOINT_BOOST | Stat berupa tambahan hitpoint untuk tank.
+ATTACK_BOOST | Stat berupa tambahan attack untuk tank
+DEFENSE_BOOST | Stat berupa tambahan defense untuk tank.
+SPEED_BOOST | Stat berupa tambahan speed untuk tank.
+RELOAD_SPEED_BOOST | Stat berupa tambahan reload speed untuk tank.
+INV_CAPACITY_BONUS | Stat berupa tambahan kapasitas inventory untuk player.
+
 #### Contoh Stat Object
-
-### ShopItem Object
-
-#### Struktur ShopItem Object
-
-#### Contoh ShopItem Object
-
-### Match Object
-
-#### Struktur Match Object
-
-#### Contoh Match Object
-
-### PlayerInventory Object
-
-#### Struktur PlayerInventory Object
-
-#### Contoh PlayerInventory Object
-
+```json
+{
+    "stat_id": 7,
+    "type": "HITPOINT_BOOST",
+    "name": "Dummy HP Boost",
+    "value": "160.0"
+}
+```

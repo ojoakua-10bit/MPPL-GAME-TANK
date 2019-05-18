@@ -15,8 +15,8 @@ public class Defaults {
     static void getDefaultConfig(Config config) {
         config.setCurrentAdmin(null);
         config.setUserToken(null);
-        config.setBaseUri("http://localhost:7169");
-        config.setFileServerUri("http://localhost");
+        config.setBaseUri("https://ojoakua.site/tankgame");
+        config.setFileServerUri("https://ojoakua.site");
     }
 
     public static String getAppToken() {

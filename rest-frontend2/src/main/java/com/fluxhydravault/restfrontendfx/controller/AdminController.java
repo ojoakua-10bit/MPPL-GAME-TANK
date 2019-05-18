@@ -1,8 +1,6 @@
 package com.fluxhydravault.restfrontendfx.controller;
 
-import com.fluxhydravault.restfrontendfx.ConnectionException;
 import com.fluxhydravault.restfrontendfx.UnauthorizedException;
-import com.fluxhydravault.restfrontendfx.UnexpectedResponse;
 import com.fluxhydravault.restfrontendfx.config.Config;
 import com.fluxhydravault.restfrontendfx.config.Defaults;
 import com.fluxhydravault.restfrontendfx.model.Admin;
