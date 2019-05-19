@@ -346,6 +346,7 @@ public class PlayerController {
     }
 
     @ResponseBody
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @RequestMapping(value = "/{id}/ban", method = { RequestMethod.PUT, RequestMethod.PATCH })
     public void setBan(
             @RequestHeader(name = "App-Token", required = false) String appToken,

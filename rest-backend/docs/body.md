@@ -1,5 +1,7 @@
 # Dokumentasi Endpoint API
 
+**DISCLAIMER**: Karena perubahan scope project, semua yang ada pada dokumentasi ini hanya yang berada pada scope admin. Meskipun pada kodingan server aslinya sudah terdapat scope player.
+
 ## Authentication
 
 Selalu sediakan informasi berikut pada HTTP header ketika menggunakan API kami. Jika tidak, maka server akan memberikan respon `401 Unauthorized`.
@@ -91,9 +93,9 @@ data | [Admin](#admin-object) object | Data dari Admin yang telah diedit. Field 
 
 ## Upload Avatar
 
-**`POST` /images/admin/{id}**
+**`POST` /uploads/images/admin/{id}**
 
-Mengubah avatar atau profile image dari admin saat ini.
+Mengubah avatar atau profile image dari admin dengan id tersebut.
 
 ### Required Parameters
 
@@ -114,7 +116,7 @@ data | string | Path relatif menuju file pada file server.
 
 **`DELETE` /admins/{id}**
 
-Menghapus akun admin dengan id yang tersebut. Dibutuhkan `App-Token` dan `User-Token` Admin.
+Menghapus akun admin dengan id yang ditentukan pada path variable. Dibutuhkan `App-Token` dan `User-Token` Admin.
 
 ### Required Parameters
 
@@ -128,35 +130,303 @@ Sistem akan memberikan respon `204 No Content` jika proses delete berhasil.
 
 ## Tambah Stat
 
-## Mendapatkan Stat
+**`POST` /stats**
+
+Menambahkan stat baru. Dibutuhkan `App-Token` dan `User-Token` Admin.
+
+### Required Parameters
+
+Field | Type | Deskripsi
+----|----|----
+stat_type | [StatType](#stattype-enum) enum | Jenis dari stat.
+stat_name | string | Nama dari stat, bersifat unique setiap stat-nya.
+stat_value | real | Nilai dari stat tersebut.
+
+
+### Response Structure
+
+Field | Type | Deskripsi
+----|----|----
+timestamp | ISO8601 timestamp | Request timestamp.
+response | string | Response code dari penambahan stat. Bernilai `201 Created` jika penambahan berhasil.
+message | string | Pesan berisi penjelasan dari response code.
+data | [Stat](#stat-object) object | Data dari Stat yang ditambahkan. Field ini berisi jika penambahan sukses.
+
+
+## Mendapatkan Daftar Stat
+
+**`GET` /stats**
+
+Mendapatkan daftar stat yang ada di server. Me-return array dari [Stat](#stat-object).
+
+### Required Parameters
+
+Tidak ada parameter dibutuhkan dalam proses ini.
+
+### Response Structure
+
+Sistem akan me-return list dari stat berupa array of [Stat](#stat-object).
 
 ## Edit Stat
 
+**`PUT` /admins/{id}**
+
+**`PATCH` /admins/{id}**
+
+Mengubah data dari stat. Dibutuhkan `App-Token` dan `User-Token` Admin. Semua parameter di sini bersifat optional.
+
+### Required Parameters
+
+Field | Type | Deskripsi
+----|----|----
+stat_type | [StatType](#stattype-enum) enum | Jenis dari stat.
+stat_name | string | Nama dari stat, bersifat unique setiap stat-nya.
+stat_value | real | Nilai dari stat tersebut.
+
+### Response Structure
+
+Field | Type | Deskripsi
+----|----|----
+timestamp | ISO8601 timestamp | Request timestamp.
+response | string | Response code dari proses pengeditan. Bernilai `201 Created` jika pengeditan berhasil.
+message | string | Pesan berisi penjelasan dari response code.
+data | [Stat](#stat-object) object | Data dari Stat yang sudah diedit. Field ini berisi jika pengeditan sukses.
+
 ## Delete Stat
+
+**`DELETE` /stats/{id}**
+
+Menghapus stat dengan id yang ditentukan pada path variable. Dibutuhkan `App-Token` dan `User-Token` Admin.
+
+### Required Parameters
+
+Tidak ada parameter dibutuhkan dalam proses ini.
+
+### Response Structure
+
+Sistem akan memberikan respon `204 No Content` jika proses delete berhasil.
 
 ---
 
 ## Tambah Item
 
-## Mendapatkan Item
+**`POST` /items**
+
+Menambahkan item baru. Dibutuhkan `App-Token` dan `User-Token` Admin.
+
+### Required Parameters
+
+Field | Type | Deskripsi
+----|----|----
+item_category | [ItemCategory](#itemcategory-enum) enum | Jenis dari item.
+item_name | string | Nama untuk item game.
+description | string | Penjelasan singkat tentang item game.
+
+### Response Structure
+
+Field | Type | Deskripsi
+----|----|----
+timestamp | ISO8601 timestamp | Request timestamp.
+response | string | Response code dari penambahan stat. Bernilai `201 Created` jika penambahan berhasil.
+message | string | Pesan berisi penjelasan dari response code.
+data | [Stat](#stat-object) object | Data dari Stat yang ditambahkan. Field ini berisi jika penambahan sukses.
+
+## Mendapatkan Daftar Item
+
+**`GET` /items**
+
+Mendapatkan daftar item yang ada di server. Me-return array dari [Item](#item-object).
+
+### Required Parameters
+
+Parameter di sini semuanya bersifat opsional.
+
+Field | Type | Deskripsi
+----|----|----
+start | integer | Nilai dari mana query dimulai.
+n | integer | Nilai maksimum banyaknya data yang akan diquery.
+
+### Response Structure
+
+Sistem akan me-return list dari stat berupa array of [Stat](#stat-object).
 
 ## Edit Item
 
+**`PUT` /admins/{id}**
+
+**`PATCH` /admins/{id}**
+
+Mengubah data dari stat. Dibutuhkan `App-Token` dan `User-Token` Admin. Semua parameter di sini bersifat optional.
+
+### Required Parameters
+
+Field | Type | Deskripsi
+----|----|----
+item_category | [ItemCategory](#itemcategory-enum) enum | Jenis dari item.
+item_name | string | Nama untuk item game.
+description | string | Penjelasan singkat tentang item game.
+
+### Response Structure
+
+Field | Type | Deskripsi
+----|----|----
+timestamp | ISO8601 timestamp | Request timestamp.
+response | string | Response code dari pengeditan stat. Bernilai `201 Created` jika pengeditan berhasil.
+message | string | Pesan berisi penjelasan dari response code.
+data | [Stat](#stat-object) object | Data dari Stat yang diedit. Field ini berisi jika pengeditan sukses.
+
+## Upload Asset Model Item
+
+**`POST` /uploads/assets/{id}**
+
+Mengupload asset model untuk item dengan id tersebut.
+
+### Required Parameters
+
+Field | Type | Deskripsi
+----|----|----
+assets_data | Multipart file data | Data asset yang akan diupload.
+
+### Response Structure
+
+Field | Type | Deskripsi
+----|----|----
+timestamp | ISO8601 timestamp | Request timestamp.
+response | string | Response code dari proses upload. Bernilai `201 Created` jika upload berhasil.
+message | string | Pesan berisi penjelasan dari response code.
+data | string | Path relatif menuju file pada file server.
+
 ## Hapus Item
+
+**`DELETE` /items/{id}**
+
+Menghapus item dengan id yang ditentukan pada path variable. Dibutuhkan `App-Token` dan `User-Token` Admin.
+
+### Required Parameters
+
+Tidak ada parameter dibutuhkan dalam proses ini.
+
+### Response Structure
+
+Sistem akan memberikan respon `204 No Content` jika proses delete berhasil.
 
 ## Menambahkan Stat ke Item
 
+**`POST` /items/{id}/stats**
+
+Menambahkan stat ke dalam item dengan id tersebut.
+
+### Required Parameters
+
+Semua parameter di sini berupa query string dan harus diisi salah satu. Tidak boleh diisi keduanya.
+
+Field | Type | Deskripsi
+----|----|----
+stat_id | number | Id dari [Stat](#stat-object)
+stat_name | string | Nama dari stat tersebut.
+
+### Response Structure
+
+Sistem akan memberikan return berupa list dari stat yang ada pada item (array of Stat).
+
 ## Menghapus Stat dari Item
+
+**`DELETE` /items/{id}/stats**
+
+Menghapus suatu stat dari item dengan id tersebut.
+
+### Required Parameters
+
+Semua parameter di sini berupa query string dan harus diisi salah satu. Tidak boleh diisi keduanya.
+
+Field | Type | Deskripsi
+----|----|----
+stat_id | number | Id dari [Stat](#stat-object)
+stat_name | string | Nama dari stat tersebut.
+
+### Response Structure
+
+Sistem akan memberikan return berupa list dari stat yang ada pada item (array of Stat).
 
 ---
 
-## Tambah Player
+## Mencari Player
 
-## Mendapatkan Player
+**`GET` /players**
+
+Mencari player dengan username tertentu.
+
+### Required Parameters
+
+Field | Type | Deskripsi
+----|----|----
+q | string | Username dari player yang akan dicari. Bersifat opsional, jika diabaikan akan mereturn list seluruh player.
+
+### Response Structure
+
+Field | Type | Deskripsi
+----|----|----
+timestamp | ISO8601 timestamp | Request timestamp.
+matched_result | [Player](#player-object) object | Player yang memiliki username tepat sama dengan username yang dimaksud.
+possible_results | array of [Player](#player-object) | Daftar player yang memiliki username yang mengandung unsur dari username yang dimaksud.
 
 ## Edit Player
 
+**`PUT` /players/{id}**
+
+**`PATCH` /players/{id}**
+
+Mengedit data player yang memiliki id tersebut. Seluruh parameter bersifat opsional.
+
+### Required Parameters
+
+**CATATAN**: Parameter yang ada di list ini hanya yang berada pada scope admin.
+
+Field | Type | Deskripsi
+----|----|----
+password | string | Password baru untuk player tersebut.
+credit_balance | integer | Nilai credit baru untuk player tersebut.
+
+### Response Structure
+
+Field | Type | Deskripsi
+----|----|----
+timestamp | ISO8601 timestamp | Request timestamp.
+response | string | Response code dari pengeditan player. Bernilai `201 Created` jika pengeditan berhasil.
+message | string | Pesan berisi penjelasan dari response code.
+data | [Player](#player-object) object | Data dari Player yang diedit. Field ini berisi jika pengeditan sukses.
+
+## Set Ban Player
+
+**`PUT` /players/{id}/ban**
+
+**`PATCH` /players/{id}/ban**
+
+Mengeset status ban dari player tersebut. Dibutuhkan `App-Token` dan `User-Token` Admin.
+
+### Required Parameters
+
+Field | Type | Deskripsi
+----|----|----
+value | boolean | Status ban untuk player tersebut.
+
+### Response Structure
+
+Sistem akan memberikan respon `204 No Content` jika proses set ban berhasil.
+
 ## Hapus Player
+
+**`DELETE` /players/{id}**
+
+Menghapus akun player dengan id yang ditentukan pada path variable. Dibutuhkan `App-Token` dan `User-Token` Admin.
+
+### Required Parameters
+
+Tidak ada parameter dibutuhkan dalam proses ini.
+
+### Response Structure
+
+Sistem akan memberikan respon `204 No Content` jika proses delete berhasil.
 
 ---
 
@@ -275,17 +545,17 @@ value | real | Nilai dari stat tersebut.
 
 Value | Deskripsi
 ----|----
-HITPOINT | Stat berupa base hitpoint dari tank.
-ATTACK | Stat berupa base attack dari tank.
-DEFENSE | Stat berupa base defense dari tank
-SPEED | Stat berupa base speed dari tank.
-RELOAD_SPEED | Stat berupa base reload speed dari tank.
-HITPOINT_BOOST | Stat berupa tambahan hitpoint untuk tank.
-ATTACK_BOOST | Stat berupa tambahan attack untuk tank
-DEFENSE_BOOST | Stat berupa tambahan defense untuk tank.
-SPEED_BOOST | Stat berupa tambahan speed untuk tank.
-RELOAD_SPEED_BOOST | Stat berupa tambahan reload speed untuk tank.
-INV_CAPACITY_BONUS | Stat berupa tambahan kapasitas inventory untuk player.
+`HITPOINT` | Stat berupa base hitpoint dari tank.
+`ATTACK` | Stat berupa base attack dari tank.
+`DEFENSE` | Stat berupa base defense dari tank
+`SPEED` | Stat berupa base speed dari tank.
+`RELOAD_SPEED` | Stat berupa base reload speed dari tank.
+`HITPOINT_BOOST` | Stat berupa tambahan hitpoint untuk tank.
+`ATTACK_BOOST` | Stat berupa tambahan attack untuk tank
+`DEFENSE_BOOST` | Stat berupa tambahan defense untuk tank.
+`SPEED_BOOST` | Stat berupa tambahan speed untuk tank.
+`RELOAD_SPEED_BOOST` | Stat berupa tambahan reload speed untuk tank.
+`INV_CAPACITY_BONUS` | Stat berupa tambahan kapasitas inventory untuk player.
 
 ### Contoh Stat Object
 ```json
