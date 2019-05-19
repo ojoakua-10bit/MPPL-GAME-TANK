@@ -115,7 +115,7 @@ public class AdminService {
 
     public void deleteAdmin() {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            HttpUriRequest request = RequestBuilder.post()
+            HttpUriRequest request = RequestBuilder.delete()
                     .setUri(config.getBaseUri() + "/admins/" + config.getCurrentAdmin().getAdminId())
                     .addHeader("App-Token", Defaults.getAppToken())
                     .addHeader("User-Token", config.getUserToken())

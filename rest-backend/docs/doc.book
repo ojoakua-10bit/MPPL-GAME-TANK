@@ -1,0 +1,3 @@
+#HTMLDOC 1.9.5
+-t pdf13 -f "../../../../README.pdf" --book --toclevels 4 --no-numbered --toctitle "Daftar Isi" --title --titleimage "title.html" --linkstyle plain --size A4 --left 3cm --right 2cm --top 2cm --bottom 3cm --header .t. --header1 ... --footer c.1 --nup 1 --tocheader .t. --tocfooter ..i --portrait --color --no-pscommands --no-xrxcomments --compression=1 --jpeg=0 --fontsize 11.0 --fontspacing 1.2 --headingfont Helvetica --bodyfont Times --headfootsize 11.0 --headfootfont Times-Roman --charset utf-8 --links --embedfonts --pagemode outline --pagelayout single --firstpage c1 --pageeffect none --pageduration 10 --effectduration 1.0 --no-encryption --permissions all  --owner-password ""  --user-password "" --browserwidth 680 --no-strict --no-overflow
+body.md

@@ -93,7 +93,7 @@ public class AdminController {
     ) {
         HeaderChecker.checkHeader(appToken, userToken, "ADMIN", tokenService);
         if (tokenService.isValidAdminToken(userToken)
-                && !tokenService.getUserToken(userToken).getUser_id().equals(adminID)) {
+                && !tokenService.getAdminToken(userToken).getUser_id().equals(adminID)) {
             throw new NoSuchPrivilegeException();
         }
 
