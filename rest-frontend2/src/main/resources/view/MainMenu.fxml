@@ -12,140 +12,141 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="rootPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="960.0" styleClass="background" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fluxhydravault.restfrontendfx.controller.MainMenuController">
-   <top>
-      <GridPane prefHeight="88.0" prefWidth="960.0" BorderPane.alignment="CENTER">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="206.0" minWidth="10.0" prefWidth="199.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" minWidth="10.0" prefWidth="163.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="579.0" minWidth="10.0" prefWidth="572.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
+<BorderPane fx:id="rootPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="600.0" prefWidth="960.0" styleClass="background" xmlns="http://javafx.com/javafx/8.0.172-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.fluxhydravault.restfrontendfx.controller.MainMenuController">
+    <top>
+        <GridPane prefHeight="88.0" prefWidth="960.0" BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="206.0" minWidth="10.0" prefWidth="199.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" minWidth="10.0" prefWidth="163.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="579.0" minWidth="10.0" prefWidth="572.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <padding>
+                <Insets bottom="12.0" left="12.0" right="12.0" top="12.0"/>
+            </padding>
             <GridPane>
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="64.0" minWidth="10.0" prefWidth="64.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="149.0" minWidth="10.0" prefWidth="122.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <ImageView fx:id="adminAvatar" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/logo.png" />
-                     </image></ImageView>
-                  <Label fx:id="homeLabel" onMouseClicked="#homeMenuClicked" prefHeight="64.0" prefWidth="149.0" text="War Tanks" GridPane.columnIndex="1" GridPane.valignment="CENTER">
-                     <font>
-                        <Font name="Segoe UI" size="24.0" />
-                     </font>
-                     <GridPane.margin>
-                        <Insets left="16.0" />
-                     </GridPane.margin>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Label>
-               </children>
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="64.0" minWidth="10.0" prefWidth="64.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="149.0" minWidth="10.0" prefWidth="122.0"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                </rowConstraints>
+                <ImageView fx:id="adminAvatar" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true"
+                           preserveRatio="true">
+                    <Image url="@../img/logo.png"/>
+                </ImageView>
+                <Label fx:id="homeLabel" onMouseClicked="#homeMenuClicked" prefHeight="64.0" prefWidth="149.0"
+                       text="War Tanks" GridPane.columnIndex="1" GridPane.valignment="CENTER">
+                    <font>
+                        <Font name="Segoe UI" size="24.0"/>
+                    </font>
+                    <GridPane.margin>
+                        <Insets left="16.0"/>
+                    </GridPane.margin>
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Label>
             </GridPane>
             <GridPane GridPane.columnIndex="2">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <Label fx:id="playerMenu" onMouseClicked="#playerMenuClicked" text="Players" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-                     <font>
-                        <Font name="Segoe UI" size="20.0" />
-                     </font>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Label>
-                  <Label fx:id="itemMenu" onMouseClicked="#itemMenuClicked" text="Item" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-                     <font>
-                        <Font name="Segoe UI" size="20.0" />
-                     </font>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Label>
-                  <Label fx:id="adminMenu" onMouseClicked="#adminMenuClicked" text="{adminId}" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-                     <font>
-                        <Font name="Segoe UI" size="20.0" />
-                     </font>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Label>
-                  <Label fx:id="logoutMenu" onMouseClicked="#logoutMenuClicked" text="Logout" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-                     <font>
-                        <Font name="Segoe UI" size="20.0" />
-                     </font>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Label>
-                  <Label onMouseClicked="#statsMenuClicked" text="Stats" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-                     <font>
-                        <Font name="Segoe UI" size="20.0" />
-                     </font>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Label>
-               </children>
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                </rowConstraints>
+                <Label fx:id="playerMenu" onMouseClicked="#playerMenuClicked" text="Players"
+                       GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                    <font>
+                        <Font name="Segoe UI" size="20.0"/>
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Label>
+                <Label fx:id="itemMenu" onMouseClicked="#itemMenuClicked" text="Item" GridPane.columnIndex="1"
+                       GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                    <font>
+                        <Font name="Segoe UI" size="20.0"/>
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Label>
+                <Label fx:id="adminMenu" onMouseClicked="#adminMenuClicked" text="{adminId}" GridPane.columnIndex="3"
+                       GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                    <font>
+                        <Font name="Segoe UI" size="20.0"/>
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Label>
+                <Label fx:id="logoutMenu" onMouseClicked="#logoutMenuClicked" text="Logout" GridPane.columnIndex="4"
+                       GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                    <font>
+                        <Font name="Segoe UI" size="20.0"/>
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Label>
+                <Label onMouseClicked="#statsMenuClicked" text="Stats" GridPane.columnIndex="2"
+                       GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                    <font>
+                        <Font name="Segoe UI" size="20.0"/>
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Label>
             </GridPane>
-         </children>
-         <padding>
-            <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
-         </padding>
-      </GridPane>
-   </top>
-   <bottom>
-      <Pane prefHeight="32.0" prefWidth="960.0" BorderPane.alignment="CENTER">
-         <children>
+        </GridPane>
+    </top>
+    <bottom>
+        <Pane prefHeight="32.0" prefWidth="960.0" BorderPane.alignment="CENTER">
             <Label alignment="CENTER" prefWidth="960.0" text="Copyright (c) 2019 FluxHydra Labs">
-               <padding>
-                  <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
-               </padding>
-               <font>
-                  <Font name="Segoe UI" size="13.0" />
-               </font>
+                <padding>
+                    <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
+                </padding>
+                <font>
+                    <Font name="Segoe UI" size="13.0"/>
+                </font>
             </Label>
-         </children>
-      </Pane>
-   </bottom>
-   <center>
-      <GridPane fx:id="homePanel" BorderPane.alignment="CENTER">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <Label fx:id="welcomeMessage" text="Hi {adminName}! Welcome to War Tanks - Admin Portal" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
-               <font>
-                  <Font name="Segoe UI Light" size="32.0" />
-               </font>
+        </Pane>
+    </bottom>
+    <center>
+        <GridPane fx:id="homePanel" BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <Label fx:id="welcomeMessage" text="Hi {adminName}! Welcome to War Tanks - Admin Portal"
+                   GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                <font>
+                    <Font name="Segoe UI Light" size="32.0"/>
+                </font>
             </Label>
-            <Label text="To start, please select one available menu above." GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
-               <font>
-                  <Font name="Segoe UI Light" size="24.0" />
-               </font>
+            <Label text="To start, please select one available menu above." GridPane.halignment="CENTER"
+                   GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+                <font>
+                    <Font name="Segoe UI Light" size="24.0"/>
+                </font>
             </Label>
-         </children>
-      </GridPane>
-   </center>
+        </GridPane>
+    </center>
 </BorderPane>

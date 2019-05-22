@@ -71,6 +71,20 @@ public class EditItemController {
     }
 
     @FXML
+    private void doUpload() {
+        FileChooser chooser = new FileChooser();
+        chooser.getExtensionFilters()
+                .add(new FileChooser.ExtensionFilter("Supported archive files (*.zip)", "*.zip"));
+
+        System.out.println("Choosing archive.");
+
+        file = chooser.showOpenDialog(stage);
+
+        if (file != null)
+            uploadButton.setText(file.getName());
+    }
+
+    @FXML
     private void doCancel() {
         stage.close();
     }
@@ -139,21 +153,6 @@ public class EditItemController {
 
         stage.close();
     }
-
-    @FXML
-    private void doUpload() {
-        FileChooser chooser = new FileChooser();
-        chooser.getExtensionFilters()
-                .add(new FileChooser.ExtensionFilter("Supported archive files (*.zip)", "*.zip"));
-
-        System.out.println("Choosing archive.");
-
-        file = chooser.showOpenDialog(stage);
-
-        if (file != null)
-            uploadButton.setText(file.getName());
-    }
-
 
     @FXML
     private void editStats() {

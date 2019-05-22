@@ -70,25 +70,6 @@ public class AdminController {
     }
 
     @FXML
-    private void chooseImage() {
-        FileChooser chooser = new FileChooser();
-        chooser.getExtensionFilters()
-                .add(new FileChooser.ExtensionFilter("Supported image files (*.jpg, *.jpeg, *.png)",
-                        "*.jpg", "*.jpeg", "*.png"));
-
-        System.out.println("Choosing image.");
-
-        adminAvatar = chooser.showOpenDialog(primaryStage);
-        if (adminAvatar != null) {
-            try {
-                avatarPreview.setImage(new Image(new FileInputStream(adminAvatar)));
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
-
-    @FXML
     private void doDelete() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.initOwner(primaryStage);
@@ -183,6 +164,25 @@ public class AdminController {
             alert.setContentText("An error has occurred while updating your profile");
 
             alert.showAndWait();
+        }
+    }
+
+    @FXML
+    private void chooseImage() {
+        FileChooser chooser = new FileChooser();
+        chooser.getExtensionFilters()
+                .add(new FileChooser.ExtensionFilter("Supported image files (*.jpg, *.jpeg, *.png)",
+                        "*.jpg", "*.jpeg", "*.png"));
+
+        System.out.println("Choosing image.");
+
+        adminAvatar = chooser.showOpenDialog(primaryStage);
+        if (adminAvatar != null) {
+            try {
+                avatarPreview.setImage(new Image(new FileInputStream(adminAvatar)));
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 

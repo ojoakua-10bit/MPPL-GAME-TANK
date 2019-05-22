@@ -9,50 +9,58 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1024.0" stylesheets="@../css/bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fluxhydravault.restfrontendfx.controller.EditItemStatsController">
-   <children>
-      <SplitPane dividerPositions="0.5" layoutX="200.0" layoutY="120.0" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" styleClass="background" SplitPane.resizableWithParent="false">
-               <children>
-                  <TableView fx:id="itemStatTable" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="93.0">
-                    <columns>
-                      <TableColumn fx:id="itemStatName" prefWidth="145.0" text="Name" />
-                      <TableColumn fx:id="itemStatType" prefWidth="168.0" text="Type" />
-                        <TableColumn fx:id="itemStatValue" prefWidth="193.0" text="Value" />
-                    </columns>
-                  </TableView>
-                  <Label layoutX="14.0" layoutY="14.0" text="Applied Item Stats" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0">
-                     <font>
-                        <Font name="Segoe UI Light" size="36.0" />
-                     </font>
-                  </Label>
-                  <Button fx:id="deleteButton" disable="true" layoutX="436.0" layoutY="555.0" mnemonicParsing="false" onAction="#doDelete" prefWidth="200.0" styleClass="danger" text="Delete from item" AnchorPane.bottomAnchor="17.0" AnchorPane.rightAnchor="12.0" />
-               </children>
-            </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" styleClass="background" SplitPane.resizableWithParent="false">
-               <children>
-                  <TableView fx:id="statTable" layoutX="7.0" layoutY="80.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="93.0">
-                    <columns>
-                        <TableColumn fx:id="statName" prefWidth="174.0" text="Name" />
-                      <TableColumn fx:id="statType" prefWidth="153.0" text="Type" />
-                      <TableColumn fx:id="statValue" prefWidth="179.0" text="Value" />
-                    </columns>
-                  </TableView>
-                  <Label layoutX="14.0" layoutY="14.0" text="Available Stats" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0">
-                     <font>
-                        <Font name="Segoe UI Light" size="36.0" />
-                     </font>
-                  </Label>
-                  <ButtonBar prefHeight="40.0" prefWidth="300.0" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="12.0">
-                     <buttons>
-                        <Button cancelButton="true" mnemonicParsing="false" onAction="#doCancel" text="Close" />
-                     </buttons>
-                  </ButtonBar>
-                  <Button fx:id="addButton" disable="true" layoutX="20.0" layoutY="552.0" mnemonicParsing="false" onAction="#doAdd" prefWidth="200.0" styleClass="primary" text="Add to item" AnchorPane.bottomAnchor="17.0" AnchorPane.leftAnchor="12.0" />
-               </children>
-            </AnchorPane>
-        </items>
-      </SplitPane>
-   </children>
+<AnchorPane prefHeight="600.0" prefWidth="1024.0" stylesheets="@../css/bootstrap3.css"
+            xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.fluxhydravault.restfrontendfx.controller.EditItemStatsController">
+    <SplitPane dividerPositions="0.5" layoutX="200.0" layoutY="120.0" prefHeight="160.0" prefWidth="200.0"
+               AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+               AnchorPane.topAnchor="0.0">
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" styleClass="background"
+                    SplitPane.resizableWithParent="false">
+            <TableView fx:id="itemStatTable" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="64.0"
+                       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="93.0">
+                <columns>
+                    <TableColumn fx:id="itemStatName" prefWidth="145.0" text="Name"/>
+                    <TableColumn fx:id="itemStatType" prefWidth="168.0" text="Type"/>
+                    <TableColumn fx:id="itemStatValue" prefWidth="193.0" text="Value"/>
+                </columns>
+            </TableView>
+            <Label layoutX="14.0" layoutY="14.0" text="Applied Item Stats" AnchorPane.leftAnchor="20.0"
+                   AnchorPane.topAnchor="20.0">
+                <font>
+                    <Font name="Segoe UI Light" size="36.0"/>
+                </font>
+            </Label>
+            <Button fx:id="deleteButton" disable="true" layoutX="436.0" layoutY="555.0" mnemonicParsing="false"
+                    onAction="#doDelete" prefWidth="200.0" styleClass="danger" text="Delete from item"
+                    AnchorPane.bottomAnchor="17.0" AnchorPane.rightAnchor="12.0"/>
+        </AnchorPane>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" styleClass="background"
+                    SplitPane.resizableWithParent="false">
+            <TableView fx:id="statTable" layoutX="7.0" layoutY="80.0" prefHeight="200.0" prefWidth="200.0"
+                       AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                       AnchorPane.topAnchor="93.0">
+                <columns>
+                    <TableColumn fx:id="statName" prefWidth="174.0" text="Name"/>
+                    <TableColumn fx:id="statType" prefWidth="153.0" text="Type"/>
+                    <TableColumn fx:id="statValue" prefWidth="179.0" text="Value"/>
+                </columns>
+            </TableView>
+            <Label layoutX="14.0" layoutY="14.0" text="Available Stats" AnchorPane.leftAnchor="20.0"
+                   AnchorPane.topAnchor="20.0">
+                <font>
+                    <Font name="Segoe UI Light" size="36.0"/>
+                </font>
+            </Label>
+            <ButtonBar prefHeight="40.0" prefWidth="300.0" AnchorPane.bottomAnchor="12.0"
+                       AnchorPane.rightAnchor="12.0">
+                <buttons>
+                    <Button cancelButton="true" mnemonicParsing="false" onAction="#doCancel" text="Close"/>
+                </buttons>
+            </ButtonBar>
+            <Button fx:id="addButton" disable="true" layoutX="20.0" layoutY="552.0" mnemonicParsing="false"
+                    onAction="#doAdd" prefWidth="200.0" styleClass="primary" text="Add to item"
+                    AnchorPane.bottomAnchor="17.0" AnchorPane.leftAnchor="12.0"/>
+        </AnchorPane>
+    </SplitPane>
 </AnchorPane>

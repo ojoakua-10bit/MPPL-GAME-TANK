@@ -1,7 +1,6 @@
 package com.fluxhydravault.restfrontendfx.controller;
 
 import com.fluxhydravault.restfrontendfx.UnexpectedResponse;
-import com.fluxhydravault.restfrontendfx.model.Admin;
 import com.fluxhydravault.restfrontendfx.service.AdminService;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;

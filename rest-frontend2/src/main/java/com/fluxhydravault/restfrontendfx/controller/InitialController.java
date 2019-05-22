@@ -19,10 +19,6 @@ public class InitialController {
     private BorderPane rootPane;
     @FXML
     private GridPane initialPane;
-    @FXML
-    private Button loginButton;
-    @FXML
-    private Button registerButton;
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -32,6 +28,7 @@ public class InitialController {
         this.initialScene = initialScene;
     }
 
+    @FXML
     public void doLogin() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
@@ -49,6 +46,7 @@ public class InitialController {
         }
     }
 
+    @FXML
     public void doRegister() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Register.fxml"));
